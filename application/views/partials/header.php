@@ -170,7 +170,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 						<!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-						<li class="nav-item has-treeview">
+						<!-- <li class="nav-item has-treeview">
 							<a href="#" class="nav-link">
 								<i class="nav-icon fas fa-tachometer-alt"></i>
 								<p>
@@ -198,13 +198,86 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 									</a>
 								</li>
 							</ul>
+						</li> -->
+
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fa fa-users" aria-hidden="true"></i>
+								<p>
+									Customer
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?php echo base_url('Customer/addCustomer') ?>" class="nav-link">
+										<i class="fa fa-plus nav-icon" aria-hidden="true"></i>
+										<p>Add Customer</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
+										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
+										<p>Manage Customer</p>
+									</a>
+								</li>
+							</ul>
 						</li>
-						<li class="nav-item">
+
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fa fa-truck" aria-hidden="true"></i>
+								<p>
+									Supplier
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?php echo base_url('Supplier/addSupplier') ?>" class="nav-link">
+										<i class="fa fa-plus nav-icon" aria-hidden="true"></i>
+										<p>Add Supplier</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?php echo base_url('Supplier/index') ?>" class="nav-link">
+										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
+										<p>Manage Supplier</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fa fa-industry" aria-hidden="true"></i>
+								<p>
+									Item
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?php echo base_url('Item/addItem') ?>" class="nav-link">
+										<i class="fa fa-plus nav-icon" aria-hidden="true"></i>
+										<p>Add Item</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?php echo base_url('Item/index') ?>" class="nav-link">
+										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
+										<p>Manage Item</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<!-- <li class="nav-item">
 							<a href="<?php echo base_url('User/forgotPassword') ?>" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>
 								<p>Forgot Password</p>
 							</a>
-						</li>
+						</li> -->
 						</li>
 					</ul>
 				</nav>
