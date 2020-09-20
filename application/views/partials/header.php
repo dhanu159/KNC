@@ -16,11 +16,14 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 	<!-- Ionicons -->
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+	<!-- Select2 -->
+	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/select2.min.css') ?>">
 	<!-- overlayScrollbars -->
-	<!-- <link rel="stylesheet" href="../../dist/css/adminlte.min.css"> -->
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/adminlte.min.css') ?>">
 	<!-- Google Font: Source Sans Pro -->
-	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
+
+
 
 </head>
 
