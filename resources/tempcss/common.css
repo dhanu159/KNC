@@ -5,6 +5,12 @@
     background-color: #FFFFFF;
     z-index: 99999;
 }
+
+.modal-content {
+    border-radius: 0 !important;
+}
+
+
 /* 
 body {
     margin: 0;
@@ -73,7 +79,10 @@ body {
     backface-visibility: hidden;
 }
 
-.dl__corner--top:before, .dl__corner--top:after, .dl__corner--bottom:before, .dl__corner--bottom:after {
+.dl__corner--top:before,
+.dl__corner--top:after,
+.dl__corner--bottom:before,
+.dl__corner--bottom:after {
     position: absolute;
     width: 17px;
     height: 17px;
