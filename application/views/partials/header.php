@@ -28,7 +28,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body onload="Preloader()" class="hold-transition sidebar-mini">
 	<!-- Preloader Start-->
 	<div id="Preloader">
 		<div class="dl">

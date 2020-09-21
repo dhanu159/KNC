@@ -30,6 +30,12 @@
 
 <!-- Page script -->
 <script>
+	var preLoader = document.getElementById('Preloader');
+
+	function Preloader() {
+		preLoader.style.display='none';
+	}
+
 	$(function() {
 		//Initialize Select2 Elements
 		$('.select2').select2()

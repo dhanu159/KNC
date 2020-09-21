@@ -14,9 +14,9 @@
     <div class="container">
       <h1>Welcome</h1>
 
-      <form class="form">
-        <input type="text" placeholder="Username">
-        <input type="password" placeholder="Password">
+      <form action="<?php echo base_url('auth/login') ?>" method="post">
+        <input type="text" placeholder="Username" name="username" id="username">
+        <input type="password" placeholder="Password" name="password" id="password">
         <button type="submit" id="login-button">Login</button>
       </form>
     </div>
@@ -37,7 +37,7 @@
   <!-- partial -->
   <script src="<?php echo base_url('resources/tempjs/jquery.min.js') ?>"></script>
 
-  <script src="<?= base_url('resources/tempjs/login.js') ?>"></script>
+  <!-- <script src="<?= base_url('resources/tempjs/login.js') ?>"></script> -->
 
 </body>
 

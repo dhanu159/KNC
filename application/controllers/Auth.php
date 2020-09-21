@@ -21,15 +21,19 @@ class Auth extends Admin_Controller
 
         $this->logged_in();
 
-        $this->form_validation->set_rules('email', 'Email', 'required');
+        $this->form_validation->set_rules('username', 'UserName', 'trim|required');
         $this->form_validation->set_rules('password', 'Password', 'required');
+
+
+		// $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+
 
         if ($this->form_validation->run() == TRUE) {
             // true case
-            $email_exists = $this->model_auth->check_email($this->input->post('email'));
+            $email_exists = $this->model_auth->check_email($this->input->post('username'));
 
             if ($email_exists == TRUE) {
-                $login = $this->model_auth->login($this->input->post('email'), $this->input->post('password'));
+                $login = $this->model_auth->login($this->input->post('username'), $this->input->post('password'));
 
                 if ($login) {
 
