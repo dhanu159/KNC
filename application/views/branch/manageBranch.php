@@ -2,15 +2,18 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-            Manage Supplier
+            Manage Branch
         </h1>
 
     </section>
+
     <section class="content">
         <!-- Small boxes (Stat box) -->
-        <div class="card">
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+            <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addSupplierModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Supplier</button>
+                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addBranchModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Branch</button>
             </div>
             <div class="card-body">
 
@@ -19,7 +22,7 @@
                         <table id="manageTable" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Supplier Name</th>
+                                    <th>Branch Name</th>
                                     <th>Address</th>
                                     <th>Contact No</th>
                                     <th>Action</th>
@@ -30,28 +33,28 @@
                     </div>
                     <!-- /.box-body -->
                 </div>
+                <!-- /.box -->
             </div>
-            <!-- /.card-body -->
+            <!-- col-md-12 -->
         </div>
-        <!-- /.card -->
         <!-- /.row -->
     </section>
 
-    <div class="modal fade" id="addSupplierModal" tabindex="-1" role="dialog" aria-labelledby="addSupplierModal" aria-hidden="true">
+    <div class="modal fade" id="addBranchModal" tabindex="-1" role="dialog" aria-labelledby="addBranchModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addSupplierModal">Add Supplier</h5>
+                    <h5 class="modal-title" id="addBranchModal">Add Branch</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
-                <form role="form" action="<?php echo base_url('supplier/create') ?>" method="post" id="createSupplierForm">
+                <form role="form" action="<?php echo base_url('branch/create') ?>" method="post" id="createBranchForm">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="supplier_name">Supplier Name</label>
-                            <input type="text" class="form-control" id="supplier_name" name="supplier_name" placeholder="Enter Supplier Name" autocomplete="off">
+                            <label for="branch_name">Branch Name</label>
+                            <input type="text" class="form-control" id="branch_name" name="branch_name" placeholder="Enter Branch Name" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label for="address">Address</label>
@@ -61,9 +64,17 @@
                             <label for="contact_no">Contact No</label>
                             <input type="number" class="form-control" id="contact_no" name="contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
                         </div>
+                        <!-- <div class="form-group">
+                            <label for="active">Status</label>
+                            <select class="form-control" id="active" name="active">
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div> -->
                     </div>
+
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Supplier</button>
+                        <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Branch</button>
                     </div>
 
                 </form>
@@ -73,22 +84,22 @@
 
 </div>
 <!-- /.content-wrapper -->
-<!-- edit Supplier modal -->
-<div class="modal fade" id="editSupplierModal" tabindex="-1" role="dialog" aria-labelledby="editSupplierModal" aria-hidden="true">
+<!-- edit Branch modal -->
+<div class="modal fade" id="editBranchModal" tabindex="-1" role="dialog" aria-labelledby="editBranchModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editSupplierModal">Edit Supplier</h5>
+                <h5 class="modal-title" id="editBranchModal">Edit Branch</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <form role="form" action="<?php echo base_url('supplier/update') ?>" method="post" id="updateSupplierForm">
+            <form role="form" action="<?php echo base_url('branch/update') ?>" method="post" id="updateBranchForm">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="supplier_name">Supplier Name</label>
-                        <input type="text" class="form-control" id="edit_supplier_name" name="edit_supplier_name" placeholder="Enter Supplier Name" autocomplete="off">
+                        <label for="branch_name">Branch Name</label>
+                        <input type="text" class="form-control" id="edit_branch_name" name="edit_branch_name" placeholder="Enter Branch Name" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="address">Address</label>
@@ -99,13 +110,11 @@
                         <input type="number" class="form-control" id="edit_contact_no" name="edit_contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
                     </div>
 
-                    <div class="form-group">
-                        <input type="hidden" class="form-control" id="edit_rv" name="edit_rv" autocomplete="off">
-                    </div>
+
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Supplier</button>
+                <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Branch</button>
                 </div>
 
             </form>
@@ -117,22 +126,22 @@
 <!-- /.content-wrapper -->
 
 <!-- remove brand modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="removeSupplierModal">
+<div class="modal fade" tabindex="-1" role="dialog" id="removeBranchModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
+                <h5 class="modal-title" id="removeBranchModal">Delete Branch</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <form role="form" action="<?php echo base_url('supplier/remove') ?>" method="post" id="removeSupplierForm">
+            <form role="form" action="<?php echo base_url('branch/remove') ?>" method="post" id="removeBranchForm">
                 <div class="modal-body">
                     <p>Do you really want to remove?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Supplier</button>
+                <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Branch</button>
                 </div>
             </form>
 
@@ -142,4 +151,4 @@
 </div><!-- /.modal -->
 
 
-<script src="<?php echo base_url('resources/pageJS/supplier.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/branch.js') ?>"></script>

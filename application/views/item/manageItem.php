@@ -29,10 +29,6 @@
 			</div>
 			<div class="card-body">
 
-
-
-
-
 			</div>
 			<!-- /.card-body -->
 		</div>
@@ -40,7 +36,6 @@
 
 	</section>
 	<!-- Main content end -->
-
 
 	<!-- Modal -->
 	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -50,36 +45,43 @@
 					<h4 class="modal-title" id="myModalLabel">Add Item</h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="txtItemName">Item Name</label>
-						<input type="text" class="form-control" id="txtItemName" placeholder="Enter Item Name" autofocus>
+				<form role="form" action="<?php echo base_url('Item/create') ?>" method="post" id="createitemForm">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="txtItemName">Item Name</label>
+							<input type="text" class="form-control" id="Item_name" name="Item_name" placeholder="Enter Item Name" autofocus>
+						</div>
+						<div class="form-group">
+							<label>Measure Unit</label>
+							<select class="form-control select2" style="width: 100%;" id="measureunit" name="measureunit">
+
+								<option value="0" disabled selected hidden>Select Measure Unit</option>
+
+								<?php foreach ($measureUnit as $row) { ?>
+									<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
+								<?php } ?>
+
+								<!-- <option>Box</option>
+							<option>Pcs</option> -->
+							</select>
+						</div>
+					
+
+						<div class="form-group">
+							<label for="txtItemName">Item Re-Order Level</label>
+							<input type="number" class="form-control" id="Re_Order" name="Re_Order" placeholder="Enter Re-Order Level" min=1>
+						</div>
 					</div>
-					<div class="form-group">
-						<label>Measure Unit</label>
-						<select class="form-control select2" style="width: 100%;">
-							<!-- <option selected="selected">Board</option> -->
-							<option value="0" disabled selected hidden>Select Measure Unit</option>
-							<option>Board</option>
-							<option>Box</option>
-							<option>Pcs</option>
-						</select>
+					<div class="modal-footer">
+
+						<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Item</button>
 					</div>
-					<div class="form-group">
-						<label for="txtItemName">Item Re-Order Level</label>
-						<input type="number" class="form-control" id="txtItemName" placeholder="Enter Re-Order Level" min=1>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-success">Save Item</button>
-				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Modal end -->
 
-	<!-- 
-	<script src="<?php echo base_url('plugins/select2/js/select2.full.min.js') ?>"></script> -->
 </div>
 <!-- /.content-wrapper -->
+
+
+<script src="<?php echo base_url('resources/pageJS/item.js') ?>"></script>
