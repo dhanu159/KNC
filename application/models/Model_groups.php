@@ -51,7 +51,7 @@ class Model_groups extends CI_Model
 	{
 		$sql = "SELECT * FROM UserGroup AS UG
 		INNER JOIN User AS U ON UG.intUserGroupID = U.intUserGroupID 
-		WHERE U.user_id = ?";
+		WHERE U.intUserID = ?";
 		$query = $this->db->query($sql, array($user_id));
 		$result = $query->row_array();
 

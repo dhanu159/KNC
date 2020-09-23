@@ -23,11 +23,43 @@ class Model_auth extends CI_Model
 	}
 
 	/* 
-		This function checks if the email and password matches with the database
+		This function checks if the user name exists in the database
+	*/
+	public function check_username($username)
+	{
+		if ($username) {
+			$sql = 'SELECT * FROM User WHERE vcUserName = ?';
+			$query = $this->db->query($sql, array($username));
+			$result = $query->num_rows();
+			return ($result == 1) ? true : false;
+		}
+
+		return false;
+	}
+
+	/* 
+		This function checks if the user name and password matches with the database
 	*/
 	public function login($email, $password) {
 		if($email && $password) {
-			$sql = "SELECT * FROM User WHERE vcEmail = ?";
+			$sql = "SELECT 
+						U.intUserID,
+						U.vcUserName,
+						U.vcPassword,
+						U.vcFullName,
+						U.vcEmail,
+						U.vcContactNo,
+						U.dtCreatedDate,
+						U.vcCreatedUser,
+						U.IsActive,
+						UG.intUserGroupID,
+						UG.vcGroupName
+					FROM 
+						User AS U
+						INNER JOIN UserGroup AS UG ON U.intUserGroupID = UG.intUserGroupID
+					WHERE 
+						U.vcUserName = ?";
+						
 			$query = $this->db->query($sql, array($email));
 
 			if($query->num_rows() == 1) {
@@ -39,9 +71,7 @@ class Model_auth extends CI_Model
 				}
 				else {
 					return false;
-				}
-
-				
+				}				
 			}
 			else {
 				return false;
