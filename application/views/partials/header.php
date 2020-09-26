@@ -154,9 +154,9 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 			<a href="#" class="brand-link">
 				<div class="user-panel pb-3 d-flex">
-					<div class="image">
+					<!-- <div class="image">
 						<img src="<?php echo base_url('resources/img/AdminLTELogo.png') ?>" alt="AdminLTE Logo" class="img-circle elevation-2" style="opacity: .8">
-					</div>
+					</div> -->
 					<div class="info">
 						<span class="brand-text font-weight-light d-block">KNC</span>
 						<span class="brand-text font-weight-light d-block" style="font-size: 0.8em;">Business Management</span>
@@ -167,82 +167,78 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 			<!-- Sidebar -->
 			<div class="sidebar">
-				<!-- Sidebar user (optional) -->
-				<!-- <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-					<div class="image">
-						<img src="<?php echo base_url('resources/img/user2-160x160.jpg') ?>" class="img-circle elevation-2" alt="User Image">
-					</div>
-					<div class="info">
-						<a href="#" class="d-block">Alexander Pierce</a>
-					</div>
-				</div> -->
-
-				<div class="user-panel pb-3 mb-3 d-flex">
-					<div class="image">
-						<img src="<?php echo base_url('resources/img/user2-160x160.jpg') ?>" class="img-circle elevation-2" alt="User Image">
-					</div>
-					<div class="info">
-						<a href="#" class="d-block">Test User
-							<span class="d-block small">Administrator</span>
-						</a>
-
-					</div>
-				</div>
 
 				<!-- Sidebar Menu -->
 				<nav class="mt-2">
 					<ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-						<!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-						<!-- <li class="nav-item has-treeview">
-							<a href="#" class="nav-link">
-								<i class="nav-icon fas fa-tachometer-alt"></i>
-								<p>
-									Dashboard
-									<i class="right fas fa-angle-left"></i>
-								</p>
-							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="#l" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Dashboard v1</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Dashboard v2</p>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a href="#" class="nav-link">
-										<i class="far fa-circle nav-icon"></i>
-										<p>Dashboard v3</p>
-									</a>
-								</li>
-							</ul>
-						</li> -->
+
+
 
 						<li class="nav-item has-treeview">
 							<a href="#" class="nav-link">
-								<i class="fa fa-users" aria-hidden="true"></i>
-								<p>
-									Customer
-									<i class="right fas fa-angle-left"></i>
-								</p>
+								<div class="user-panel pb-3 mb-3 d-flex">
+									<div class="image">
+										<img src="<?php echo base_url('resources/img/user2-160x160.jpg') ?>" class="img-circle elevation-2" alt="User Image">
+									</div>
+									<div class="info">
+										<span href="#" class="d-block"><?= $_SESSION['full_name'] ?>
+											<span class="d-block small"><?= $_SESSION['group_name'] ?></span>
+										</span>
+									</div>
+								</div>
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
 									<a href="<?php echo base_url('Customer/addCustomer') ?>" class="nav-link">
-										<i class="fa fa-plus nav-icon" aria-hidden="true"></i>
-										<p>Add Customer</p>
+										<i class="fas fa-user-edit"></i>
+										<p>&nbsp;&nbsp;Change Account Details</p>
+									</a>
+								</li>
+
+							</ul>
+						</li>
+
+						<li class="nav-item">
+							<a href="<?= base_url('dashboard') ?>" class="nav-link">
+								<i class="fas fa-tachometer-alt"></i>
+								<p>&nbsp;&nbsp;&nbsp;Dashboard</p>
+							</a>
+						</li>
+
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fas fa-tools"></i>
+								<p>&nbsp;&nbsp;&nbsp;Utilities
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
+										<i class="fas fa-user"></i>
+										<p>&nbsp;&nbsp;&nbsp;User</p>
 									</a>
 								</li>
 								<li class="nav-item">
+									<a href="<?= base_url('Utilities/UserGroup') ?>" class="nav-link">
+										<i class="fas fa-users"></i>
+										<p>&nbsp;&nbsp;User Group</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fa fa-users" aria-hidden="true"></i>
+								<p>&nbsp;&nbsp;Customer
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
 									<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
 										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
-										<p>Manage Customer</p>
+										<p>&nbsp;&nbsp;Manage Customer</p>
 									</a>
 								</li>
 							</ul>
@@ -251,22 +247,15 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 						<li class="nav-item has-treeview">
 							<a href="#" class="nav-link">
 								<i class="fa fa-truck" aria-hidden="true"></i>
-								<p>
-									Supplier
+								<p>&nbsp;&nbsp;Supplier
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
-									<a href="<?php echo base_url('Supplier/addSupplier') ?>" class="nav-link">
-										<i class="fa fa-plus nav-icon" aria-hidden="true"></i>
-										<p>Add Supplier</p>
-									</a>
-								</li>
-								<li class="nav-item">
 									<a href="<?php echo base_url('Supplier/index') ?>" class="nav-link">
 										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
-										<p>Manage Supplier</p>
+										<p>&nbsp;&nbsp;Manage Supplier</p>
 									</a>
 								</li>
 							</ul>
@@ -275,27 +264,25 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 						<li class="nav-item has-treeview">
 							<a href="#" class="nav-link">
 								<i class="fa fa-industry" aria-hidden="true"></i>
-								<p>
-									Item
+								<p>&nbsp;&nbsp;&nbsp;Item
 									<i class="right fas fa-angle-left"></i>
 								</p>
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
-									<a href="<?php echo base_url('Item/addItem') ?>" class="nav-link">
-										<i class="fa fa-plus nav-icon" aria-hidden="true"></i>
-										<p>Add Item</p>
-									</a>
-								</li>
-								<li class="nav-item">
 									<a href="<?php echo base_url('Item/index') ?>" class="nav-link">
 										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
-										<p>Manage Item</p>
+										<p>&nbsp;&nbsp;Manage Item</p>
 									</a>
 								</li>
 							</ul>
 						</li>
-
+						<li class="nav-item">
+							<a href="<?= base_url('auth/logout') ?>" class="nav-link">
+								<i class="fas fa-power-off"></i>
+								<p>&nbsp;&nbsp;&nbsp;Logout</p>
+							</a>
+						</li>
 						<!-- <li class="nav-item">
 							<a href="<?php echo base_url('User/forgotPassword') ?>" class="nav-link">
 								<i class="far fa-circle nav-icon"></i>

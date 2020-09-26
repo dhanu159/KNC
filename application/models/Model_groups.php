@@ -7,20 +7,21 @@ class Model_groups extends CI_Model
 		parent::__construct();
 	}
 
-	public function getGroupData($groupId = null) 
+	public function getUserGroupData($groupId = null) 
 	{
 		if($groupId) {
-			$sql = "SELECT * FROM UserGroup WHERE intUserGroupID = ?";
+			$sql = "SELECT intUserGroupID,vcGroupName,vcPermission FROM UserGroup WHERE intUserGroupID = ?";
 			$query = $this->db->query($sql, array($groupId));
 			return $query->row_array();
 		}
 
-		$sql = "SELECT * FROM UserGroup WHERE intUserGroupID != ?";
+		// $sql = "SELECT intUserGroupID,vcGroupName,vcPermission FROM UserGroup WHERE intUserGroupID != ?";
+		$sql = "SELECT intUserGroupID,vcGroupName,vcPermission FROM UserGroup";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
 	}
 
-	public function create($data = '')
+	public function createUserGroup($data = '')
 	{
 		$create = $this->db->insert('UserGroup', $data);
 		return ($create == true) ? true : false;

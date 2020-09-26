@@ -18,10 +18,15 @@
 } */
 
 /* Bootstrap Overriding */
+
 .modal-content {
     border-radius: 0 !important;
 }
 
+.content-center {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
 
 /* 
 body {
@@ -91,10 +96,7 @@ body {
     backface-visibility: hidden;
 }
 
-.dl__corner--top:before,
-.dl__corner--top:after,
-.dl__corner--bottom:before,
-.dl__corner--bottom:after {
+.dl__corner--top:before, .dl__corner--top:after, .dl__corner--bottom:before, .dl__corner--bottom:after {
     position: absolute;
     width: 17px;
     height: 17px;

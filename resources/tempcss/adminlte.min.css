@@ -10777,12 +10777,12 @@ body.sidebar-collapse:not(.sidebar-mini-md):not(.sidebar-mini) .content-wrapper,
         height: inherit
     }
 }
-
+ 
 .main-footer {
     background: #fff;
     border-top: 1px solid #dee2e6;
     color: #869099;
-    padding: 1rem
+    padding: 0.5rem
 }
 
 .main-footer.text-sm, .text-sm .main-footer {

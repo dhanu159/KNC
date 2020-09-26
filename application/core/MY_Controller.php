@@ -11,10 +11,11 @@ class MY_Controller extends CI_Controller
 class Admin_Controller extends MY_Controller 
 {
 	var $permission = array();
+	var $isAdmin = FALSE;
 
 	public function __construct() 
 	{
-		parent::__construct();
+		parent::__construct(); 
 
 		$group_data = array();
 		if(empty($this->session->userdata('logged_in'))) {
@@ -23,12 +24,23 @@ class Admin_Controller extends MY_Controller
 			$this->session->set_userdata($session_data);
 		}
 		else {
-			$user_id = $this->session->userdata('id');
-			$this->load->model('model_groups');
-			$group_data = $this->model_groups->getUserGroupByUserId($user_id);
+			$user_id = $this->session->userdata('user_id');
+			$this->load->model('model_auth');
+			$group_data = $this->model_auth->getUserGroupByUserId($user_id);
+
+			if ($group_data["isAdmin"] == 1) {
+				$this->isAdmin = TRUE;
+				$this->data['isAdmin'] = TRUE;
+				$this->data['user_permission'] = array();
+			}else{
+				$this->data['isAdmin'] = FALSE;
+				$this->data['user_permission'] = unserialize($group_data['vcPermission']);
+				$this->permission = unserialize($group_data['vcPermission']);
+			}
+
+
+
 			
-			$this->data['user_permission'] = unserialize($group_data['permission']);
-			$this->permission = unserialize($group_data['permission']);
 		}
 	}
 
@@ -51,11 +63,11 @@ class Admin_Controller extends MY_Controller
 	public function render_template($page = null, $data = array())
 	{
 
-		$this->load->view('templates/header',$data);
-		$this->load->view('templates/header_menu',$data);
-		$this->load->view('templates/side_menubar',$data);
+		$this->load->view('partials/header',$data);
+		// $this->load->view('templates/header_menu',$data);
+		// $this->load->view('templates/side_menubar',$data);
 		$this->load->view($page, $data);
-		$this->load->view('templates/footer',$data);
+		$this->load->view('partials/footer',$data);
 	}
 
 	public function company_currency()
