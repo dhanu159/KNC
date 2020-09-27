@@ -13,7 +13,7 @@ class Utilities extends Admin_Controller
     public function UserGroup()
     {
         if (!$this->isAdmin) {
-            if (!in_array('userGroup', $this->permission)) {
+            if (!in_array('viewUserGroup', $this->permission)) {
                 redirect('dashboard', 'refresh');
             }
         }
