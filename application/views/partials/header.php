@@ -225,6 +225,12 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 										<p>&nbsp;&nbsp;User Group</p>
 									</a>
 								</li>
+								<li class="nav-item">
+									<a href="<?= base_url('Utilities/MeasureUnit') ?>" class="nav-link">
+										<i class="fas fa-balance-scale-right"></i>
+										<p>&nbsp;&nbsp;Measure Unit</p>
+									</a>
+								</li>
 							</ul>
 						</li>
 						<li class="nav-item has-treeview">
