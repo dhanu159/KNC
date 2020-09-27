@@ -22,7 +22,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-header">
-                <?php if (in_array('createGroup', $user_permission) || $isAdmin) { ?>
+                <?php if (in_array('createUserGroup', $user_permission) || $isAdmin) { ?>
                     <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add User Group</button>
                 <?php } ?>
             </div>
