@@ -26,6 +26,14 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/common.css') ?>">
 
 
+	<script src="<?php echo base_url('resources/tempjs/jquery.min.js') ?>"></script>
+	
+
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+
 </head>
 
 <body onload="Preloader()" class="hold-transition sidebar-mini">
