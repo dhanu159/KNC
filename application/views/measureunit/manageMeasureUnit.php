@@ -23,7 +23,7 @@
                             <thead>
                                 <tr>
                                     <th>Measure Unit</th>
-                                    <th>Action</th>
+                                    <th style="width: 300px;">Action</th>
                                 </tr>
                             </thead>
 
@@ -49,7 +49,7 @@
                 </div>
 
                 <!-- Modal -->
-                <form role="form" action="<?php echo base_url('MeasureUnit/create') ?>" method="post" id="createunitForm">
+                <form role="form" action="<?php echo base_url('Utilities/createMeasureUnit') ?>" method="post" id="createunitForm">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="Unit_name">Unit Name</label>

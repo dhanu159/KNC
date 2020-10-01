@@ -29,7 +29,7 @@ $(document).ready(function() {
                     toastr["success"](response.messages);
 
                     // hide the modal
-                    $("#addMeasureUnitModal").modal('hide');
+                    $("#addItemModal").modal('hide');
 
                     // reset the form
                     $("#createitemForm")[0].reset();
@@ -50,10 +50,10 @@ $(document).ready(function() {
 
                         });
                     } else {
-                        toastr["warning"](response.messages);
+                        toastr["error"](response.messages);
 
                         // hide the modal
-                        $("#addMeasureUnitModal").modal('hide');
+                        $("#addItemModal").modal('hide');
                         // reset the form
                         $("#createitemForm")[0].reset();
                         $("#createitemForm .form-group").removeClass('has-error').removeClass('has-success');

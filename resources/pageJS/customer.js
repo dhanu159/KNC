@@ -1,33 +1,14 @@
 var manageTable;
-// function fetch(){
-//     $.ajax({
-//         url: 
-//         type: 'POST',
-//         dataType: "json",
-//         success: function(data){
-//             $('#manageTable').DataTable ({
-//                 "data" : data.posts,
-//                 "columns" : [
-//                     {"data" : "intSupplierID"},
-//                     {"data" : "vcSupplierName"},
-//                     {"data" : "IsActive"}
-//                 ]
-//              } );
-
-//         }
-//     });
-
-// }
 
 $(document).ready(function() {
     manageTable = $('#manageTable').DataTable({
-        'ajax': 'fetchSupplierData',
+        'ajax': 'fetchCustomerData',
         'order': []
     });
 
 
     // submit the create from 
-    $("#createSupplierForm").unbind('submit').on('submit', function() {
+    $("#createCustomerForm").unbind('submit').on('submit', function() {
         var form = $(this);
 
         // remove the text-danger
@@ -48,11 +29,11 @@ $(document).ready(function() {
                     toastr["success"](response.messages);
 
                     // hide the modal
-                    $("#addSupplierModal").modal('hide');
+                    $("#addCustomerModal").modal('hide');
 
                     // reset the form
-                    $("#createSupplierForm")[0].reset();
-                    $("#createSupplierForm .form-group").removeClass('has-error').removeClass('has-success');
+                    $("#createCustomerForm")[0].reset();
+                    $("#createCustomerForm .form-group").removeClass('has-error').removeClass('has-success');
 
                 } else {
 
@@ -73,7 +54,7 @@ $(document).ready(function() {
                         toastr["error"](response.messages);
 
                         // hide the modal
-                        $("#addSupplierModal").modal('hide');
+                        $("#addCustomerModal").modal('hide');
 
                     }
                 }

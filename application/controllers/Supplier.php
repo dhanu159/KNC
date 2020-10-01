@@ -66,8 +66,6 @@ class Supplier extends CI_Controller
 
 	public function fetchSupplierData()
 	{
-
-
 		$result = array('data' => array());
 
 		$data = $this->model_supplier->getSupplierData();

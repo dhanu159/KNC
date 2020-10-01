@@ -25,7 +25,7 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#myModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Item</button>
+				<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addItemModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Item</button>
 			</div>
 			<div class="card-body">
 
@@ -38,7 +38,7 @@
 	<!-- Main content end -->
 
 	<!-- Modal -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal fade" id="addItemModal" tabindex="-1" role="dialog" aria-labelledby="addItemModal">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -47,13 +47,13 @@
 				</div>
 				<form role="form" action="<?php echo base_url('Item/create') ?>" method="post" id="createitemForm">
 					<div class="modal-body">
-						<div class="form-group">
+						<div class="form-group"> 
 							<label for="txtItemName">Item Name</label>
 							<input type="text" class="form-control" id="Item_name" name="Item_name" placeholder="Enter Item Name" autofocus>
 						</div>
 						<div class="form-group">
 							<label>Measure Unit</label>
-							<select class="form-control select2" style="width: 100%;" id="measureunit" name="measureunit">
+							<select class="form-control select2" style="width: 100%;" id="measure_unit" name="measure_unit">
 
 								<option value="0" disabled selected hidden>Select Measure Unit</option>
 
@@ -69,7 +69,7 @@
 
 						<div class="form-group">
 							<label for="txtItemName">Item Re-Order Level</label>
-							<input type="number" class="form-control" id="Re_Order" name="Re_Order" placeholder="Enter Re-Order Level" min=1>
+							<input type="number" class="form-control" id="re_order" name="re_order" placeholder="Enter Re-Order Level" min=1>
 						</div>
 					</div>
 					<div class="modal-footer">

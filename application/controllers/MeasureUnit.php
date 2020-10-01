@@ -10,7 +10,7 @@ class MeasureUnit extends CI_Controller
 		$this->load->model('model_measureunit');
     }
     
-    public function index()
+    public function MeasureUnit()
 	{
 		$this->load->view('partials/header');
 		$this->load->view('measureunit/manageMeasureUnit');

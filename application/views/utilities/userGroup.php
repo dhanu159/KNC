@@ -27,7 +27,54 @@
                 <?php } ?>
             </div>
             <div class="card-body">
+
+
+                <?php if ($this->session->flashdata('success')) : ?>
+                    <!-- <div class="alert alert-success alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             
+            </div> -->
+
+
+                <?php elseif ($this->session->flashdata('error')) : ?>
+                    <div class="alert alert-error alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <?php echo $this->session->flashdata('error'); ?>
+                    </div>
+                <?php endif; ?>
+
                 <?php echo validation_errors(); ?>
+
+                <table id="manageUserGroup" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Group Name</th>
+                            <th style="width: 300px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        if ($user_groups_data) {
+                            foreach ($user_groups_data as $k => $v) { ?>
+                                <tr>
+                                    <td><?= $v['vcGroupName'] ?></td>
+                                    <?php if (in_array('updateUserGroup', $user_permission) || in_array('deleteUserGroup', $user_permission) || $isAdmin) { ?>
+                                        <td>
+                                            <?php if (in_array('updateUserGroup', $user_permission) || $isAdmin) { ?>
+                                                <a href="<?php echo base_url('groups/edit/' . $v['intUserGroupID']) ?>" class="btn btn-default"><i class="fa fa-edit"></i></a>
+                                            <?php } ?>
+                                            <?php if (in_array('deleteUserGroup', $user_permission) || $isAdmin) { ?>
+                                                <a href="<?php echo base_url('groups/delete/' . $v['intUserGroupID']) ?>" class="btn btn-default"><i class="fa fa-trash"></i></a>
+                                            <?php } ?>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
+                        <?php
+                            }
+                        }
+                        ?>
+                    </tbody>
+                </table>
             </div>
             <!-- /.card-body -->
         </div>
@@ -149,6 +196,26 @@
 
 </div>
 <!-- /.content-wrapper -->
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#manageUserGroup').DataTable();
+
+        tostarMessage();
+    });
+    <?php
+    if ($this->session->flashdata('success')) {
+    ?>
+        tostarMessage();
+    <?php
+    }
+    ?>
+
+    function tostarMessage() {
+        toastr["success"](<?php echo $this->session->flashdata('success'); ?>);
+    }
+</script>
+
 
 
 <!-- <script src="<?php echo base_url('resources/pageJS/item.js') ?>"></script> -->

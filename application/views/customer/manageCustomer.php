@@ -1,49 +1,155 @@
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
-	<!-- Content Header (Page header) -->
-	<section class="content-header">
-		<div class="container-fluid">
-			<div class="row mb-2">
-				<div class="col-sm-6">
-					<h1>Manage Customer</h1>
-				</div>
-				<div class="col-sm-6">
-					<ol class="breadcrumb float-sm-right">
-						<li class="breadcrumb-item"><a href="#">Home</a></li>
-						<li class="breadcrumb-item active">Blank Page</li>
-					</ol>
-				</div>
-			</div>
-		</div><!-- /.container-fluid -->
-	</section>
+    <section class="content-header">
+        <h1>
+            Manage Customer
+        </h1>
 
-	<!-- Main content -->
-	<section class="content">
+    </section>
+    <section class="content">
+        <!-- Small boxes (Stat box) -->
+        <div class="card">
+            <div class="card-header">
+                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addCustomerModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Customer</button>
+            </div>
+            <div class="card-body">
 
-		<!-- Default box -->
-		<div class="card">
-			<div class="card-header">
-				<h3 class="card-title">Title</h3>
+                <div class="box">
+                    <div class="box-body">
+                        <table id="manageTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <th>Address</th>
+                                    <th>Contact No 1</th>
+									<th>Contact No 2</th>
+									<th>Credit Limit</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
 
-				<div class="card-tools">
-					<button type="button" class="btn btn-tool" data-card-widget="collapse" data-toggle="tooltip" title="Collapse">
-						<i class="fas fa-minus"></i></button>
-					<button type="button" class="btn btn-tool" data-card-widget="remove" data-toggle="tooltip" title="Remove">
-						<i class="fas fa-times"></i></button>
-				</div>
-			</div>
-			<div class="card-body">
-				Start creating your amazing application!
-			</div>
-			<!-- /.card-body -->
-			<div class="card-footer">
-				Footer
-			</div>
-			<!-- /.card-footer-->
-		</div>
-		<!-- /.card -->
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+        <!-- /.row -->
+    </section>
 
-	</section>
-	<!-- /.content -->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="addCustomerModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomerModal">Add Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form role="form" action="<?php echo base_url('customer/create') ?>" method="post" id="createCustomerForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="supplier_name">Customer Name</label>
+                            <input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Enter Customer Name" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact_no_1">Contact No 1</label>
+                            <input type="number" class="form-control" id="contact_no_1" name="contact_no_1" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No 1" autocomplete="off">
+						</div>
+						<div class="form-group">
+                            <label for="contact_no_2">Contact No 2</label>
+                            <input type="number" class="form-control" id="contact_no_2" name="contact_no_2" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No 2" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="txtItemName">Credit Limit</label>
+							<input type="number" class="form-control" id="credit_limit" name="credit_limit" placeholder="Enter Credit Limit" min=1>
+						</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Customer</button>
+                    </div>
+
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 </div>
 <!-- /.content-wrapper -->
+<!-- edit Supplier modal -->
+<div class="modal fade" id="editSupplierModal" tabindex="-1" role="dialog" aria-labelledby="editSupplierModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editSupplierModal">Edit Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" action="<?php echo base_url('supplier/update') ?>" method="post" id="updateSupplierForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="supplier_name">Supplier Name</label>
+                        <input type="text" class="form-control" id="edit_supplier_name" name="edit_supplier_name" placeholder="Enter Supplier Name" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" id="edit_address" name="edit_address" placeholder="Enter Address" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact_no">Contact No</label>
+                        <input type="number" class="form-control" id="edit_contact_no" name="edit_contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" id="edit_rv" name="edit_rv" autocomplete="off">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Supplier</button>
+                </div>
+
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</div>
+<!-- /.content-wrapper -->
+
+<!-- remove brand modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="removeSupplierModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form role="form" action="<?php echo base_url('supplier/remove') ?>" method="post" id="removeSupplierForm">
+                <div class="modal-body">
+                    <p>Do you really want to remove?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Supplier</button>
+                </div>
+            </form>
+
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script src="<?php echo base_url('resources/pageJS/customer.js') ?>"></script>

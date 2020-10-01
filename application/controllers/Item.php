@@ -13,32 +13,48 @@ class Item extends CI_Controller
     
     public function index()
 	{
-
-
 		$data["measureUnit"] = $this->Model_measureunit->getMeasureUnitData(null,false);
 
-		// $measureunit = $this->Model_measureunit->getMeasureUnitData(1);
-		// $this->data['measureunit'] = $measureunit;
-
-		
 		$this->load->view('partials/header');
 		$this->load->view('item/manageItem',$data);
 		$this->load->view('partials/footer');
-
-		
-		//$this->render_template('item/manageItem', $this->data);
 	}
 	
-	public function render_template($page = null, $data = array())
-	{
-		$this->load->view($page, $data);
-	
-
-	}
 
 	public function create()
 	{
-		
+		$response = array();
+
+		$this->form_validation->set_rules('Item_name', 'Item Name', 'trim|required');
+		$this->form_validation->set_rules('measure_unit', 'Measure Unit', 'trim|required');
+		//$this->form_validation->set_rules('re_order', 'contact no', 'required|min_length[10]|max_length[10]');
+		// $this->form_validation->set_rules('active', 'Active', 'trim|required');
+
+		$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+
+		if ($this->form_validation->run() == TRUE) {
+			$data = array(
+				'vcItemName' => $this->input->post('Item_name'),
+				'intMeasureUnitID' => $this->input->post('measure_unit'),
+				'decReOrderLevel' => $this->input->post('re_order'),
+				'intUserID' => "1",
+			);
+			$create = $this->model_item->create($data);
+			if ($create == true) {
+				$response['success'] = true;
+				$response['messages'] = 'Succesfully created !';
+			} else {
+				$response['success'] = false;
+				$response['messages'] = 'Error in the database while creating the brand information';
+			}
+		} else {
+			$response['success'] = false;
+			foreach ($_POST as $key => $value) {
+				$response['messages'][$key] = form_error($key);
+			}
+		}
+
+		echo json_encode($response);
 
 	}
 
