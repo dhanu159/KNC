@@ -16,7 +16,7 @@ class Model_measureunit extends CI_Model
     }
 
     /* get the Supplier data */
-    public function getMeasureUnitData($id = null,$isArray)
+    public function getMeasureUnitData($id = null, $isArray)
     {
 
         if ($id) {
@@ -27,16 +27,15 @@ class Model_measureunit extends CI_Model
             } else {
                 return  $result = $query->result();
             }
-           }
+        }
 
-            $sql = "SELECT intMeasureUnitID,vcMeasureUnit FROM measureunit";
-            $query = $this->db->query($sql);
-            if ($isArray == true) {
-               return $query->result_array();
-            } else {
-                $result = $query->result();
-                return $result;
-            }
-        
+        $sql = "SELECT intMeasureUnitID,vcMeasureUnit FROM measureunit";
+        $query = $this->db->query($sql);
+        if ($isArray == true) {
+            return $query->result_array();
+        } else {
+            $result = $query->result();
+            return $result;
+        }
     }
 }

@@ -67,19 +67,20 @@ $(document).ready(function() {
 
 });
 
-function editSupplier(id) {
+function editCustomer(id) {
     $.ajax({
-        url: 'fetchSupplierDataById/' + id,
+        url: 'fetchCustomerDataById/' + id,
         type: 'post',
         dataType: 'json',
         success: function(response) {
 
-            $("#edit_supplier_name").val(response.vcSupplierName);
+            $("#edit_customer_name").val(response.vcCustomerName);
             $("#edit_address").val(response.vcAddress);
-            $("#edit_contact_no").val(response.vcContactNo);
-            $("#edit_rv").val(response.rv);
+            $("#edit_contact_no_1").val(response.vcContactNo1);
+            $("#edit_contact_no_2").val(response.vcContactNo2);
+            $("#edit_credit_limit").val(response.decCreditLimit);
             // submit the edit from 
-            $("#updateSupplierForm").unbind('submit').bind('submit', function() {
+            $("#updateCustomerForm").unbind('submit').bind('submit', function() {
                 var form = $(this);
 
                 // remove the text-danger
@@ -99,9 +100,9 @@ function editSupplier(id) {
                             toastr["success"](response.messages);
 
                             // hide the modal
-                            $("#editSupplierModal").modal('hide');
-                            $("#updateSupplierForm")[0].reset();
-                            $("#updateSupplierForm .form-group").removeClass('has-error').removeClass('has-success');
+                            $("#editCustomerModal").modal('hide');
+                            $("#updateCustomerForm")[0].reset();
+                            $("#updateCustomerForm .form-group").removeClass('has-error').removeClass('has-success');
 
                         } else {
 
@@ -122,9 +123,9 @@ function editSupplier(id) {
                                 toastr["error"](response.messages);
 
                                 // hide the modal
-                                $("#editSupplierModal").modal('hide');
-                                $("#updateSupplierForm")[0].reset();
-                                $("#updateSupplierForm .form-group").removeClass('has-error').removeClass('has-success');
+                                $("#editCustomerModal").modal('hide');
+                                $("#updateCustomerForm")[0].reset();
+                                $("#updateCustomerForm .form-group").removeClass('has-error').removeClass('has-success');
                             }
                         }
                     }
@@ -137,7 +138,7 @@ function editSupplier(id) {
     });
 }
 
-function removeSupplier(id) {
+function removeCustomer(id) {
     if (id) {
 
         // submit the edit from 
