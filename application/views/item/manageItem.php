@@ -29,6 +29,22 @@
 			</div>
 			<div class="card-body">
 
+			<table id="manageItem" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+							<th>Item Name</th>
+							<th>Measure Unit</th>
+							<th>Item Type</th>
+							<th>Stock Qty</th>
+							<th>Re-Order Level</th>
+                            <th style="width: 300px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+			
+                    </tbody>
+                </table>
+
 			</div>
 			<!-- /.card-body -->
 		</div>
@@ -54,18 +70,22 @@
 						<div class="form-group">
 							<label>Measure Unit</label>
 							<select class="form-control select2" style="width: 100%;" id="measure_unit" name="measure_unit">
-
 								<option value="0" disabled selected hidden>Select Measure Unit</option>
-
 								<?php foreach ($measureUnit as $row) { ?>
 									<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
 								<?php } ?>
-
-								<!-- <option>Box</option>
-							<option>Pcs</option> -->
 							</select>
 						</div>
 					
+						<div class="form-group">
+							<label>Item Type</label>
+							<select class="form-control select2" style="width: 100%;" id="item_type" name="item_type">
+								<option value="0" disabled selected hidden>Select Item Type</option>
+								<?php foreach ($itemType as $row) { ?>
+									<option value="<?= $row->intItemTypeID ?>"><?= $row->vcItemTypeName ?></option>
+								<?php } ?>
+							</select>
+						</div>
 
 						<div class="form-group">
 							<label for="txtItemName">Item Re-Order Level</label>

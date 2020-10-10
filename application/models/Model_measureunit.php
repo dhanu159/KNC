@@ -15,7 +15,7 @@ class Model_measureunit extends CI_Model
         }
     }
 
-    /* get the Supplier data */
+    /* get the get Measure Unit Data data */
     public function getMeasureUnitData($id = null, $isArray)
     {
 
@@ -38,4 +38,17 @@ class Model_measureunit extends CI_Model
             return $result;
         }
     }
+
+        /* get the get Item Type Data data */
+        public function getItemTypeData($id = null, $isArray)
+        {
+            $sql = "SELECT intItemTypeID,vcItemTypeName FROM itemtype";
+            $query = $this->db->query($sql);
+            if ($isArray == true) {
+                return $query->result_array();
+            } else {
+                $result = $query->result();
+                return $result;
+            }
+        }
 }

@@ -9,15 +9,22 @@ class Item extends CI_Controller
 
 		$this->load->model('model_item');
 		$this->load->model('Model_measureunit');
+
+		// $item_data = $this->model_item->getItemData();
+		// $this->data['item_data'] = $item_data;
+	
+		
     }
     
     public function index()
 	{
 		$data["measureUnit"] = $this->Model_measureunit->getMeasureUnitData(null,false);
+		$data["itemType"] = $this->Model_measureunit->getItemTypeData(null,false);
 
 		$this->load->view('partials/header');
 		$this->load->view('item/manageItem',$data);
 		$this->load->view('partials/footer');
+		
 	}
 	
 
@@ -27,7 +34,7 @@ class Item extends CI_Controller
 
 		$this->form_validation->set_rules('Item_name', 'Item Name', 'trim|required');
 		$this->form_validation->set_rules('measure_unit', 'Measure Unit', 'trim|required');
-		//$this->form_validation->set_rules('re_order', 'contact no', 'required|min_length[10]|max_length[10]');
+		$this->form_validation->set_rules('item_type', 'Item Type', 'trim|required');
 		// $this->form_validation->set_rules('active', 'Active', 'trim|required');
 
 		$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
@@ -37,6 +44,7 @@ class Item extends CI_Controller
 				'vcItemName' => $this->input->post('Item_name'),
 				'intMeasureUnitID' => $this->input->post('measure_unit'),
 				'decReOrderLevel' => $this->input->post('re_order'),
+				'intItemTypeID'=> $this->input->post('item_type'),
 				'intUserID' => "1",
 			);
 			$create = $this->model_item->create($data);
