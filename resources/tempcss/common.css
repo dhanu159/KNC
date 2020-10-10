@@ -28,6 +28,12 @@
     vertical-align: middle !important;
 }
 
+.arcadia-main-container {
+    height: 80vh;
+    overflow-y: auto;
+}
+
+
 /* 
 body {
     margin: 0;

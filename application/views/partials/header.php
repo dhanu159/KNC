@@ -18,19 +18,21 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 	<!-- Select2 -->
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/select2.min.css') ?>">
-	<!-- overlayScrollbars -->
+	<!-- Theme style -->
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/adminlte.min.css') ?>">
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
 	<!-- Common -->
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/common.css') ?>">
 	<!-- Toster message -->
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"> 
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 	<!-- jquery.dataTables -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+	<!-- Tempusdominus Bbootstrap 4 -->
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url('resources/tempcss/tempusdominus-bootstrap-4.min.css') ?>">
 
 	<!-- <script src="<?php echo base_url('resources/tempjs/jquery.min.js') ?>"></script> -->
-	
+
 	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -293,6 +295,23 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 									<a href="<?php echo base_url('Item/index') ?>" class="nav-link">
 										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
 										<p>&nbsp;&nbsp;Manage Item</p>
+									</a>
+								</li>
+							</ul>
+						</li>
+
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fas fa-layer-group"></i>
+								<p>&nbsp;&nbsp;&nbsp;Stock
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?php echo base_url('GRN/CreateGRN') ?>" class="nav-link">
+										<i class="fas fa-cart-plus"></i>
+										<p>&nbsp;&nbsp;Create GRN</p>
 									</a>
 								</li>
 							</ul>

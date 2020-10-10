@@ -24,16 +24,17 @@
 <script src="<?php echo base_url('resources/tempjs/adminlte.min.js') ?>"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="<?php echo base_url('resources/tempjs/demo.js') ?>"></script>
-
-<!-- 2020-09-17 Viraj -->
-
+<!-- InputMask  -->
+<script src="<?php echo base_url('resources/tempjs/moment.min.js') ?>"></script>
+<!-- Tempusdominus Bootstrap 4  -->
+<script src="<?php echo base_url('resources/tempjs/tempusdominus-bootstrap-4.min.js') ?>"></script>
 
 <!-- Page script -->
 <script>
 	var preLoader = document.getElementById('Preloader');
 
 	function Preloader() {
-		preLoader.style.display='none';
+		preLoader.style.display = 'none';
 	}
 
 	$(function() {
@@ -56,10 +57,10 @@
 		// //Money Euro
 		// $('[data-mask]').inputmask()
 
-		// //Date range picker
-		// $('#reservationdate').datetimepicker({
-		// 	format: 'L'
-		// });
+		//Date range picker
+		$('#reservationdate').datetimepicker({
+			format: 'L'
+		});
 		// //Date range picker
 		// $('#reservation').daterangepicker()
 		// //Date range picker with time picker
