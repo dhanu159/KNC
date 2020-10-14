@@ -15,14 +15,14 @@
     } */
 
     thead tr {
-        background-color: #17a2b8;
+        background-color: #3d9970;
         color: #FFFFFF;
-        border: 1px solid #17a2b8;
+        border: 1px solid #3d9970;
     }
 
     .first-tr {
         /* background-color: #c2c7d0; */
-        border: 2px solid #17a2b8;
+        border: 2px solid #3d9970;
     }
 
     .button {
@@ -43,7 +43,7 @@
     }
 
     .green {
-        background: #2ecc71;
+        background: #3d9970;
     }
 
     /* tr>td {
@@ -182,6 +182,7 @@
                                 </tr>
                             </table>
                         </div>
+                        <button type="button" class="btn btn-lg btn-info btn-flat float-right" data-toggle="modal" data-target="#addItemModal"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
                     </div>
                     <!-- /.col -->
                 </div>
