@@ -40,7 +40,6 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 
-	<script src="<?php echo base_url('resources/tempjs/common.js') ?>"></script>
 
 </head>
 

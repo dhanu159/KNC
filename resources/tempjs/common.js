@@ -1,3 +1,32 @@
+$(document).ready(function () {
+
+    $('.only-decimal').keypress(function (event) {
+        return isNumber(event, this)
+    });
+    // THE SCRIPT THAT CHECKS IF THE KEY PRESSED IS A NUMERIC OR DECIMAL VALUE.
+    function isNumber(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        // alert(charCode);
+        if (
+            (charCode != 46 || $(element).val().indexOf('.') != -1) && // “.” CHECK DOT, AND ONLY ONE.
+            (charCode < 48 || charCode > 57) &&
+            (charCode != 13))
+            {
+            return false;
+        }
+        return true;
+    }
+
+});
+
+
+// Preloader
+var preLoader = document.getElementById('Preloader');
+
+function Preloader() {
+    preLoader.style.display = 'none';
+}
+
 // Popup Notification Message
 toastr.options = {
     "closeButton": true,
@@ -16,3 +45,18 @@ toastr.options = {
     "showMethod": "fadeIn",
     "hideMethod": "fadeOut"
 }
+
+
+//Initialize Select2 Elements
+$('.select2').select2()
+
+//Initialize Select2 Elements
+$('.select2bs4').select2({
+    theme: 'bootstrap4'
+})
+
+//Date picker
+$('#receivedDate').datetimepicker({
+    format: 'L'
+});
+

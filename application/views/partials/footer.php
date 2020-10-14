@@ -28,39 +28,44 @@
 <script src="<?php echo base_url('resources/tempjs/moment.min.js') ?>"></script>
 <!-- Tempusdominus Bootstrap 4  -->
 <script src="<?php echo base_url('resources/tempjs/tempusdominus-bootstrap-4.min.js') ?>"></script>
+<!-- Common  -->
+<script src="<?php echo base_url('resources/tempjs/common.js') ?>"></script>
+
 
 <!-- Page script -->
 <script>
-	var preLoader = document.getElementById('Preloader');
+	// var preLoader = document.getElementById('Preloader');
 
-	function Preloader() {
-		preLoader.style.display = 'none';
-	}
+	// function Preloader() {
+	// 	preLoader.style.display = 'none';
+	// }
 
-	$(function() {
-		//Initialize Select2 Elements
-		$('.select2').select2()
+	// $(function() {
+		// //Initialize Select2 Elements
+		// $('.select2').select2()
 
-		//Initialize Select2 Elements
-		$('.select2bs4').select2({
-			theme: 'bootstrap4'
-		})
-
-		// //Datemask dd/mm/yyyy
-		// $('#datemask').inputmask('dd/mm/yyyy', {
-		// 	'placeholder': 'dd/mm/yyyy'
+		// //Initialize Select2 Elements
+		// $('.select2bs4').select2({
+		// 	theme: 'bootstrap4'
 		// })
-		// //Datemask2 mm/dd/yyyy
-		// $('#datemask2').inputmask('mm/dd/yyyy', {
-		// 	'placeholder': 'mm/dd/yyyy'
-		// })
-		// //Money Euro
-		// $('[data-mask]').inputmask()
 
-		//Date range picker
-		$('#reservationdate').datetimepicker({
-			format: 'L'
-		});
+		// // //Datemask dd/mm/yyyy
+		// // $('#datemask').inputmask('dd/mm/yyyy', {
+		// // 	'placeholder': 'dd/mm/yyyy'
+		// // })
+		// // //Datemask2 mm/dd/yyyy
+		// // $('#datemask2').inputmask('mm/dd/yyyy', {
+		// // 	'placeholder': 'mm/dd/yyyy'
+		// // })
+		// // //Money Euro
+		// // $('[data-mask]').inputmask()
+
+		// //Date range picker
+		// $('#receivedDate').datetimepicker({
+		// 	format: 'L'
+		// });
+
+
 		// //Date range picker
 		// $('#reservation').daterangepicker()
 		// //Date range picker with time picker
@@ -110,7 +115,7 @@
 		// 	$(this).bootstrapSwitch('state', $(this).prop('checked'));
 		// });
 
-	});
+	// });
 </script>
 
 </body>
