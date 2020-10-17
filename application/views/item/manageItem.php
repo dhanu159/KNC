@@ -29,26 +29,28 @@
 			</div>
 			<div class="card-body">
 
-			<table id="manageItem" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-							<th>Item Name</th>
-							<th>Measure Unit</th>
-							<th>Item Type</th>
-							<th>Stock Qty</th>
-							<th>Re-Order Level</th>
-                            <th style="width: 300px;">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-			
-                    </tbody>
-                </table>
+				<div class="box">
+					<div class="box-body">
+						<table id="manageTable" class="table table-bordered table-striped">
+							<thead>
+								<tr>
+									<th>Item Name</th>
+									<th>Measure Unit</th>
+									<th>Item Type</th>
+									<th>Stock Qty</th>
+									<th>Re-Order Level</th>
+									<th>Unit Price</th>
+									<th style="width: 300px;">Action</th>
+								</tr>
+							</thead>
 
+						</table>
+					</div>
+				</div>
+				<!-- /.card-body -->
 			</div>
-			<!-- /.card-body -->
+			<!-- /.card -->
 		</div>
-		<!-- /.card -->
 
 	</section>
 	<!-- Main content end -->
@@ -63,28 +65,32 @@
 				</div>
 				<form role="form" action="<?php echo base_url('Item/create') ?>" method="post" id="createitemForm">
 					<div class="modal-body">
-						<div class="form-group"> 
+						<div class="form-group">
 							<label for="txtItemName">Item Name</label>
 							<input type="text" class="form-control" id="Item_name" name="Item_name" placeholder="Enter Item Name" autofocus>
 						</div>
 						<div class="form-group">
 							<label>Measure Unit</label>
 							<select class="form-control select2" style="width: 100%;" id="measure_unit" name="measure_unit">
-								<option value="0" disabled selected hidden>Select Measure Unit</option>
+								<option value="" disabled selected hidden>Select Measure Unit</option>
 								<?php foreach ($measureUnit as $row) { ?>
 									<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
 								<?php } ?>
 							</select>
 						</div>
-					
+
 						<div class="form-group">
 							<label>Item Type</label>
 							<select class="form-control select2" style="width: 100%;" id="item_type" name="item_type">
-								<option value="0" disabled selected hidden>Select Item Type</option>
+								<option value="" disabled selected hidden>Select Item Type</option>
 								<?php foreach ($itemType as $row) { ?>
 									<option value="<?= $row->intItemTypeID ?>"><?= $row->vcItemTypeName ?></option>
 								<?php } ?>
 							</select>
+						</div>
+
+						<div id="GenerateUnitPriceTextBox">
+
 						</div>
 
 						<div class="form-group">
@@ -96,12 +102,103 @@
 
 						<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Item</button>
 					</div>
+
+
+				</form>
 			</div>
 		</div>
 	</div>
 
 </div>
 <!-- /.content-wrapper -->
+
+<!-- edit Item modal -->
+<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editItemModal">Edit Supplier</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<form role="form" action="<?php echo base_url('Item/update') ?>" method="post" id="updateItemForm">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="Item_name">Item Name</label>
+						<input type="text" class="form-control" id="edit_item_name" name="edit_item_name" placeholder="Enter Item Name" autocomplete="off">
+					</div>
+					<div class="form-group">
+						<label>Measure Unit</label>
+						<select class="form-control select2" style="width: 100%;" id="edit_measure_unit" name="edit_measure_unit">
+							<!-- <option value="0" disabled selected hidden>Select Measure Unit</option> -->
+							<?php foreach ($measureUnit as $row) { ?>
+								<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
+							<?php } ?>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<label>Item Type</label>
+						<select class="form-control select2" style="width: 100%;" id="edit_item_type" name="edit_item_type">
+							<!-- <option value="0" disabled selected hidden>Select Item Type</option> -->
+							<?php foreach ($itemType as $row) { ?>
+								<option value="<?php echo $row->intItemTypeID ?>"><?php echo $row->vcItemTypeName ?></option>
+							<?php } ?>
+						</select>
+					</div>
+
+					<div id="EditGenerateUnitPriceTextBox">
+
+					</div>
+
+					<div class="form-group">
+						<label for="txtItemName">Item Re-Order Level</label>
+						<input type="number" class="form-control" id="edit_re_order" name="edit_re_order" placeholder="Enter Re-Order Level" min=1>
+					</div>
+
+					<div class="form-group">
+						<input type="hidden" class="form-control" id="edit_rv" name="edit_rv" autocomplete="off">
+					</div>
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Item</button>
+				</div>
+
+			</form>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</div>
+<!-- /.content-wrapper -->
+
+<!-- remove Item modal -->
+<div class="modal fade" tabindex="-1" role="dialog" id="removeItemModal">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<form role="form" action="<?php echo base_url('Item/remove') ?>" method="post" id="removeItemForm">
+				<div class="modal-body">
+					<p>Do you really want to remove?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Item</button>
+				</div>
+			</form>
+
+
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <script src="<?php echo base_url('resources/pageJS/item.js') ?>"></script>
