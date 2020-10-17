@@ -166,9 +166,14 @@ class Item extends CI_Controller
 					$response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
 				} else {
 
+					$intEnteredBy = array(
+						'intEnteredBy' => "1",
+					);
+	
+					$insertItemHitory = $this->model_item->insertItemHitory($intEnteredBy,$id);
 					$update = $this->model_item->update($data, $id);
 
-					if ($update == true) {
+					if ($update == true && $insertItemHitory ==true) {
 						$response['success'] = true;
 						$response['messages'] = 'Succesfully updated !';
 					} else {
