@@ -14,7 +14,7 @@ class Model_item extends CI_Model
 			$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
             inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
             inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
-            WHERE it.intItemID = ?";
+            WHERE it.intItemID = ? ";
 			$query = $this->db->query($sql, array($itemId));
 			return $query->row_array();
         }
@@ -22,6 +22,7 @@ class Model_item extends CI_Model
 		$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
+        where  IsActive = 1
         order by it.dtCreatedDate desc";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
@@ -51,6 +52,22 @@ class Model_item extends CI_Model
             $update = $this->db->update('item', $data);
             return ($update == true) ? true : false;
         }
+    }
+
+    public function insertItemHitory($intEnteredBy, $id)
+    {
+        $this->db->trans_start();
+        $sql = "SELECT intItemID, vcItemName, intMeasureUnitID, dtCreatedDate, intUserID, decStockInHand, IsActive, decReOrderLevel, intItemTypeID, decUnitPrice FROM item WHERE intitemID = ? ";
+        $query = $this->db->query($sql, array($id));
+        if ($query->num_rows()) {
+            $this->db->insert('item_his', $query->row_array());
+            $insert_id = $this->db->insert_id();
+            $this->db->where('intItem_hisID', $insert_id);
+            $update = $this->db->update('item_his', $intEnteredBy);
+            $this->db->trans_complete();
+            return ($update == true) ? true : false;
+        }
+       
     }
 
     public function chkRv($id = null)

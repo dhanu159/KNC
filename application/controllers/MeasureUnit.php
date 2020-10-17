@@ -60,9 +60,9 @@ class MeasureUnit extends CI_Controller
             $buttons = '';
 
 
-            $buttons .= '<button type="button" class="btn btn-default" onclick="editBranch(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#editBranchModal"><i class="fas fa-edit"></i></button>';
+            $buttons .= '<button type="button" class="btn btn-default" onclick="editMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#editMeasureUnitModal"><i class="fas fa-edit"></i></button>';
 
-            $buttons .= ' <button type="button" class="btn btn-default" onclick="removeBranch(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#removeBranchModal"><i class="fa fa-trash"></i></button>';
+            $buttons .= ' <button type="button" class="btn btn-default" onclick="removeMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#removeMeasureUnithModal"><i class="fa fa-trash"></i></button>';
 
             //$status = ($value['IsActive'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
 
