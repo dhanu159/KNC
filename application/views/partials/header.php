@@ -313,6 +313,12 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 										<p>&nbsp;&nbsp;Create GRN</p>
 									</a>
 								</li>
+								<li class="nav-item">
+									<a href="<?php echo base_url('GRN/ViewGRN') ?>" class="nav-link">
+										<i class="fas fa-search"></i>
+										<p>&nbsp;&nbsp;View GRN</p>
+									</a>
+								</li>
 							</ul>
 						</li>
 						<li class="nav-item">
