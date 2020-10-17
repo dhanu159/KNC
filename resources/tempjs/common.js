@@ -10,8 +10,7 @@ $(document).ready(function () {
         if (
             (charCode != 46 || $(element).val().indexOf('.') != -1) && // “.” CHECK DOT, AND ONLY ONE.
             (charCode < 48 || charCode > 57) &&
-            (charCode != 13))
-            {
+            (charCode != 13)) {
             return false;
         }
         return true;
@@ -56,7 +55,39 @@ $('.select2bs4').select2({
 })
 
 //Date picker
-$('#receivedDate').datetimepicker({
-    format: 'L'
+$('#dtReceivedDate').datetimepicker({
+    format: 'L',
+    maxDate: new Date()
 });
 
+
+// Alerts
+function arcadiaConfirmAlert(message, event, isRefreshPage) {
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: message,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, submit it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var result = event();
+            alert(result);
+
+            Swal.fire(
+                'Succeeded !',
+                'Your request has been successfully processed.',
+                'success'
+            ).then((res) => {
+                if (res.isConfirmed || res.dismiss) {
+                    location.reload();
+                }
+            })
+        }
+    })
+
+
+}

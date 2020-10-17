@@ -28,11 +28,20 @@
     vertical-align: middle !important;
 }
 
+/* Arcadia Container */
+
 .arcadia-main-container {
     height: 80vh;
     overflow-y: auto;
 }
 
+/* Acradia Table */
+
+.arcadia-table thead tr {
+    background-color: #3d9970;
+    color: #FFFFFF;
+    border: 1px solid #3d9970;
+}
 
 /* 
 body {
