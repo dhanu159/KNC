@@ -12,7 +12,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	
+
 	<!-- Font Awesome -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
 	<!-- Ionicons -->
@@ -249,55 +249,32 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 								</li>
 							</ul>
 						</li>
-						<li class="nav-item has-treeview">
-							<a href="#" class="nav-link">
+						<li class="nav-item">
+							<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
 								<i class="fa fa-users" aria-hidden="true"></i>
-								<p>&nbsp;&nbsp;Customer
-									<i class="right fas fa-angle-left"></i>
-								</p>
+								<p>&nbsp;&nbsp;Customer</p>
 							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
-										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
-										<p>&nbsp;&nbsp;Manage Customer</p>
-									</a>
-								</li>
-							</ul>
 						</li>
 
-						<li class="nav-item has-treeview">
-							<a href="#" class="nav-link">
+						<li class="nav-item">
+							<a href="<?php echo base_url('Supplier/index') ?>" class="nav-link">
 								<i class="fa fa-truck" aria-hidden="true"></i>
-								<p>&nbsp;&nbsp;Supplier
-									<i class="right fas fa-angle-left"></i>
-								</p>
+								<p>&nbsp;&nbsp;Supplier</p>
 							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="<?php echo base_url('Supplier/index') ?>" class="nav-link">
-										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
-										<p>&nbsp;&nbsp;Manage Supplier</p>
-									</a>
-								</li>
-							</ul>
+						</li>
+
+						<li class="nav-item">
+							<a href="<?php echo base_url('Branch/index') ?>" class="nav-link">
+								<i class="fas fa-store"></i>
+								<p>&nbsp;&nbsp;Branch</p>
+							</a>
 						</li>
 
 						<li class="nav-item has-treeview">
-							<a href="#" class="nav-link">
+							<a href="<?php echo base_url('Item/index') ?>" class="nav-link">
 								<i class="fa fa-industry" aria-hidden="true"></i>
-								<p>&nbsp;&nbsp;&nbsp;Item
-									<i class="right fas fa-angle-left"></i>
-								</p>
+								<p>&nbsp;&nbsp;&nbsp;Item</p>
 							</a>
-							<ul class="nav nav-treeview">
-								<li class="nav-item">
-									<a href="<?php echo base_url('Item/index') ?>" class="nav-link">
-										<i class="fa fa-cogs nav-icon" aria-hidden="true"></i>
-										<p>&nbsp;&nbsp;Manage Item</p>
-									</a>
-								</li>
-							</ul>
 						</li>
 
 						<li class="nav-item has-treeview">
