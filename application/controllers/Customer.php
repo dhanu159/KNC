@@ -15,6 +15,11 @@ class Customer extends Admin_Controller
 
 	public function index()
 	{
+		if (!$this->isAdmin) {
+            if (!in_array('viewCustomer', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
 		$this->load->view('partials/header');
 		$this->load->view('customer/manageCustomer',$this->data);
 		$this->load->view('partials/footer');
