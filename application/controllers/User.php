@@ -117,7 +117,7 @@ class User extends Admin_Controller
 		$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
 		if ($this->form_validation->run() == TRUE) {
-			$password = $this->password_hash($this->input->post('edit_password'));
+			$password = $this->password_hash($this->input->post('password'));
 			$data = array(
 				'vcUserName' => $this->input->post('user_name'),
 				'vcPassword' =>  $password,
