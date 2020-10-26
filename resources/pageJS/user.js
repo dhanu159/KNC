@@ -1,24 +1,13 @@
 var manageTable;
 
 $(document).ready(function() {
-
-    $('#item_type').on('change', function() {
-        GenerateUnitPriceTextBox();
-    });
-
-    $('#edit_item_type').on('change', function() {
-        EditGenerateUnitPriceTextBox();
-    });
-
-
     manageTable = $('#manageTable').DataTable({
-        'ajax': 'fetchItemData',
+        'ajax': 'fetchUserData',
         'order': []
     });
 
-
     // submit the create from 
-    $("#createitemForm").unbind('submit').on('submit', function() {
+    $("#createUserForm").unbind('submit').on('submit', function() {
         var form = $(this);
 
         // remove the text-danger
@@ -35,14 +24,15 @@ $(document).ready(function() {
 
                 if (response.success === true) {
 
+
                     toastr["success"](response.messages);
 
                     // hide the modal
-                    $("#addItemModal").modal('hide');
+                    $("#addUserModal").modal('hide');
 
                     // reset the form
-                    $("#createitemForm")[0].reset();
-                    $("#createitemForm .form-group").removeClass('has-error').removeClass('has-success');
+                    $("#createUserForm")[0].reset();
+                    $("#createUserForm .form-group").removeClass('has-error').removeClass('has-success');
 
                 } else {
 
@@ -59,13 +49,12 @@ $(document).ready(function() {
 
                         });
                     } else {
+
                         toastr["error"](response.messages);
 
                         // hide the modal
-                        $("#addItemModal").modal('hide');
-                        // reset the form
-                        $("#createitemForm")[0].reset();
-                        $("#createitemForm .form-group").removeClass('has-error').removeClass('has-success');
+                        $("#addUserModal").modal('hide');
+                        $("#createUserForm")[0].reset();
                     }
                 }
             }
@@ -77,25 +66,28 @@ $(document).ready(function() {
 
 });
 
-function editItem(id) {
+function editUser(id) {
     $.ajax({
-        url: 'fetchItemDataById/' + id,
+        url: 'fetchUserDataById/' + id,
         type: 'post',
         dataType: 'json',
         success: function(response) {
 
-            $("#edit_item_name").val(response.vcItemName);
-            $('#edit_measure_unit').select2().select2('val', response.intMeasureUnitID);
-            $('#edit_item_type').select2().select2('val', response.intItemTypeID);
-            $("#edit_re_order").val(response.decReOrderLevel);
-            $("#edit_rv").val(response.rv);
-            if (response.intItemTypeID) {
-                EditGenerateUnitPriceTextBox();
+            $("#edit_user_name").val(response.vcUserName);
+            // $("#edit_password").val(response.vcPassword);
+            $('#edit_full_name').val(response.vcFullName);
+            $("#edit_email").val(response.vcEmail);
+            $('#edit_contact_no').val(response.vcContactNo);
+            $('#edit_user_group').select2().select2('val', response.intUserGroupID);
+            $('#edit_branch').select2().select2('val', response.intBranchID);
+            if (response.IsAdmin == 1) {
+                document.getElementById("edit_IsAdmin").checked = true;
+            } else {
+                document.getElementById("edit_IsAdmin").checked = false;
             }
-            $('#edit_unit_price').val(response.decUnitPrice);
 
             // submit the edit from 
-            $("#updateItemForm").unbind('submit').bind('submit', function() {
+            $("#editUserForm").unbind('submit').bind('submit', function() {
                 var form = $(this);
 
                 // remove the text-danger
@@ -115,9 +107,9 @@ function editItem(id) {
                             toastr["success"](response.messages);
 
                             // hide the modal
-                            $("#editItemModal").modal('hide');
-                            $("#updateItemForm")[0].reset();
-                            $("#updateItemForm .form-group").removeClass('has-error').removeClass('has-success');
+                            $("#editUserModal").modal('hide');
+                            $("#editUserForm")[0].reset();
+                            $("#editUserForm .form-group").removeClass('has-error').removeClass('has-success');
 
                         } else {
 
@@ -138,9 +130,9 @@ function editItem(id) {
                                 toastr["error"](response.messages);
 
                                 // hide the modal
-                                $("#editItemModal").modal('hide');
-                                $("#updateItemForm")[0].reset();
-                                $("#updateItemForm .form-group").removeClass('has-error').removeClass('has-success');
+                                $("#editUserModal").modal('hide');
+                                $("#editUserForm")[0].reset();
+                                $("#editUserForm .form-group").removeClass('has-error').removeClass('has-success');
                             }
                         }
                     }
@@ -153,51 +145,11 @@ function editItem(id) {
     });
 }
 
-function GenerateUnitPriceTextBox() {
-    var Item_Type = $('#item_type').val();
-
-    var htmlElements = "";
-
-    if (Item_Type == 1) {
-        htmlElements = '<div class="form-group">' +
-            '							<label for="txtItemName">Unit Price</label>' +
-            '							<input type="number" class="form-control" id="unit_price" name="unit_price" placeholder="Enter Unit Price" min=1>' +
-            '						</div>';
-    } else {
-        htmlElements = "";
-
-    }
-
-    $("#GenerateUnitPriceTextBox").html("");
-    $("#GenerateUnitPriceTextBox").append(htmlElements);
-
-}
-
-function EditGenerateUnitPriceTextBox() {
-    var Item_Type = $('#edit_item_type').val();
-
-    var htmlElements = "";
-
-    if (Item_Type == 1) {
-        htmlElements = '<div class="form-group">' +
-            '							<label for="txtItemName">Unit Price</label>' +
-            '							<input type="number" class="form-control" id="edit_unit_price" name="edit_unit_price" placeholder="Enter Unit Price" min=1>' +
-            '						</div>';
-    } else {
-        htmlElements = "";
-
-    }
-
-    $("#EditGenerateUnitPriceTextBox").html("");
-    $("#EditGenerateUnitPriceTextBox").append(htmlElements);
-
-}
-
-function removeItem(id) {
+function removeUser(id) {
     if (id) {
 
         // submit the edit from 
-        $("#removeItemForm").unbind('submit').bind('submit', function() {
+        $("#removeUserForm").unbind('submit').bind('submit', function() {
             var form = $(this);
 
             // remove the text-danger
@@ -208,7 +160,7 @@ function removeItem(id) {
                 url: form.attr('action'),
                 type: form.attr('method'),
                 data: {
-                    intItemID: id
+                    intUserID: id
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -221,9 +173,9 @@ function removeItem(id) {
                         toastr["success"](response.messages);
 
                         // hide the modal
-                        $("#removeItemModal").modal('hide');
-                        $("#removeItemForm")[0].reset();
-                        $("#removeItemForm .form-group").removeClass('has-error').removeClass('has-success');
+                        $("#removeUserModal").modal('hide');
+                        $("#removeUserForm")[0].reset();
+                        $("#removeUserForm .form-group").removeClass('has-error').removeClass('has-success');
 
                     } else {
 
@@ -231,9 +183,9 @@ function removeItem(id) {
                         toastr["error"](response.messages);
 
                         // hide the modal
-                        $("#removeItemModal").modal('hide');
-                        $("#removeItemForm")[0].reset();
-                        $("#removeItemForm .form-group").removeClass('has-error').removeClass('has-success');
+                        $("#removeUserModal").modal('hide');
+                        $("#removeUserForm")[0].reset();
+                        $("#removeUserForm .form-group").removeClass('has-error').removeClass('has-success');
                     }
                 }
             });

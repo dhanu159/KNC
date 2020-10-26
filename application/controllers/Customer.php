@@ -1,5 +1,5 @@
 <?php
-class Customer extends CI_Controller
+class Customer extends Admin_Controller
 {
 
 	public function __construct()
@@ -7,18 +7,28 @@ class Customer extends CI_Controller
 		parent::__construct();
 
 		$this->load->model('model_customer');
+		$this->load->model('model_groups');
+
+		$user_group_data = $this->model_groups->getUserGroupData();
+        $this->data['user_groups_data'] = $user_group_data;
 	}
 
 	public function index()
 	{
 		$this->load->view('partials/header');
-		$this->load->view('customer/manageCustomer');
+		$this->load->view('customer/manageCustomer',$this->data);
 		$this->load->view('partials/footer');
 	}
 
-	
+
 	public function create()
 	{
+		if (!$this->isAdmin) {
+			if (!in_array('createCustomer', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$response = array();
 
 		$this->form_validation->set_rules('customer_name', 'customer name', 'trim|required');
@@ -34,7 +44,7 @@ class Customer extends CI_Controller
 				'vcContactNo1' => $this->input->post('contact_no_1'),
 				'vcContactNo2' => $this->input->post('contact_no_2'),
 				'decCreditLimit' => $this->input->post('credit_limit'),
-				'intUserID' => "1",
+				'intUserID' => $this->session->userdata('user_id'),
 			);
 			$create = $this->model_customer->create($data);
 			if ($create == true) {
@@ -66,20 +76,36 @@ class Customer extends CI_Controller
 
 	public function fetchCustomerData()
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('viewCustomer', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+
 		$result = array('data' => array());
 
 		$data = $this->model_customer->getCustomerData();
 		foreach ($data as $key => $value) {
 
-			// button
 			$buttons = '';
 
+			if ($this->isAdmin) {
+				$buttons .= '<button type="button" class="btn btn-default" onclick="editCustomer(' . $value['intCustomerID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeCustomer(' . $value['intCustomerID'] . ')" data-toggle="modal" data-target="#removeCustomerModal"><i class="fa fa-trash"></i></button>';
+			} else {
+				if (in_array('editCustomer', $this->permission)) {
+					$buttons .= '<button type="button" class="btn btn-default" onclick="editCustomer(' . $value['intCustomerID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+				}
 
-			$buttons .= '<button type="button" class="btn btn-default" onclick="editCustomer(' . $value['intCustomerID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+				if (in_array('deleteCustomer', $this->permission)) {
+					$buttons .= ' <button type="button" class="btn btn-default" onclick="removeCustomer(' . $value['intCustomerID'] . ')" data-toggle="modal" data-target="#removeCustomerModal"><i class="fa fa-trash"></i></button>';
+				}
+			}
 
-			$buttons .= ' <button type="button" class="btn btn-default" onclick="removeCustomer(' . $value['intCustomerID'] . ')" data-toggle="modal" data-target="#removeCustomerModal"><i class="fa fa-trash"></i></button>';
 
-			//$status = ($value['IsActive'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+
 
 			$result['data'][$key] = array(
 				$value['vcCustomerName'],
@@ -89,64 +115,77 @@ class Customer extends CI_Controller
 				$value['decCreditLimit'],
 				$buttons
 			);
-		} // /foreach
+		}
 
 		echo json_encode($result);
 	}
 
 	public function update($id)
-    {
+	{
 
-        $response = array();
+		if (!$this->isAdmin) {
+			if (!in_array('editCustomer', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
 
-        if ($id) {
-            $this->form_validation->set_rules('edit_customer_name', 'branch name', 'trim|required');
-            $this->form_validation->set_rules('edit_address', 'address', 'trim|required');
-            $this->form_validation->set_rules('edit_contact_no_1', 'contact no', 'required|min_length[10]|max_length[10]');
+		$response = array();
+
+		if ($id) {
+			$this->form_validation->set_rules('edit_customer_name', 'branch name', 'trim|required');
+			$this->form_validation->set_rules('edit_address', 'address', 'trim|required');
+			$this->form_validation->set_rules('edit_contact_no_1', 'contact no', 'required|min_length[10]|max_length[10]');
 
 
-            $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+			$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
-            if ($this->form_validation->run() == TRUE) {
-                $data = array(
-                    'vcCustomerName' => $this->input->post('edit_customer_name'),
-                    'vcAddress' => $this->input->post('edit_address'),
+			if ($this->form_validation->run() == TRUE) {
+				$data = array(
+					'vcCustomerName' => $this->input->post('edit_customer_name'),
+					'vcAddress' => $this->input->post('edit_address'),
 					'vcContactNo1' => $this->input->post('edit_contact_no_1'),
 					'vcContactNo2' => $this->input->post('edit_contact_no_2'),
 					'decCreditLimit' => $this->input->post('edit_credit_limit'),
 				);
 
 				$intEnteredBy = array(
-                    'intEnteredBy' => "1",
+					'intEnteredBy' => $this->session->userdata('user_id'),
 				);
 
-				$insertCustomerHitory = $this->model_customer->insertCustomerHitory($intEnteredBy,$id);
-				
-				$update = $this->model_customer->update($data, $id);
-				
-                if ($update == true && $insertCustomerHitory ==true) {
-                    $response['success'] = true;
-                    $response['messages'] = 'Succesfully updated';
-                } else {
-                    $response['success'] = false;
-                    $response['messages'] = 'Error in the database while updated the brand information';
-                }
-            } else {
-                $response['success'] = false;
-                foreach ($_POST as $key => $value) {
-                    $response['messages'][$key] = form_error($key);
-                }
-            }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = 'Error please refresh the page again!!';
-        }
+				$insertCustomerHitory = $this->model_customer->insertCustomerHitory($intEnteredBy, $id);
 
-        echo json_encode($response);
+				$update = $this->model_customer->update($data, $id);
+
+				if ($update == true && $insertCustomerHitory == true) {
+					$response['success'] = true;
+					$response['messages'] = 'Succesfully updated';
+				} else {
+					$response['success'] = false;
+					$response['messages'] = 'Error in the database while updated the brand information';
+				}
+			} else {
+				$response['success'] = false;
+				foreach ($_POST as $key => $value) {
+					$response['messages'][$key] = form_error($key);
+				}
+			}
+		} else {
+			$response['success'] = false;
+			$response['messages'] = 'Error please refresh the page again!!';
+		}
+
+		echo json_encode($response);
 	}
-	
+
 	public function remove($intCustomerID = null)
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('deleteCustomer', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$intCustomerID = $this->input->post('intCustomerID');
 		$response = array();
 		if ($intCustomerID) {
@@ -171,5 +210,4 @@ class Customer extends CI_Controller
 			echo json_encode($response);
 		}
 	}
-
 }

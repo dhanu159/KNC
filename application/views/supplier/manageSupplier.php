@@ -10,7 +10,9 @@
         <!-- Small boxes (Stat box) -->
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addSupplierModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Supplier</button>
+                <?php if (in_array('createSupplier', $user_permission) || $isAdmin) { ?>
+                    <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addSupplierModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Supplier</button>
+                <?php } ?>
             </div>
             <div class="card-body">
 
@@ -115,7 +117,7 @@
 
 </div>
 <!-- /.content-wrapper -->
-
+<?php if (in_array('deleteSupplier', $user_permission) || $isAdmin) { ?>
 <!-- remove brand modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="removeSupplierModal">
     <div class="modal-dialog" role="document">
@@ -140,6 +142,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+<?php } ?>
 
 <script src="<?php echo base_url('resources/pageJS/supplier.js') ?>"></script>

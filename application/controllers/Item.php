@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Item extends CI_Controller
+class Item extends Admin_Controller
 {
 	public function __construct()
 	{
@@ -9,22 +9,28 @@ class Item extends CI_Controller
 
 		$this->load->model('model_item');
 		$this->load->model('Model_measureunit');
-
+		$this->load->model('model_groups');
 		// $item_data = $this->model_item->getItemData();
 		// $this->data['item_data'] = $item_data;
-	
-		
-    }
-    
-    public function index()
+		$user_group_data = $this->model_groups->getUserGroupData();
+        $this->data['user_groups_data'] = $user_group_data;
+
+	}
+
+	public function index()
 	{
-		$data["measureUnit"] = $this->Model_measureunit->getMeasureUnitData(null,false);
-		$data["itemType"] = $this->Model_measureunit->getItemTypeData(null,false);
+		if (!$this->isAdmin) {
+			if (!in_array('viewItem', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$this->data["measureUnit"] = $this->Model_measureunit->getMeasureUnitData(null, false);
+		$this->data["itemType"] = $this->Model_measureunit->getItemTypeData(null, false);
 
 		$this->load->view('partials/header');
-		$this->load->view('item/manageItem',$data);
+		$this->load->view('item/manageItem', $this->data);
 		$this->load->view('partials/footer');
-		
 	}
 
 	public function fetchItemDataById($id)
@@ -36,9 +42,16 @@ class Item extends CI_Controller
 
 		return false;
 	}
-	
+
 	public function fetchItemData()
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('viewItem', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$result = array('data' => array());
 
 		$data = $this->model_item->getItemData();
@@ -47,12 +60,18 @@ class Item extends CI_Controller
 			// button
 			$buttons = '';
 
+			if ($this->isAdmin) {
+				$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+			} else {
+				if (in_array('editItem', $this->permission)) {
+					$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
+				}
 
-			$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
-
-			$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
-
-			//$status = ($value['IsActive'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+				if (in_array('deleteItem', $this->permission)) {
+					$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+				}
+			}
 
 			$result['data'][$key] = array(
 				$value['vcItemName'],
@@ -70,6 +89,12 @@ class Item extends CI_Controller
 
 	public function remove($intItemID = null)
 	{
+		if (!$this->isAdmin) {
+			if (!in_array('deleteItem', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$inItemID = $this->input->post('intItemID');
 		$response = array();
 		if ($inItemID) {
@@ -97,13 +122,24 @@ class Item extends CI_Controller
 
 	public function create()
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('createItem', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+
 		$response = array();
 
 		$this->form_validation->set_rules('Item_name', 'Item Name', 'trim|required');
 		$this->form_validation->set_rules('measure_unit', 'Measure Unit', 'trim|required');
 		$this->form_validation->set_rules('item_type', 'Item Type', 'trim|required');
-		// $this->form_validation->set_rules('measure_unit', 'Measure Unit', 'required|callback_select_validate'); // Validating select option field.
-
+		if($this->input->post('edit_item_type') == 1)
+		{
+			$this->form_validation->set_rules('edit_unit_price', 'Measure Unit', 'trim|required');
+		}
+		
 		$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
 		if ($this->form_validation->run() == TRUE) {
@@ -111,9 +147,9 @@ class Item extends CI_Controller
 				'vcItemName' => $this->input->post('Item_name'),
 				'intMeasureUnitID' => $this->input->post('measure_unit'),
 				'decReOrderLevel' => $this->input->post('re_order'),
-				'intItemTypeID'=> $this->input->post('item_type'),
-				'decUnitPrice'=> $this->input->post('unit_price'),
-				'intUserID' => "1",
+				'intItemTypeID' => $this->input->post('item_type'),
+				'decUnitPrice' => $this->input->post('unit_price'),
+				'intUserID' => $this->session->userdata('user_id'),
 			);
 			$create = $this->model_item->create($data);
 			if ($create == true) {
@@ -131,11 +167,16 @@ class Item extends CI_Controller
 		}
 
 		echo json_encode($response);
-
 	}
 
 	public function update($id)
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('editItem', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
 
 		$response = array();
 
@@ -143,6 +184,10 @@ class Item extends CI_Controller
 			$this->form_validation->set_rules('edit_item_name', 'Item Name', 'trim|required');
 			$this->form_validation->set_rules('edit_measure_unit', 'Measure Unit', 'trim|required');
 			$this->form_validation->set_rules('edit_item_type', 'Item Type', 'trim|required');
+			if($this->input->post('edit_item_type') == 1)
+			{
+				$this->form_validation->set_rules('edit_unit_price', 'Measure Unit', 'trim|required');
+			}
 			
 
 			$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
@@ -152,9 +197,9 @@ class Item extends CI_Controller
 					'vcItemName' => $this->input->post('edit_item_name'),
 					'intMeasureUnitID' => $this->input->post('edit_measure_unit'),
 					'decReOrderLevel' => $this->input->post('edit_re_order'),
-					'intItemTypeID'=> $this->input->post('edit_item_type'),
-					'decUnitPrice'=> $this->input->post('edit_unit_price'),
-					'intUserID' => "1",
+					'intItemTypeID' => $this->input->post('edit_item_type'),
+					'decUnitPrice' => $this->input->post('edit_unit_price'),
+					'intUserID' => $this->session->userdata('user_id'),
 				);
 				$currentRV = '';
 				$currentRV =  $this->input->post('edit_rv');
@@ -167,13 +212,13 @@ class Item extends CI_Controller
 				} else {
 
 					$intEnteredBy = array(
-						'intEnteredBy' => "1",
+						'intEnteredBy' => $this->session->userdata('user_id'),
 					);
-	
-					$insertItemHitory = $this->model_item->insertItemHitory($intEnteredBy,$id);
+
+					$insertItemHitory = $this->model_item->insertItemHitory($intEnteredBy, $id);
 					$update = $this->model_item->update($data, $id);
 
-					if ($update == true && $insertItemHitory ==true) {
+					if ($update == true && $insertItemHitory == true) {
 						$response['success'] = true;
 						$response['messages'] = 'Succesfully updated !';
 					} else {
@@ -184,13 +229,11 @@ class Item extends CI_Controller
 			} else {
 				$response['success'] = false;
 				foreach ($_POST as $key => $value) {
-				$response['messages'][$key] = form_error($key);
+					$response['messages'][$key] = form_error($key);
 				}
 			}
 		}
 
 		echo json_encode($response);
 	}
-
-
 }

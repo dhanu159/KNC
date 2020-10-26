@@ -21,6 +21,13 @@ class Model_groups extends CI_Model
 		return $query->result_array();
 	}
 
+	public function getComboUserGroups() 
+	{
+		$sql = "SELECT intUserGroupID,vcGroupName FROM UserGroup";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		return $result;
+	}
 	public function createUserGroup($data = '')
 	{
 		$create = $this->db->insert('UserGroup', $data);
@@ -40,6 +47,25 @@ class Model_groups extends CI_Model
 		$delete = $this->db->delete('UserGroup');
 		return ($delete == true) ? true : false;
 	}
+
+	public function userGroupChkExists($id = null)
+    {
+        if ($id) {
+            $sql = "SELECT EXISTS(SELECT intUserGroupID  FROM user WHERE intUserGroupID = ?) AS value";
+            $query = $this->db->query($sql, array($id));
+            return $query->result_array();
+        }
+	}
+	
+	
+    public function removeUserGroup($id)
+    {
+        if ($id) {
+            $this->db->where('intUserGroupID', $id);
+            $delete = $this->db->delete('usergroup');
+            return ($delete == true) ? true : false;
+        }
+    }
 
 	public function existInUserGroup($id)
 	{

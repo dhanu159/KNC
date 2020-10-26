@@ -230,7 +230,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
-									<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
+									<a href="<?php echo base_url('User/index') ?>" class="nav-link">
 										<i class="fas fa-user"></i>
 										<p>&nbsp;&nbsp;&nbsp;User</p>
 									</a>

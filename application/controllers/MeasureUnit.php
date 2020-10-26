@@ -1,24 +1,41 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class MeasureUnit extends CI_Controller
+class MeasureUnit extends Admin_Controller
 {
-	public function __construct()
-	{
-		parent::__construct();
+    public function __construct()
+    {
+        parent::__construct();
 
-		$this->load->model('model_measureunit');
+        $this->load->model('model_measureunit');
+        $this->load->model('model_groups');
+
+        $user_group_data = $this->model_groups->getUserGroupData();
+        $this->data['user_groups_data'] = $user_group_data;
     }
-    
+
     public function MeasureUnit()
-	{
-		$this->load->view('partials/header');
-		$this->load->view('measureunit/manageMeasureUnit');
-		$this->load->view('partials/footer');
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('viewMeasureUnit', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $this->load->view('partials/header');
+        $this->load->view('measureunit/manageMeasureUnit', $this->data);
+        $this->load->view('partials/footer');
     }
-    
+
     public function create()
     {
+
+        if (!$this->isAdmin) {
+            if (!in_array('createMeasureUnit', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
         $response = array();
 
         $this->form_validation->set_rules('Unit_name', 'Measure Unit Name', 'trim|required');
@@ -28,7 +45,7 @@ class MeasureUnit extends CI_Controller
         if ($this->form_validation->run() == TRUE) {
             $data = array(
                 'vcMeasureUnit	' => $this->input->post('Unit_name'),
-           
+
             );
             $create = $this->model_measureunit->create($data);
             if ($create == true) {
@@ -51,31 +68,40 @@ class MeasureUnit extends CI_Controller
     public function fetchMeasureUnitData()
     {
 
+        if (!$this->isAdmin) {
+            if (!in_array('viewMeasureUnit', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
         $result = array('data' => array());
 
-        $data = $this->model_measureunit->getMeasureUnitData(null,true);
+        $data = $this->model_measureunit->getMeasureUnitData(null, true);
         foreach ($data as $key => $value) {
 
-            // button
             $buttons = '';
 
+            if ($this->isAdmin) {
+                $buttons .= '<button type="button" class="btn btn-default" onclick="editMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#editMeasureUnitModal"><i class="fas fa-edit"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#removeMeasureUnithModal"><i class="fa fa-trash"></i></button>';
+            } else {
+                if (in_array('editMeasureUnit', $this->permission)) {
+                    $buttons .= '<button type="button" class="btn btn-default" onclick="editMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#editMeasureUnitModal"><i class="fas fa-edit"></i></button>';
+                }
 
-            $buttons .= '<button type="button" class="btn btn-default" onclick="editMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#editMeasureUnitModal"><i class="fas fa-edit"></i></button>';
+                if (in_array('deleteMeasureUnit', $this->permission)) {
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="removeMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#removeMeasureUnithModal"><i class="fa fa-trash"></i></button>';
+                }
+            }
 
-            $buttons .= ' <button type="button" class="btn btn-default" onclick="removeMeasureUnit(' . $value['intMeasureUnitID'] . ')" data-toggle="modal" data-target="#removeMeasureUnithModal"><i class="fa fa-trash"></i></button>';
 
-            //$status = ($value['IsActive'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
 
             $result['data'][$key] = array(
                 $value['vcMeasureUnit'],
                 $buttons
             );
-        } // /foreach
+        }
 
         echo json_encode($result);
     }
-
-
-
-    
 }

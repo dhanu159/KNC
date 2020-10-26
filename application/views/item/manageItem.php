@@ -25,7 +25,10 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addItemModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Item</button>
+				<?php if (in_array('createItem', $user_permission) || $isAdmin) { ?>
+					<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addItemModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Item</button>
+				<?php } ?>
+
 			</div>
 			<div class="card-body">
 
@@ -113,70 +116,73 @@
 <!-- /.content-wrapper -->
 
 <!-- edit Item modal -->
-<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModal" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="editItemModal">Edit Supplier</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-
-			<form role="form" action="<?php echo base_url('Item/update') ?>" method="post" id="updateItemForm">
-				<div class="modal-body">
-					<div class="form-group">
-						<label for="Item_name">Item Name</label>
-						<input type="text" class="form-control" id="edit_item_name" name="edit_item_name" placeholder="Enter Item Name" autocomplete="off">
-					</div>
-					<div class="form-group">
-						<label>Measure Unit</label>
-						<select class="form-control select2" style="width: 100%;" id="edit_measure_unit" name="edit_measure_unit">
-							<!-- <option value="0" disabled selected hidden>Select Measure Unit</option> -->
-							<?php foreach ($measureUnit as $row) { ?>
-								<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
-							<?php } ?>
-						</select>
-					</div>
-
-					<div class="form-group">
-						<label>Item Type</label>
-						<select class="form-control select2" style="width: 100%;" id="edit_item_type" name="edit_item_type">
-							<!-- <option value="0" disabled selected hidden>Select Item Type</option> -->
-							<?php foreach ($itemType as $row) { ?>
-								<option value="<?php echo $row->intItemTypeID ?>"><?php echo $row->vcItemTypeName ?></option>
-							<?php } ?>
-						</select>
-					</div>
-
-					<div id="EditGenerateUnitPriceTextBox">
-
-					</div>
-
-					<div class="form-group">
-						<label for="txtItemName">Item Re-Order Level</label>
-						<input type="number" class="form-control" id="edit_re_order" name="edit_re_order" placeholder="Enter Re-Order Level" min=1>
-					</div>
-
-					<div class="form-group">
-						<input type="hidden" class="form-control" id="edit_rv" name="edit_rv" autocomplete="off">
-					</div>
+<?php if (in_array('editItem', $user_permission) || $isAdmin) { ?>
+	<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-labelledby="editItemModal" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="editItemModal">Edit Item</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
 
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Item</button>
-				</div>
+				<form role="form" action="<?php echo base_url('Item/update') ?>" method="post" id="updateItemForm">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="Item_name">Item Name</label>
+							<input type="text" class="form-control" id="edit_item_name" name="edit_item_name" placeholder="Enter Item Name" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label>Measure Unit</label>
+							<select class="form-control select2" style="width: 100%;" id="edit_measure_unit" name="edit_measure_unit">
+								<!-- <option value="0" disabled selected hidden>Select Measure Unit</option> -->
+								<?php foreach ($measureUnit as $row) { ?>
+									<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
+								<?php } ?>
+							</select>
+						</div>
 
-			</form>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+						<div class="form-group">
+							<label>Item Type</label>
+							<select class="form-control select2" style="width: 100%;" id="edit_item_type" name="edit_item_type">
+								<!-- <option value="0" disabled selected hidden>Select Item Type</option> -->
+								<?php foreach ($itemType as $row) { ?>
+									<option value="<?php echo $row->intItemTypeID ?>"><?php echo $row->vcItemTypeName ?></option>
+								<?php } ?>
+							</select>
+						</div>
+
+						<div id="EditGenerateUnitPriceTextBox">
+					
+						</div>
+
+						<div class="form-group">
+							<label for="txtItemName">Item Re-Order Level</label>
+							<input type="number" class="form-control" id="edit_re_order" name="edit_re_order" placeholder="Enter Re-Order Level" min=1>
+						</div>
+
+						<div class="form-group">
+							<input type="hidden" class="form-control" id="edit_rv" name="edit_rv" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Item</button>
+					</div>
+
+				</form>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+<?php } ?>
 
 </div>
 <!-- /.content-wrapper -->
 
-<!-- remove Item modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="removeItemModal">
+<?php if (in_array('deleteItem', $user_permission) || $isAdmin) { ?>
+	<div class="modal fade" tabindex="-1" role="dialog" id="removeItemModal">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -199,6 +205,9 @@
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+<?php } ?>
+
+<!-- remove Item modal -->
 
 
 <script src="<?php echo base_url('resources/pageJS/item.js') ?>"></script>

@@ -40,6 +40,14 @@ class Model_branch extends CI_Model
 
     }
 
+    public function getComboBranch() 
+	{
+		$sql = "SELECT intBranchID,vcBranchName FROM branch WHERE IsActive = 1";
+		$query = $this->db->query($sql);
+		$result = $query->result();
+		return $result;
+	}
+
 
     public function remove($id)
     {

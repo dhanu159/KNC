@@ -1,18 +1,28 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Branch extends CI_Controller
+class Branch extends Admin_Controller
 {
     public function __construct()
     {
         parent::__construct();
 
         $this->load->model('model_branch');
+        $this->load->model('model_groups');
+
+        $user_group_data = $this->model_groups->getUserGroupData();
+        $this->data['user_groups_data'] = $user_group_data;
     }
     public function index()
     {
+        if (!$this->isAdmin) {
+            if (!in_array('viewBranch', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
         $this->load->view('partials/header');
-        $this->load->view('branch/manageBranch');
+        $this->load->view('branch/manageBranch', $this->data);
         $this->load->view('partials/footer');
     }
 
@@ -28,12 +38,17 @@ class Branch extends CI_Controller
 
     public function create()
     {
+        if (!$this->isAdmin) {
+            if (!in_array('createBranch', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
         $response = array();
 
         $this->form_validation->set_rules('branch_name', 'branch name', 'trim|required');
         $this->form_validation->set_rules('address', 'address', 'trim|required');
         $this->form_validation->set_rules('contact_no', 'contact no', 'required|min_length[10]|max_length[10]');
-        // $this->form_validation->set_rules('active', 'Active', 'trim|required');
 
         $this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
 
@@ -42,8 +57,7 @@ class Branch extends CI_Controller
                 'vcBranchName' => $this->input->post('branch_name'),
                 'vcAddress' => $this->input->post('address'),
                 'vcContactNo' => $this->input->post('contact_no'),
-                // 'IsActive' => $this->input->post('active'),
-                'intUserID' => "1",
+                'intUserID' => $this->session->userdata('user_id'),
             );
             $create = $this->model_branch->create($data);
             if ($create == true) {
@@ -66,20 +80,30 @@ class Branch extends CI_Controller
     public function fetchBranchData()
     {
 
+        if (!$this->isAdmin) {
+            if (!in_array('viewBranch', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
         $result = array('data' => array());
 
         $data = $this->model_branch->getBranchData();
         foreach ($data as $key => $value) {
 
-            // button
             $buttons = '';
 
-
-            $buttons .= '<button type="button" class="btn btn-default" onclick="editBranch(' . $value['intBranchID'] . ')" data-toggle="modal" data-target="#editBranchModal"><i class="fas fa-edit"></i></button>';
-
-            $buttons .= ' <button type="button" class="btn btn-default" onclick="removeBranch(' . $value['intBranchID'] . ')" data-toggle="modal" data-target="#removeBranchModal"><i class="fa fa-trash"></i></button>';
-
-            //$status = ($value['IsActive'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+            if ($this->isAdmin) {
+                $buttons .= '<button type="button" class="btn btn-default" onclick="editBranch(' . $value['intBranchID'] . ')" data-toggle="modal" data-target="#editBranchModal"><i class="fas fa-edit"></i></button>';
+                $buttons .= ' <button type="button" class="btn btn-default" onclick="removeBranch(' . $value['intBranchID'] . ')" data-toggle="modal" data-target="#removeBranchModal"><i class="fa fa-trash"></i></button>';
+            } else {
+                if (in_array('editBranch', $this->permission)) {
+                    $buttons .= '<button type="button" class="btn btn-default" onclick="editBranch(' . $value['intBranchID'] . ')" data-toggle="modal" data-target="#editBranchModal"><i class="fas fa-edit"></i></button>';
+                }
+                if (in_array('deleteBranch', $this->permission)) {
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="removeBranch(' . $value['intBranchID'] . ')" data-toggle="modal" data-target="#removeBranchModal"><i class="fa fa-trash"></i></button>';
+                }
+            }
 
             $result['data'][$key] = array(
                 $value['vcBranchName'],
@@ -87,7 +111,7 @@ class Branch extends CI_Controller
                 $value['vcContactNo'],
                 $buttons
             );
-        } // /foreach
+        }
 
         echo json_encode($result);
     }
@@ -95,6 +119,11 @@ class Branch extends CI_Controller
     public function update($id)
     {
 
+        if (!$this->isAdmin) {
+            if (!in_array('editBranch', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
         $response = array();
 
         if ($id) {
@@ -135,6 +164,12 @@ class Branch extends CI_Controller
 
     public function remove($intbranchID = null)
     {
+        if (!$this->isAdmin) {
+            if (!in_array('deleteBranch', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
         $intbranchID = $this->input->post('intBranchID');
         $response = array();
         if ($intbranchID) {

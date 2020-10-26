@@ -11,33 +11,35 @@
         <!-- Small boxes (Stat box) -->
         <div class="row">
             <div class="col-md-12 col-xs-12">
-            <div class="card">
-            <div class="card-header">
-                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addBranchModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Branch</button>
-            </div>
-            <div class="card-body">
-
-                <div class="box">
-                    <div class="box-body">
-                        <table id="manageTable" class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Branch Name</th>
-                                    <th>Address</th>
-                                    <th>Contact No</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-
-                        </table>
+                <div class="card">
+                    <div class="card-header">
+                        <?php if (in_array('createBranch', $user_permission) || $isAdmin) { ?>
+                            <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addBranchModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Branch</button>
+                        <?php } ?>
                     </div>
-                    <!-- /.box-body -->
+                    <div class="card-body">
+
+                        <div class="box">
+                            <div class="box-body">
+                                <table id="manageTable" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Branch Name</th>
+                                            <th>Address</th>
+                                            <th>Contact No</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                </table>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <!-- col-md-12 -->
                 </div>
-                <!-- /.box -->
-            </div>
-            <!-- col-md-12 -->
-        </div>
-        <!-- /.row -->
+                <!-- /.row -->
     </section>
 
     <div class="modal fade" id="addBranchModal" tabindex="-1" role="dialog" aria-labelledby="addBranchModal" aria-hidden="true">
@@ -74,7 +76,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Branch</button>
+                        <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Branch</button>
                     </div>
 
                 </form>
@@ -114,7 +116,7 @@
                 </div>
 
                 <div class="modal-footer">
-                <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Branch</button>
+                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Branch</button>
                 </div>
 
             </form>
@@ -126,6 +128,7 @@
 <!-- /.content-wrapper -->
 
 <!-- remove brand modal -->
+<?php if (in_array('deleteBranch', $user_permission) || $isAdmin) { ?>
 <div class="modal fade" tabindex="-1" role="dialog" id="removeBranchModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -141,7 +144,7 @@
                     <p>Do you really want to remove?</p>
                 </div>
                 <div class="modal-footer">
-                <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Branch</button>
+                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Branch</button>
                 </div>
             </form>
 
@@ -149,6 +152,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+<?php } ?>
 
 <script src="<?php echo base_url('resources/pageJS/branch.js') ?>"></script>

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Supplier extends CI_Controller
+class Supplier extends Admin_Controller
 {
 
 	public function __construct()
@@ -9,12 +9,25 @@ class Supplier extends CI_Controller
 		parent::__construct();
 
 		$this->load->model('model_supplier');
+		$this->load->model('model_groups');
+
+		$user_group_data = $this->model_groups->getUserGroupData();
+        $this->data['user_groups_data'] = $user_group_data;
 	}
 	public function index()
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('viewSupplier', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$this->load->view('partials/header');
-		$this->load->view('supplier/manageSupplier');
+		$this->load->view('supplier/manageSupplier',$this->data);
 		$this->load->view('partials/footer');
+
+
 	}
 
 	public function fetchSupplierDataById($id)
@@ -29,6 +42,14 @@ class Supplier extends CI_Controller
 
 	public function create()
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('createSupplier', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+
 		$response = array();
 
 		$this->form_validation->set_rules('supplier_name', 'supplier name', 'trim|required');
@@ -44,7 +65,7 @@ class Supplier extends CI_Controller
 				'vcAddress' => $this->input->post('address'),
 				'vcContactNo' => $this->input->post('contact_no'),
 				// 'IsActive' => $this->input->post('active'),
-				'intUserID' => "1",
+				'intUserID' => $this->session->userdata('user_id'),
 			);
 			$create = $this->model_supplier->create($data);
 			if ($create == true) {
@@ -66,6 +87,13 @@ class Supplier extends CI_Controller
 
 	public function fetchSupplierData()
 	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('viewSupplier', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$result = array('data' => array());
 
 		$data = $this->model_supplier->getSupplierData();
@@ -74,27 +102,44 @@ class Supplier extends CI_Controller
 			// button
 			$buttons = '';
 
+			
+            if ($this->isAdmin) {
+				$buttons .= '<button type="button" class="btn btn-default" onclick="editSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#editSupplierModal"><i class="fas fa-edit"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#removeSupplierModal"><i class="fa fa-trash"></i></button>';
 
-			$buttons .= '<button type="button" class="btn btn-default" onclick="editSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#editSupplierModal"><i class="fas fa-edit"></i></button>';
+            } else {
+                if (in_array('editSupplier', $this->permission)) {
+                    $buttons .= '<button type="button" class="btn btn-default" onclick="editSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#editSupplierModal"><i class="fas fa-edit"></i></button>';
+                }
 
-			$buttons .= ' <button type="button" class="btn btn-default" onclick="removeSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#removeSupplierModal"><i class="fa fa-trash"></i></button>';
+                if (in_array('deleteSupplier', $this->permission)) {
+					$buttons .= ' <button type="button" class="btn btn-default" onclick="removeSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#removeSupplierModal"><i class="fa fa-trash"></i></button>';
 
-			//$status = ($value['IsActive'] == 1) ? '<span class="label label-success">Active</span>' : '<span class="label label-warning">Inactive</span>';
+                }
+            }
+
+
+
 
 			$result['data'][$key] = array(
 				$value['vcSupplierName'],
 				$value['vcAddress'],
 				$value['vcContactNo'],
-				//$status,
 				$buttons
 			);
-		} // /foreach
+		} 
 
 		echo json_encode($result);
 	}
 
 	public function update($id)
 	{
+		if (!$this->isAdmin) {
+			if (!in_array('editSupplier', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 
 		$response = array();
 
@@ -145,6 +190,12 @@ class Supplier extends CI_Controller
 
 	public function remove($intSupplierID = null)
 	{
+		if (!$this->isAdmin) {
+			if (!in_array('deleteSupplier', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
 		$intSupplierID = $this->input->post('intSupplierID');
 		$response = array();
 		if ($intSupplierID) {

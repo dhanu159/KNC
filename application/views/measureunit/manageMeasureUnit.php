@@ -13,7 +13,10 @@
         <!-- Small boxes (Stat box) -->
         <div class="card">
             <div class="card-header">
+            <?php if (in_array('createMeasureUnit', $user_permission) || $isAdmin) { ?>
                 <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addMeasureUnitModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Measure Unit</button>
+
+				<?php } ?>
             </div>
             <div class="card-body">
 
@@ -101,6 +104,7 @@
 
 
 <!-- remove brand modal -->
+<?php if (in_array('deleteMeasureUnit', $user_permission) || $isAdmin) { ?>
 <div class="modal fade" tabindex="-1" role="dialog" id="removeMeasureUnithModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -124,6 +128,6 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
-
+<?php } ?>
 
 <script src="<?php echo base_url('resources/pageJS/measureunit.js') ?>"></script>
