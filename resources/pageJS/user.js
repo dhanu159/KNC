@@ -14,6 +14,7 @@ $(document).ready(function() {
         $(".text-danger").remove();
 
         $.ajax({
+            async: true,
             url: form.attr('action'),
             type: form.attr('method'),
             data: form.serialize(), // /converting the form data into array and sending it to server
@@ -68,6 +69,7 @@ $(document).ready(function() {
 
 function editUser(id) {
     $.ajax({
+        async: true,
         url: 'fetchUserDataById/' + id,
         type: 'post',
         dataType: 'json',
@@ -94,6 +96,7 @@ function editUser(id) {
                 $(".text-danger").remove();
 
                 $.ajax({
+                    async: false,
                     url: form.attr('action') + '/' + id,
                     type: form.attr('method'),
                     data: form.serialize(), // /converting the form data into array and sending it to server
@@ -157,6 +160,7 @@ function removeUser(id) {
 
 
             $.ajax({
+                async: true,
                 url: form.attr('action'),
                 type: form.attr('method'),
                 data: {
