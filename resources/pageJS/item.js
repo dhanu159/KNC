@@ -161,7 +161,7 @@ function GenerateUnitPriceTextBox() {
     if (Item_Type == 2) {
         htmlElements = '<div class="form-group">' +
             '							<label for="txtItemName">Unit Price</label>' +
-            '							<input type="number" class="form-control" id="unit_price" name="unit_price" placeholder="Enter Unit Price" min=1>' +
+            '							<input type="number" class="form-control" id="unit_price" name="unit_price" placeholder="Enter Unit Price" min=1 step="any">' +
             '						</div>';
     } else {
         htmlElements = "";
@@ -181,7 +181,7 @@ function EditGenerateUnitPriceTextBox() {
     if (Item_Type == 2) {
         htmlElements = '<div class="form-group">' +
             '							<label for="txtItemName">Unit Price</label>' +
-            '							<input type="number" class="form-control" id="edit_unit_price" name="edit_unit_price" placeholder="Enter Unit Price" min=1>' +
+            '							<input type="number" class="form-control" id="edit_unit_price" name="edit_unit_price" placeholder="Enter Unit Price" min=1 step="any">' +
             '						</div>';
     } else {
         htmlElements = "";

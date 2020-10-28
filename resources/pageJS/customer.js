@@ -142,7 +142,7 @@ function removeCustomer(id) {
     if (id) {
 
         // submit the edit from 
-        $("#removeSupplierForm").unbind('submit').bind('submit', function() {
+        $("#removeCustomerForm").unbind('submit').bind('submit', function() {
             var form = $(this);
 
             // remove the text-danger
@@ -153,7 +153,7 @@ function removeCustomer(id) {
                 url: form.attr('action'),
                 type: form.attr('method'),
                 data: {
-                    intSupplierID: id
+                    intCustomerID: id
                 },
                 dataType: 'json',
                 success: function(response) {
@@ -166,9 +166,9 @@ function removeCustomer(id) {
                         toastr["success"](response.messages);
 
                         // hide the modal
-                        $("#removeSupplierModal").modal('hide');
-                        $("#removeSupplierForm")[0].reset();
-                        $("#removeSupplierForm .form-group").removeClass('has-error').removeClass('has-success');
+                        $("#removeCustomerModal").modal('hide');
+                        $("#removeCustomerForm")[0].reset();
+                        $("#removeCustomerForm .form-group").removeClass('has-error').removeClass('has-success');
 
                     } else {
 
@@ -176,9 +176,9 @@ function removeCustomer(id) {
                         toastr["error"](response.messages);
 
                         // hide the modal
-                        $("#removeSupplierModal").modal('hide');
-                        $("#removeSupplierForm")[0].reset();
-                        $("#removeSupplierForm .form-group").removeClass('has-error').removeClass('has-success');
+                        $("#removeCustomerModal").modal('hide');
+                        $("#removeCustomerForm")[0].reset();
+                        $("#removeCustomerForm .form-group").removeClass('has-error').removeClass('has-success');
                     }
                 }
             });

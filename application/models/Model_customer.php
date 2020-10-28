@@ -43,6 +43,14 @@ class Model_customer extends CI_Model
         }
        
     }
+    public function chkexists($id = null)
+    {
+        if ($id) {
+            $sql = "SELECT EXISTS(SELECT intCustomerID  FROM issu WHERE intCustomerID = ?) AS value";
+            $query = $this->db->query($sql, array($id));
+            return $query->result_array();
+        }
+	}
 
     public function update($data, $id)
     {

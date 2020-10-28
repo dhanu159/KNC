@@ -39,6 +39,13 @@ class Model_measureunit extends CI_Model
         }
     }
 
+    public function getMeasureUnitByItemID($id)
+    {
+        $sql = "SELECT mu.intMeasureUnitID, mu.vcMeasureUnit from item IT inner join measureunit MU on IT.intMeasureUnitID = MU.intMeasureUnitID  where IT.intItemID = ?";
+        $query = $this->db->query($sql, array($id));
+        return    $query->row_array();
+    }
+
     /* get the get Item Type Data data */
     public function getItemTypeData($id = null, $isArray)
     {
@@ -59,7 +66,6 @@ class Model_measureunit extends CI_Model
             $update = $this->db->update('measureunit', $data);
             return ($update == true) ? true : false;
         }
-        
     }
 
     public function remove($id)

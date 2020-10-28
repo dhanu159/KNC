@@ -195,8 +195,8 @@ class Customer extends Admin_Controller
 		$response = array();
 		if ($intCustomerID) {
 
-			$result = $this->model_customer->chkexists($intCustomerID);
-
+		//	$result = $this->model_customer->chkexists($intCustomerID);
+		$result = '';
 			if ($result <> '') {
 				if ($result[0]['value'] == 1) {
 					$response['success'] = false;
