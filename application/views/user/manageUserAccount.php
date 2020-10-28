@@ -1,9 +1,9 @@
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
-    <section class="content-header">
-        <h1>
-            Manage User Account
-        </h1>
+<div class="content-wrapper arcadia-main-container "">
+    <section class=" content-header">
+    <h1>
+        Manage User Account
+    </h1>
 
     </section>
     <section class="content">
@@ -111,69 +111,69 @@
 <!-- /.content-wrapper -->
 <!-- edit User modal -->
 <?php if (in_array('editUser', $user_permission) || $isAdmin) { ?>
-<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editUserModal">Edit User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form role="form" action="<?php echo base_url('user/editUser') ?>" method="post" id="editUserForm">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="user_name">User Name</label>
-                        <input type="text" class="form-control" id="edit_user_name" name="edit_user_name" placeholder="Enter User Name" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="edit_password" name="edit_password" placeholder="Enter password" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="full_name">Full Name</label>
-                        <input type="text" class="form-control" id="edit_full_name" name="edit_full_name" placeholder="Enter Full Name" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="text" class="form-control" id="edit_email" name="edit_email" placeholder="Enter Email" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="contact_no">Contact No</label>
-                        <input type="number" class="form-control" id="edit_contact_no" name="edit_contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label>Branch</label>
-                        <select class="form-control select2" style="width: 100%;" id="edit_branch" name="edit_branch">
-                            <!-- <option value="" disabled selected hidden>Select Branch</option> -->
-                            <?php foreach ($branch as $row) { ?>
-                                <option value="<?= $row->intBranchID ?>"><?= $row->vcBranchName ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>User Group</label>
-                        <select class="form-control select2" style="width: 100%;" id="edit_user_group" name="edit_user_group">
-                            <!-- <option value="" disabled selected hidden>Select User Group</option> -->
-                            <?php foreach ($userGroup as $row) { ?>
-                                <option value="<?= $row->intUserGroupID ?>"><?= $row->vcGroupName ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="edit_IsAdmin" name="edit_IsAdmin">
-                        <label class="form-check-label" for="edit_IsAdmin">Admin</label>
-                    </div>
+    <div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModal">Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update User</button>
-                </div>
+                <form role="form" action="<?php echo base_url('user/editUser') ?>" method="post" id="editUserForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="user_name">User Name</label>
+                            <input type="text" class="form-control" id="edit_user_name" name="edit_user_name" placeholder="Enter User Name" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="edit_password" name="edit_password" placeholder="Enter password" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="full_name">Full Name</label>
+                            <input type="text" class="form-control" id="edit_full_name" name="edit_full_name" placeholder="Enter Full Name" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" class="form-control" id="edit_email" name="edit_email" placeholder="Enter Email" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact_no">Contact No</label>
+                            <input type="number" class="form-control" id="edit_contact_no" name="edit_contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <select class="form-control select2" style="width: 100%;" id="edit_branch" name="edit_branch">
+                                <!-- <option value="" disabled selected hidden>Select Branch</option> -->
+                                <?php foreach ($branch as $row) { ?>
+                                    <option value="<?= $row->intBranchID ?>"><?= $row->vcBranchName ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>User Group</label>
+                            <select class="form-control select2" style="width: 100%;" id="edit_user_group" name="edit_user_group">
+                                <!-- <option value="" disabled selected hidden>Select User Group</option> -->
+                                <?php foreach ($userGroup as $row) { ?>
+                                    <option value="<?= $row->intUserGroupID ?>"><?= $row->vcGroupName ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="edit_IsAdmin" name="edit_IsAdmin">
+                            <label class="form-check-label" for="edit_IsAdmin">Admin</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update User</button>
+                    </div>
 
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
-</div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    </div>
 <?php } ?>
 <!-- /.content-wrapper -->
 <?php if (in_array('deleteUser', $user_permission) || $isAdmin) { ?>
