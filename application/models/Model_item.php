@@ -14,7 +14,7 @@ class Model_item extends CI_Model
 			$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
             inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
             inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
-            WHERE it.intItemID = ? ";
+            WHERE IsActive = 1 AND it.intItemID = ? ";
 			$query = $this->db->query($sql, array($itemId));
 			return $query->row_array();
         }
@@ -23,10 +23,22 @@ class Model_item extends CI_Model
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
         where  IsActive = 1
-        order by it.dtCreatedDate desc";
+        order by it.vcItemName asc";
 		$query = $this->db->query($sql, array(1));
 		return $query->result_array();
-	}
+    }
+
+
+    public function getOnlyRawItemData()
+    {
+        $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
+        inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
+        inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
+        where  IsActive = 1 AND it.intItemTypeID = 1
+        order by it.vcItemName asc";
+        $query = $this->db->query($sql, array(1));
+        return $query->result_array();
+    }
 
     public function create($data)
     {
