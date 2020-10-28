@@ -55,6 +55,17 @@
         margin: 0 auto;
 
     }
+
+    input[type=text]:disabled {
+        background: #ffffff;
+        border: 1px solid #ced4da !important;
+
+    }
+
+    input[type=text]:read-only {
+        background: #ffffff;
+        border-color: #ffffff;
+    }
 </style>
 
 <!-- Content Wrapper. Contains page content -->
@@ -80,7 +91,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="#">
+                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN">
                     <div class="row">
                         <div class="form-group col-md-12">
                             <label for="supplier">Supplier</label>
@@ -99,32 +110,23 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label>Received Date</label>
-                            <!-- <div class="input-group date" id="receivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" placeholder="Select Received Date" style="pointer-events: none;" />
-                                <div class="input-group-append" data-target="#receivedDate" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div> -->
-
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
+                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" name="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
                                 <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
 
                         </div>
-                        <!-- <div id="target" style="position:relative" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" id="Datetimepicker" data-toggle="datetimepicker" data-target="#target" autocomplete="off" style="width: 200px;" />
-                    </div> -->
                     </div>
 
-                    <table class="table arcadia-table" id="itemTable">
+                    <table class="table arcadia-table" id="itemTable" style="display: inline;">
                         <thead>
                             <tr>
                                 <th hidden>Item ID</th>
                                 <th style="text-align:center;">Item</th>
                                 <th style="width: 200px; text-align:center;">Unit Price</th>
+                                <th style="width: 100px; text-align:center;">Unit</th>
                                 <th style="width: 100px; text-align:center;">Qty</th>
                                 <th style="width: 200px; text-align:center;">Total Price</th>
                                 <th style="width: 100px; text-align: center;">Action</th>
@@ -136,14 +138,15 @@
                                 <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
                                 <td class="static">
                                     <!-- <input type="text" class="form-control" name="txtItem"> -->
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem">
-                                        <option value="0" disabled selected hidden>Select Item</option>
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getMeasureUnitByItemID();"">
+                                        <option value=" 0" disabled selected hidden>Select Item</option>
                                         <?php foreach ($item_data as $k => $v) { ?>
                                             <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
                                         <?php } ?>
                                     </select>
                                 </td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;"></td>
+                                <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
                                 <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
                                 <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
@@ -160,16 +163,22 @@
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
-                                        <th style="border-top:0 !important;">Sub Total:</th>
-                                        <td id="subTotal" style="width: 200px; font-weight: 600; text-align:right; border-top:0 !important;">0.00</td>
+                                        <th style="border-top:0 !important; width:180px;">Sub Total:</th>
+                                        <td>
+                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right;" id="subTotal" name="subTotal" placeholder="0.00" readonly>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th style="border-top:0 !important;">Discount:</th>
-                                        <td style="border-top:0 !important;"><input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;"></td>
+                                        <td style="border-top:0 !important;">
+                                            <input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;">
+                                        </td>
                                     </tr>
                                     <tr style="border-top:2px solid #dee2e6; border-bottom:2px solid #dee2e6;">
                                         <th style="font-size:1.5em;">Grand Total:</th>
-                                        <td id="grandTotal" style="font-weight: 600; text-align:right; font-size:1.5em;">0.00</td>
+                                        <td>
+                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right; font-size:1.5em;" id="grandTotal" name="grandTotal" placeholder="0.00" readonly>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
