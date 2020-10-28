@@ -199,6 +199,11 @@ class Utilities extends Admin_Controller
 
     public function MeasureUnit()
     {
+        if (!$this->isAdmin) {
+            if (!in_array('viewMeasureUnit', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
         // $this->load->view('partials/header');
         // $this->load->view('measureunit/manageMeasureUnit');
         // $this->load->view('partials/footer');

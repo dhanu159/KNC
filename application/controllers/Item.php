@@ -135,7 +135,7 @@ class Item extends Admin_Controller
 		$this->form_validation->set_rules('Item_name', 'Item Name', 'trim|required');
 		$this->form_validation->set_rules('measure_unit', 'Measure Unit', 'trim|required');
 		$this->form_validation->set_rules('item_type', 'Item Type', 'trim|required');
-		if($this->input->post('edit_item_type') == 1)
+		if($this->input->post('edit_item_type') == 2)
 		{
 			$this->form_validation->set_rules('edit_unit_price', 'Measure Unit', 'trim|required');
 		}
@@ -184,7 +184,7 @@ class Item extends Admin_Controller
 			$this->form_validation->set_rules('edit_item_name', 'Item Name', 'trim|required');
 			$this->form_validation->set_rules('edit_measure_unit', 'Measure Unit', 'trim|required');
 			$this->form_validation->set_rules('edit_item_type', 'Item Type', 'trim|required');
-			if($this->input->post('edit_item_type') == 1)
+			if($this->input->post('edit_item_type') == 2)
 			{
 				$this->form_validation->set_rules('edit_unit_price', 'Measure Unit', 'trim|required');
 			}
