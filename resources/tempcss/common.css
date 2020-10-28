@@ -43,6 +43,33 @@
     border: 1px solid #3d9970;
 }
 
+table {
+    /* display: block; */
+    width: auto !important;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.dataTables_length {
+    width: 100% !important;
+}
+
+.custom-select-sm {
+    float: left;
+}
+
+/* table.dataTable {
+    display: block;
+} */
+
+/* #manageTable {
+    width: auto !important;
+} */
+
+/* table.dataTable, table.dataTable th{
+    width: 100%;
+} */
+
 /* 
 body {
     margin: 0;
@@ -50,6 +77,14 @@ body {
     height: 100vh;
     width: 100vw;
 } */
+
+.text-center{
+    text-align: center !important;
+}
+
+.text-right{
+    text-align: right !important;
+}
 
 @-webkit-keyframes dyinglight {
     15% {
