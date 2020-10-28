@@ -1,4 +1,4 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
     // $("#dtReceivedDate").datepicker().datepicker("setDate", new Date());
     // $('#dtReceivedDate').datepicker('setDate', 'today');
@@ -7,22 +7,22 @@ $(document).ready(function () {
 
 
 
-    $('#cmbItem').on('select2:select', function (e) {
+    $('#cmbItem').on('select2:select', function(e) {
         $('#txtUnitPrice').focus();
     });
 
-    $('#txtQty,#txtUnitPrice').keyup(function (event) {
+    $('#txtQty,#txtUnitPrice').keyup(function(event) {
         CalculateTotal();
     });
 
-    $('#txtDiscount').keyup(function (event) {
+    $('#txtDiscount').keyup(function(event) {
         CalculateGrandTotal();
     });
-    $("#btnAddToGrid").click(function () {
+    $("#btnAddToGrid").click(function() {
         AddToGrid();
     });
     //Bind keypress event to textbox
-    $('.add-item').keypress(function (event) {
+    $('.add-item').keypress(function(event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             AddToGrid();
@@ -48,7 +48,7 @@ $(document).ready(function () {
         if ($('#itemTable tr').length > 2) { // Because table header and item add row in here
             var discount = $("#txtDiscount").val();
             var total = 0;
-            $('#itemTable tbody tr').each(function () {
+            $('#itemTable tbody tr').each(function() {
                 var value = parseInt($(this).closest("tr").find('.total').val());
                 if (!isNaN(value)) {
                     total += value;
@@ -89,29 +89,29 @@ $(document).ready(function () {
                 var qty = $("input[name=txtQty]").val();
                 var total = unitPrice * qty;
 
-                $(".first-tr").after('<tr>'+
-                    '<td hidden>'+
-                    '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '" readonly>'+
-                    '</td>'+
-                    '<td>'+
-                    '<input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>'+
-                    '</td>'+
-                    '<td>'+
-                    '<input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_' + row_id + '" value="' + parseFloat(unitPrice).toFixed(2) + '" readonly>'+
-                    '</td>'+
-                    '<td>'+
-                    '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>'+
-                    '</td>'+
-                    '<td>'+
-                    '<input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>'+
-                    '</td>'+
-                    '<td>'+
-                    '<input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_' + row_id + '"  value="' + parseFloat(total).toFixed(2) + '" readonly>'+
-                    '</td>'+
-                    '<td class="static">'+
-                        '<span class="button red center-items"><i class="fas fa-times"></i></span>'+
-                    '</td>'+
-                '</tr>');
+                $(".first-tr").after('<tr>' +
+                    '<td hidden>' +
+                    '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '" readonly>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_' + row_id + '" value="' + parseFloat(unitPrice).toFixed(2) + '" readonly>' +
+                    '</td>' +
+                    '<td>' +
+                    '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_' + row_id + '"  value="' + parseFloat(total).toFixed(2) + '" readonly>' +
+                    '</td>' +
+                    '<td class="static">' +
+                    '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
+                    '</td>' +
+                    '</tr>');
 
                 row_id++;
                 remove();
@@ -163,7 +163,7 @@ $(document).ready(function () {
 
 
     function remove() {
-        $(".red").click(function () {
+        $(".red").click(function() {
             // var itemID = $(this).closest("tr").find('td.itemID').text();
             // var itemName = $(this).closest("tr").find('td.itemName').text();
 
@@ -172,7 +172,7 @@ $(document).ready(function () {
 
             var IsAlreadyIncluded = false;
 
-            $("#cmbItem option").each(function () {
+            $("#cmbItem option").each(function() {
                 if (itemID == $(this).val()) {
                     IsAlreadyIncluded = true;
                     return false;
@@ -191,7 +191,7 @@ $(document).ready(function () {
         });
     }
 
-    $('#btnSubmit').click(function () {
+    $('#btnSubmit').click(function() {
 
         if ($('#supplier').val() == null) {
             toastr["error"]("Please select a supplier !");
@@ -205,7 +205,7 @@ $(document).ready(function () {
             toastr["error"]("Please choose the receive items !");
             $("#cmbItem").focus();
         } else {
-            arcadiaConfirmAlert("You want to be able to save this !", function () {
+            arcadiaConfirmAlert("You want to be able to save this !", function() {
 
                 var form = $("#createGRN");
 
@@ -213,15 +213,14 @@ $(document).ready(function () {
                     type: form.attr('method'),
                     url: form.attr('action'),
                     data: form.serialize(),
-                    async: false,
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success == true) {
                             arcadiaSuccessMessage(true);
                         } else {
 
                             if (response.messages instanceof Object) {
-                                $.each(response.messages, function (index, value) {
+                                $.each(response.messages, function(index, value) {
                                     var id = $("#" + index);
 
                                     id.closest('.form-group')
@@ -236,9 +235,9 @@ $(document).ready(function () {
                                 toastr["error"](response.messages);
 
                                 arcadiaErrorMessage(response.messages);
-                            }                            
+                            }
                         }
- 
+
                     }
                 });
             }, true);
@@ -258,7 +257,7 @@ $(document).ready(function () {
     });
 
 
-    $("#createGRN").unbind('submit').on('submit', function (e) {
+    $("#createGRN").unbind('submit').on('submit', function(e) {
 
         // var form = $(this);
 
@@ -278,7 +277,7 @@ $(document).ready(function () {
 });
 
 // on first focus (bubbles up to document), open the menu
-$(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
+$(document).on('focus', '.select2-selection.select2-selection--single', function(e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
 });
 
@@ -290,17 +289,20 @@ function getMeasureUnitByItemID() {
             url: 'getMeasureUnitByItemID/' + ItemID,
             type: 'post',
             dataType: 'json',
-            success: function (response) {
+            success: function(response) {
                 $("#txtMeasureUnit").val(response.vcMeasureUnit);
+            },
+            error: function(xhr, status, error) {
+                //var err = eval("(" + xhr.responseText + ")");
+                alert(xhr.responseText);
             }
         });
     }
 }
 
-    // // steal focus during close - only capture once and stop propogation
-    // $('select.select2').on('select2:closing', function(e) {
-    //     $(e.target).data("select2").$selection.one('focus focusin', function(e) {
-    //         e.stopPropagation();
-    //     });
-    // });
-
+// // steal focus during close - only capture once and stop propogation
+// $('select.select2').on('select2:closing', function(e) {
+//     $(e.target).data("select2").$selection.one('focus focusin', function(e) {
+//         e.stopPropagation();
+//     });
+// });

@@ -68,7 +68,6 @@ class GRN extends Admin_Controller
     public function getMeasureUnitByItemID($ItemID)
     {
             $data = $this->model_measureunit->getMeasureUnitByItemID($ItemID);
-            var_dump($data);
             echo json_encode($data);
     }
 
