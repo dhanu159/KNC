@@ -75,19 +75,52 @@ function arcadiaConfirmAlert(message, event, isRefreshPage) {
     }).then((result) => {
         if (result.isConfirmed) {
             var result = event();
-            alert(result);
 
-            Swal.fire(
-                'Succeeded !',
-                'Your request has been successfully processed.',
-                'success'
-            ).then((res) => {
-                if (res.isConfirmed || res.dismiss) {
-                    location.reload();
-                }
-            })
+            // if (result == true) {
+            //     Swal.fire(
+            //         'Succeeded !',
+            //         'Your request has been successfully processed.',
+            //         'success'
+            //     ).then((res) => {
+            //         if (res.isConfirmed || res.dismiss) {
+            //             location.reload();
+            //         }
+            //     })
+            // }else{
+            //     toastr["error"]("GRN Saving Error !");
+            // }
+          
         }
     })
-
-
 }
+
+function arcadiaSuccessMessage(isRefreshPage = false){
+    Swal.fire(
+        'Succeeded !',
+        'Your request has been successfully processed.',
+        'success'
+    ).then((res) => {
+        if (res.isConfirmed || res.dismiss) {
+            if (isRefreshPage == true) {
+                location.reload();
+            }
+        }
+    })
+}
+
+
+function arcadiaErrorMessage(Msg,isRefreshPage = false){
+    Swal.fire(
+        'Something went wrong !',
+        Msg,
+        'error'
+    ).then((res) => {
+        if (res.isConfirmed || res.dismiss) {
+            if (isRefreshPage == true) {
+                location.reload();
+            }
+        }
+    })
+}
+
+
