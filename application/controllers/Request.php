@@ -39,8 +39,33 @@ class Request extends Admin_Controller
             echo json_encode($data);
     }
 
-    public function SaveRequest()
+    public function SaveRequestItem()
     {
+        if (!$this->isAdmin) {
+            if (!in_array('createRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        // $this->form_validation->set_rules('supplier', 'supplier', 'trim|required');
+        // $this->form_validation->set_rules('invoice_no', 'invoice no', 'trim|required');
+
+        if ($this->form_validation->run() == TRUE) {
+            $result = $this->model_request->SaveRequestItem();
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            }
+        } else {
+            $response['success'] = false;
+            foreach ($_POST as $key => $value) {
+                $response['messages'][$key] = form_error($key);
+            }
+        }
+        echo json_encode($response);
 
     }
 

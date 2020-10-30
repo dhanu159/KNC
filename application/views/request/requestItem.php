@@ -92,7 +92,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('Request/SaveRequest') ?>" id="createGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('Request/SaveRequestItem') ?>" id="createGRN">
                     
                     <table class="table arcadia-table" id="itemTable">
                         <thead>
