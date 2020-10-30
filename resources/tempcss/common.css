@@ -71,6 +71,9 @@ table {
     display: block !important;
 }
 
+.dataTables_wrapper .dataTables_paginate .paginate_button{
+    padding: 0 !important;
+}
 /* table.dataTable, table.dataTable th{
     width: 100%;
 } */
