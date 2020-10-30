@@ -23,7 +23,7 @@ class Model_customer extends CI_Model
             return $query->row_array();
         }
 
-        $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,vcContactNo2,decCreditLimit FROM customer WHERE IsActive = 1";
+        $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,IFNULL(vcContactNo2,'N/A') AS vcContactNo2,decCreditLimit FROM customer WHERE IsActive = 1";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

@@ -19,7 +19,7 @@ class Model_item extends CI_Model
 			return $query->row_array();
         }
         
-		$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
+		$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,IFNULL(it.decStockInHand,'N/A') AS decStockInHand,it.decReOrderLevel,IFNULL(it.decUnitPrice,'N/A') AS decUnitPrice,it.rv FROM item as it
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
         where  IsActive = 1
@@ -35,6 +35,17 @@ class Model_item extends CI_Model
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
         where  IsActive = 1 AND it.intItemTypeID = 1
+        order by it.vcItemName asc";
+        $query = $this->db->query($sql, array(1));
+        return $query->result_array();
+    }
+
+    public function getOnlyFinishedItemData()
+    {
+        $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
+        inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
+        inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
+        where  IsActive = 1 AND it.intItemTypeID = 2
         order by it.vcItemName asc";
         $query = $this->db->query($sql, array(1));
         return $query->result_array();
@@ -69,7 +80,7 @@ class Model_item extends CI_Model
     public function insertItemHitory($intEnteredBy, $id)
     {
         $this->db->trans_start();
-        $sql = "SELECT intItemID, vcItemName, intMeasureUnitID, dtCreatedDate, intUserID, decStockInHand, IsActive, decReOrderLevel, intItemTypeID, decUnitPrice FROM item WHERE intitemID = ? ";
+        $sql = "SELECT intItemID, vcItemName, intMeasureUnitID, dtCreatedDate, intUserID, decStockInHand, IsActive, decReOrderLevel, intItemTypeID, decUnitPrice,dtLastModifiedDate FROM item WHERE intitemID = ? ";
         $query = $this->db->query($sql, array($id));
         if ($query->num_rows()) {
             $this->db->insert('item_his', $query->row_array());

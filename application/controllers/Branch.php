@@ -6,7 +6,7 @@ class Branch extends Admin_Controller
     public function __construct()
     {
         parent::__construct();
-
+        $this->not_logged_in();
         $this->load->model('model_branch');
         $this->load->model('model_groups');
 
@@ -25,6 +25,8 @@ class Branch extends Admin_Controller
         $this->load->view('branch/manageBranch', $this->data);
         $this->load->view('partials/footer');
     }
+
+
 
     public function fetchBranchDataById($id)
     {

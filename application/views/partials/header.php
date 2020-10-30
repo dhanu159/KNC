@@ -38,7 +38,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 	<script>
-		$.fn.DataTable.ext.pager.numbers_length = 3;
+		//$.fn.DataTable.ext.pager.numbers_length = 3;
 	</script>
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
@@ -278,6 +278,28 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 								<i class="fa fa-industry" aria-hidden="true"></i>
 								<p>&nbsp;&nbsp;&nbsp;Item</p>
 							</a>
+						</li>
+						<li class="nav-item has-treeview">
+							<a href="#" class="nav-link">
+								<i class="fas fa-layer-group"></i>
+								<p>&nbsp;&nbsp;&nbsp;Request
+									<i class="right fas fa-angle-left"></i>
+								</p>
+							</a>
+							<ul class="nav nav-treeview">
+								<li class="nav-item">
+									<a href="<?php echo base_url('Request/RequestItem') ?>" class="nav-link">
+										<i class="fas fa-cart-plus"></i>
+										<p>&nbsp;&nbsp;Request Item</p>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a href="<?php echo base_url('Request/ViewRequest') ?>" class="nav-link">
+										<i class="fas fa-search"></i>
+										<p>&nbsp;&nbsp;View Request</p>
+									</a>
+								</li>
+							</ul>
 						</li>
 
 						<li class="nav-item has-treeview">
