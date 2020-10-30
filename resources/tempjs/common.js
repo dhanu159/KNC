@@ -1,23 +1,25 @@
 $(document).ready(function () {
 
+    $('#manageTable').DataTable();
+
     $('.only-decimal').keypress(function (event) {
         return isNumber(event, this)
     });
-    // THE SCRIPT THAT CHECKS IF THE KEY PRESSED IS A NUMERIC OR DECIMAL VALUE.
-    function isNumber(evt, element) {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        // alert(charCode);
-        if (
-            (charCode != 46 || $(element).val().indexOf('.') != -1) && // “.” CHECK DOT, AND ONLY ONE.
-            (charCode < 48 || charCode > 57) &&
-            (charCode != 13)) {
-            return false;
-        }
-        return true;
-    }
+
 
 });
 
+// THE SCRIPT THAT CHECKS IF THE KEY PRESSED IS A NUMERIC OR DECIMAL VALUE.
+function isNumber(evt, element) {
+    var charCode = (evt.which) ? evt.which : event.keyCode
+    if (
+        (charCode != 46 || $(element).val().indexOf('.') != -1) && // “.” CHECK DOT, AND ONLY ONE.
+        (charCode < 48 || charCode > 57) &&
+        (charCode != 13)) {
+        return false;
+    }
+    return true;
+}
 
 // Preloader
 var preLoader = document.getElementById('Preloader');
