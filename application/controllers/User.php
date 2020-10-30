@@ -5,7 +5,7 @@ class User extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
+		$this->not_logged_in();
 		$this->load->model('model_groups');
 		$this->load->model('model_user');
 		$this->load->model('model_branch');
@@ -58,6 +58,7 @@ class User extends Admin_Controller
 			// button
 			$buttons = '';
 			$viewAdmin = '';
+			
 			$viewAdmin = ($value['IsAdmin'] == 1) ? '<span class="badge badge badge-danger">Admin</span>' : '<span class="badge badge badge-warning">User</span>';
 
 			if ($this->isAdmin) {

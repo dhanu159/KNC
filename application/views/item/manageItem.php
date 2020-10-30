@@ -34,7 +34,7 @@
 
 				<div class="box">
 					<div class="box-body">
-						<table id="manageTable" class="table table-bordered table-striped">
+						<table id="manageTable" class="table table-bordered table-striped text-center">
 							<thead>
 								<tr>
 									<th>Item Name</th>
@@ -43,7 +43,7 @@
 									<th>Stock Qty</th>
 									<th>Re-Order Level</th>
 									<th>Unit Price</th>
-									<th style="width: 300px;">Action</th>
+									<th>Action</th>
 								</tr>
 							</thead>
 

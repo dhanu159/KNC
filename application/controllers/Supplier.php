@@ -7,7 +7,7 @@ class Supplier extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
+		$this->not_logged_in();
 		$this->load->model('model_supplier');
 		$this->load->model('model_groups');
 

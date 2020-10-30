@@ -6,7 +6,7 @@ class Item extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
+		$this->not_logged_in();
 		$this->load->model('model_item');
 		$this->load->model('Model_measureunit');
 		$this->load->model('model_groups');
@@ -59,10 +59,13 @@ class Item extends Admin_Controller
 
 			// button
 			$buttons = '';
+			$ReorderLevl = '';
+			$UnitPrice = '';
 
 			if ($this->isAdmin) {
 				$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
 				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+				
 			} else {
 				if (in_array('editItem', $this->permission)) {
 					$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
@@ -71,15 +74,19 @@ class Item extends Admin_Controller
 				if (in_array('deleteItem', $this->permission)) {
 					$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
 				}
+				
 			}
+
+			$ReorderLevl =  '<p class="text-right">' . $value['decReOrderLevel'] . '</p>' ;
+			$UnitPrice =  '<p class="text-right">' . $value['decUnitPrice'] . '</p>' ;
 
 			$result['data'][$key] = array(
 				$value['vcItemName'],
 				$value['vcMeasureUnit'],
 				$value['vcItemTypeName'],
 				$value['decStockInHand'],
-				$value['decReOrderLevel'],
-				$value['decUnitPrice'],
+				$ReorderLevl,
+				$UnitPrice,
 				$buttons
 			);
 		} // /foreach

@@ -4,7 +4,9 @@ $(document).ready(function() {
     // $('#dtReceivedDate').datepicker('setDate', 'today');
     // $("#dtReceivedDate").val(formatDate('dd-M-y', new Date()));
 
-
+    $(document).on('keyup', 'input[type=search]', function(e) {
+        $("li").attr('aria-selected', false);
+    });
 
 
     $('#cmbItem').on('select2:select', function(e) {
@@ -122,9 +124,11 @@ $(document).ready(function() {
                 CalculateItemCount();
                 CalculateGrandTotal();
                 $("#cmbItem").focus();
+                $("li").attr('aria-selected', false);
             } else {
                 toastr["error"]("Please select valid item !");
                 $("#cmbItem").focus();
+                $("li").attr('aria-selected', false);
             }
         }
     }

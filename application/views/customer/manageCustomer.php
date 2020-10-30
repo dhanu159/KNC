@@ -71,7 +71,7 @@
 						</div>
 						<div class="form-group">
 							<label for="txtCredit">Credit Limit</label>
-							<input type="number" class="form-control" id="credit_limit" name="credit_limit" placeholder="Enter Credit Limit" min=1>
+							<input type="text" class="form-control only-decimal" id="credit_limit" name="credit_limit" placeholder="Enter Credit Limit">
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -116,7 +116,7 @@
 					</div>
 					<div class="form-group">
 						<label for="txtCredit">Credit Limit</label>
-						<input type="number" class="form-control" id="edit_credit_limit" name="edit_credit_limit" placeholder="Enter Credit Limit" min=1>
+						<input type="text" class="form-control only-decimal" id="edit_credit_limit" name="edit_credit_limit" placeholder="Enter Credit Limit">
 					</div>
 				</div>
 
