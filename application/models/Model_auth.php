@@ -54,10 +54,12 @@ class Model_auth extends CI_Model
 						U.IsActive,
 						U.intBranchID,
 						UG.intUserGroupID,
-						UG.vcGroupName
+						UG.vcGroupName,
+						B.IsMainBranch
 					FROM 
 						User AS U
 						INNER JOIN UserGroup AS UG ON U.intUserGroupID = UG.intUserGroupID
+						INNER JOIN Branch AS B ON U.intBranchID = B.intBranchID
 					WHERE 
 						U.vcUserName = ?";
 						
