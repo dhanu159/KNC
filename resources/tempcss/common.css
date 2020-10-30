@@ -58,16 +58,18 @@ table {
     float: left;
 }
 
-.dataTables_wrapper .dataTables_filter input{
-    margin-left: 0 !important;;
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: 0 !important;
+    ;
 }
+
 /* table.dataTable {
     display: block;
 } */
 
-/* #manageTable {
-    width: auto !important;
-} */
+#manageTable {
+    display: block !important;
+}
 
 /* table.dataTable, table.dataTable th{
     width: 100%;
