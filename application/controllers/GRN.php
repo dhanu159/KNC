@@ -87,4 +87,26 @@ class GRN extends Admin_Controller
 
         $this->render_template('GRN/viewGRN',$this->data);
     }
+
+    //-----------------------------------
+    // Edit GRN
+    //-----------------------------------
+
+    public function EditGRN($GRNHeaderID)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('editGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        if (!$GRNHeaderID) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $grn_data = $this->model_grn->getGRNDataByID($GRNHeaderID);
+        $this->data['grn_data'] = $grn_data;
+
+        $this->render_template('GRN/viewGRN', $this->data);
+    }
 }
