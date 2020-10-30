@@ -52,6 +52,7 @@ class Model_auth extends CI_Model
 						U.dtCreatedDate,
 						U.vcCreatedUser,
 						U.IsActive,
+						U.intBranchID,
 						UG.intUserGroupID,
 						UG.vcGroupName
 					FROM 
