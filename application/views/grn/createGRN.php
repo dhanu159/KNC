@@ -120,7 +120,7 @@
                         </div>
                     </div>
 
-                    <table class="table arcadia-table" id="itemTable" style="display: inline;">
+                    <table class="table arcadia-table" id="itemTable">
                         <thead>
                             <tr>
                                 <th hidden>Item ID</th>
