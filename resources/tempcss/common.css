@@ -45,7 +45,7 @@
 
 table {
     /* display: block; */
-    width: auto !important;
+    width: 100% !important;
     overflow-x: auto;
     white-space: nowrap;
 }
@@ -58,6 +58,9 @@ table {
     float: left;
 }
 
+.dataTables_wrapper .dataTables_filter input{
+    margin-left: 0 !important;;
+}
 /* table.dataTable {
     display: block;
 } */
@@ -78,11 +81,11 @@ body {
     width: 100vw;
 } */
 
-.text-center{
+.text-center {
     text-align: center !important;
 }
 
-.text-right{
+.text-right {
     text-align: right !important;
 }
 
