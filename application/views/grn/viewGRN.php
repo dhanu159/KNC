@@ -32,11 +32,11 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Status :</label>
-                            <select class="custom-select">
-                                <option>All</option>
-                                <option>Pending</option>
-                                <option>Approved</option>
-                                <option>Rejected</option>
+                            <select class="custom-select" id="cmbStatus">
+                                <option value="0">All</option>
+                                <option value="1">Approved</option>
+                                <option value="2">Pending</option>
+                                <option value="3">Rejected</option>
                             </select>
                         </div>
                     </div>
@@ -51,7 +51,7 @@
                                         <i class="far fa-calendar-alt"></i>
                                     </span>
                                 </div>
-                                <input type="text" class="form-control float-right" id="reservation">
+                                <input type="text" class="form-control float-right" name="daterange">
                             </div>
                             <!-- /.input group -->
                         </div>
@@ -69,7 +69,6 @@
                         <table id="manageTable" class="table table-bordered table-striped" style="display:block !important;">
                             <thead>
                                 <tr>
-                                    <th hidden>ID</th>
                                     <th>GRN No</th>
                                     <th>Invoice No</th>
                                     <th>Supplier</th>
@@ -81,10 +80,12 @@
                                     <th>Created User</th>
                                     <th>Approved Date</th>
                                     <th>Approved User</th>
+                                    <th>Rejected Date</th>
+                                    <th>Rejected User</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <!-- <tbody>
                                 <?php foreach ($grn_data as $k => $v) { ?>
                                     <?php if ($v['ApprovedUser'] == NULL) { ?>
                                         <tr style="background-color: #FFC108;">
@@ -122,11 +123,10 @@
                                         </tr>
 
                                     <?php } ?>
-                            </tbody>
+                            </tbody> -->
                         </table>
-
                         <hr>
-                        Color tags : <span class="badge badge-pill badge-warning">Prnding Approvals</span>
+                        Color tags : <span class="badge badge-pill badge-warning">Pending Approvals</span> <span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">Approved GRNs</span> <span class="badge badge-pill badge-danger">Rejected GRNs</span>
                     </div>
                     <!-- /.box-body -->
                 </div>
@@ -143,6 +143,19 @@
 
 <!-- /.content-wrapper -->
 
+
+<!-- <script>
+    $(function() {
+        date = new Date();
+        $('input[name="daterange"]').daterangepicker({
+            opens: 'center',
+            startDate: new Date(date.getFullYear(), date.getMonth(), 1),
+            endDate: new Date()
+        }, function(start, end, label) {
+            alert("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+    });
+</script> -->
 
 
 <script src="<?php echo base_url('resources/pageJS/viewGRN.js') ?>"></script>
