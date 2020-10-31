@@ -51,12 +51,14 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Create GRN</h1>
+                    <h1>Edit GRN</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">GRN</a></li>
-                        <li class="breadcrumb-item active">Create GRN</li>
+                        <li class="breadcrumb-item"><a href="#">Stock</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url("GRN/ViewGRN"); ?>">View GRN</a></li>
+                        <li class="breadcrumb-item active">Edit GRN</li>
+
                     </ol>
                 </div>
             </div>
@@ -72,9 +74,15 @@
                         <div class="form-group col-md-12">
                             <label for="supplier">Supplier</label>
                             <select class="form-control select2" style="width: 100%;" id="supplier" name="supplier">
-                                <option value="0" disabled selected hidden>Select Supplier</option>
-                                <?php foreach ($supplier_data as $k => $v) { ?>
-                                    <option value="<?= $v['intSupplierID'] ?>"><?= $v['vcSupplierName'] ?></option>
+                                <?php foreach ($supplier_data as $k => $v) {
+                                    $isSelected = "";
+                                    $ReceivedDate = date("m/d/Y", strtotime($grn_header_data['dtReceivedDate']));
+
+                                    if ($grn_header_data['intSupplierID'] == $v['intSupplierID']) {
+                                        $isSelected = "selected";
+                                    }
+                                ?>
+                                    <option value="<?= $v['intSupplierID']; ?>" <?= $isSelected; ?>><?= $v['vcSupplierName']; ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -82,12 +90,18 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="invoice_no">Invoice No</label>
-                            <input type="text" class="form-control" id="invoice_no" name="invoice_no" placeholder="Enter Invoice Number" autocomplete="off" required />
+                            <input type="text" class="form-control" id="invoice_no" name="invoice_no" placeholder="Enter Invoice Number" autocomplete="off" required value="<?= $grn_header_data['vcInvoiceNo']; ?>">
                         </div>
+                        <!-- <script>
+                            $("#datetimepickerFrom").datepicker({
+                                defaultDate: '<?php echo $newDate; ?>'
+                            });
+                        </script> -->
+
                         <div class="form-group col-md-6">
                             <label>Received Date</label>
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" name="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
+                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" name="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" value="<?= $ReceivedDate  ?>" />
                                 <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -141,19 +155,19 @@
                                     <tr>
                                         <th style="border-top:0 !important; width:180px;">Sub Total:</th>
                                         <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right;" id="subTotal" name="subTotal" placeholder="0.00" readonly>
+                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right;" id="subTotal" name="subTotal" placeholder="0.00" value="<?= number_format($grn_header_data['decSubTotal'], 2, '.', ',') ?>" readonly>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th style="border-top:0 !important;">Discount:</th>
                                         <td style="border-top:0 !important;">
-                                            <input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;">
+                                            <input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;" value="<?= number_format($grn_header_data['decDiscount'], 2, '.', '') ?>">
                                         </td>
                                     </tr>
                                     <tr style="border-top:2px solid #dee2e6; border-bottom:2px solid #dee2e6;">
                                         <th style="font-size:1.5em;">Grand Total:</th>
                                         <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right; font-size:1.5em;" id="grandTotal" name="grandTotal" placeholder="0.00" readonly>
+                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right; font-size:1.5em;" id="grandTotal" name="grandTotal" placeholder="0.00" value="<?= number_format($grn_header_data['decGrandTotal'], 2, '.', ',') ?>" readonly>
                                         </td>
                                     </tr>
                                 </table>
@@ -177,6 +191,11 @@
 <script src="<?php echo base_url('resources/pageJS/createGRN.js') ?>"></script>
 
 <script>
+    // $("#dtReceivedDate").datetimepicker("defaultDate", "<?= $ReceivedDate ?>");
+
+
+    // <?= htmlspecialchars("07/04/2016") ?>
+
     // $(document).ready(function() {
 
     //     // $("#dtReceivedDate").datepicker().datepicker("setDate", new Date());
@@ -373,3 +392,5 @@
     // //     });
     // // });
 </script>
+
+<script src="<?php echo base_url('resources/pageJS/createGRN.js') ?>"></script>
