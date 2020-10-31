@@ -21,8 +21,11 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/select2.min.css') ?>">
 	<!-- Theme style -->
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/adminlte.min.css') ?>">
+	<!-- daterange picker -->
+	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/daterangepicker.css') ?>">
 	<!-- Google Font: Source Sans Pro -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700">
+
 	<!-- Common -->
 	<link rel="stylesheet" href="<?php echo base_url('resources/tempcss/common.css') ?>">
 	<!-- Toster message -->
@@ -31,6 +34,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
 	<!-- Tempusdominus Bbootstrap 4 -->
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('resources/tempcss/tempusdominus-bootstrap-4.min.css') ?>">
+
 
 	<!-- <script src="<?php echo base_url('resources/tempjs/jquery.min.js') ?>"></script> -->
 
