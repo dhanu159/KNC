@@ -28,10 +28,36 @@
         <!-- Small boxes (Stat box) -->
         <div class="card">
             <div class="card-header">
-                <?php if (in_array('createGRN', $user_permission) || $isAdmin) { ?>
-                    <a href="<?= base_url("GRN/CreateGRN") ?>" class="btn btn-info btn-flat"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Create GRN</a>
-                    <!-- <button type="button" class="btn btn-info btn-flat"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Create GRN</button> -->
-                <?php } ?>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Status :</label>
+                            <select class="custom-select">
+                                <option>All</option>
+                                <option>Pending</option>
+                                <option>Approved</option>
+                                <option>Rejected</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Date range -->
+                        <div class="form-group">
+                            <label>Date Range :</label>
+
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="far fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                                <input type="text" class="form-control float-right" id="reservation">
+                            </div>
+                            <!-- /.input group -->
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="card-body">
 
@@ -82,10 +108,10 @@
                                         <td style="padding: 0;">
                                             <?php if ($v['ApprovedUser'] == NULL) { ?>
                                                 <?php if (in_array('editGRN', $user_permission) || $isAdmin) { ?>
-                                                    <button type="button" class="btn btn-default"><i class="fas fa-edit"></i></button>
+                                                    <a class="button btn btn-default" href="<?= base_url("GRN/EditGRN/" . $v['intGRNHeaderID']); ?>"><i class="fas fa-edit"></i></a>
                                                 <?php }
-                                                if (in_array('editGRN', $user_permission) || $isAdmin) { ?>
-                                                    <button type="button" class="btn btn-default" onclick="removeGRN(<?= $v['intGRNHeaderID'] ?>)"><i class="fa fa-trash"></i></button>
+                                                if (in_array('deleteGRN', $user_permission) || $isAdmin) { ?>
+                                                    <a class="button btn btn-default" onclick="removeGRN(<?= $v['intGRNHeaderID'] ?>)"><i class="fa fa-trash"></i></a>
                                                 <?php }
                                             }
                                             if (in_array('approveGRN', $user_permission) || $isAdmin) { ?>
