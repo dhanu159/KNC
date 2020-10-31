@@ -26,7 +26,6 @@
 <script src="<?php echo base_url('resources/tempjs/demo.js') ?>"></script>
 <!-- InputMask  -->
 <script src="<?php echo base_url('resources/tempjs/moment.min.js') ?>"></script>
-<script src="<?php echo base_url('resources/tempjs/jquery.inputmask.bundle.min.js') ?>"></script>
 <!-- date-range-picker  -->
 <script src="<?php echo base_url('resources/tempjs/daterangepicker.js') ?>"></script>
 <!-- Tempusdominus Bootstrap 4  -->
