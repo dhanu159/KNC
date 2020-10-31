@@ -19,7 +19,7 @@ class GRN extends Admin_Controller
     //-----------------------------------
 
     public function CreateGRN()
-    { 
+    {
         if (!$this->isAdmin) {
             if (!in_array('createGRN', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -67,25 +67,80 @@ class GRN extends Admin_Controller
 
     public function getMeasureUnitByItemID($ItemID)
     {
-            $data = $this->model_measureunit->getMeasureUnitByItemID($ItemID);
-            echo json_encode($data);
+        $data = $this->model_measureunit->getMeasureUnitByItemID($ItemID);
+        echo json_encode($data);
     }
 
     //-----------------------------------
     // View GRN
     //-----------------------------------
 
-    public function ViewGRN(){
+
+    // public function ViewGRN($StatusType = 0, $FromDate = "", $ToDate = "2020-10-10")
+public function ViewGRN(){
         if (!$this->isAdmin) {
             if (!in_array('viewGRN', $this->permission)) {
                 redirect('dashboard', 'refresh');
             }
         }
 
-        $grn_data = $this->model_grn->getGRNHeaderData();
-        $this->data['grn_data'] = $grn_data;
+        $this->render_template('GRN/viewGRN');
 
-        $this->render_template('GRN/viewGRN',$this->data);
+}
+
+    public function FilterGRNHeaderData($StatusType, $FromDate, $ToDate)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('viewGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $result = array('data' => array());
+
+
+        $grn_data = $this->model_grn->getGRNHeaderData(null,$StatusType, $FromDate, $ToDate);
+
+        // $this->data['grn_data'] = $grn_data;
+
+        foreach ($grn_data as $key => $value) {
+
+            $buttons = '';
+
+            if ($value['ApprovedUser'] == null && $value['RejectedUser'] == null) { // Pending && Edit
+                if (in_array('editGRN', $this->permission) || $this->isAdmin) {
+                    $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/EditGRN/" . $value['intGRNHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
+                }
+                if (in_array('deleteGRN', $this->permission) || $this->isAdmin) {
+                    $buttons .= '<a class="button btn btn-default" onclick="removeGRN('. $value['intGRNHeaderID'] .')"><i class="fa fa-trash"></i></a>';
+                }
+            }else if($value['ApprovedUser'] == null){ // Pending 
+                if (in_array('approveGRN', $this->permission) || $this->isAdmin) {
+                    $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ApproveGRN/" . $value['intGRNHeaderID']) . '"><i class="far fa-thumbs-up"></i></a>';
+                }
+            }
+
+
+            $result['data'][$key] = array(
+                $value['vcGRNNo'],
+                $value['vcInvoiceNo'],
+                $value['vcSupplierName'],
+                number_format((float)$value['decSubTotal'], 2, '.', ''),
+                number_format((float)$value['decDiscount'], 2, '.', ''),
+                number_format((float)$value['decGrandTotal'], 2, '.', ''),
+                $value['dtReceivedDate'],
+                $value['dtCreatedDate'],
+                $value['CreatedUser'],
+                ($value['dtApprovedOn'] == NULL) ? "N/A" : $value['dtApprovedOn'],
+                ($value['ApprovedUser'] == NULL) ? "N/A" : $value['ApprovedUser'],
+                ($value['dtRejectedOn'] == NULL) ? "N/A" : $value['dtRejectedOn'],
+                ($value['RejectedUser'] == NULL) ? "N/A" : $value['RejectedUser'],
+                $buttons
+            );
+        }
+
+        echo json_encode($result);
+
     }
 
     //-----------------------------------
