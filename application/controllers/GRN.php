@@ -19,14 +19,14 @@ class GRN extends Admin_Controller
     //-----------------------------------
 
     public function CreateGRN()
-    {
+    { 
         if (!$this->isAdmin) {
             if (!in_array('createGRN', $this->permission)) {
                 redirect('dashboard', 'refresh');
             }
         }
 
-        $supplier_data = $this->model_supplier->getSupplierData(null, 1);
+        $supplier_data = $this->model_supplier->getSupplierData();
         $item_data = $this->model_item->getOnlyRawItemData();
 
         $this->data['supplier_data'] = $supplier_data;
@@ -104,9 +104,18 @@ class GRN extends Admin_Controller
             redirect('dashboard', 'refresh');
         }
 
-        $grn_data = $this->model_grn->getGRNDataByID($GRNHeaderID);
-        $this->data['grn_data'] = $grn_data;
+        $grn_header_data = $this->model_grn->getGRNHeaderData($GRNHeaderID);
+        $grn_detail_data = $this->model_grn->getGRNDetailData($GRNHeaderID);
+        $supplier_data = $this->model_supplier->getSupplierData();
+        $item_data = $this->model_item->getOnlyRawItemData();
 
-        $this->render_template('GRN/viewGRN', $this->data);
+        $this->data['supplier_data'] = $supplier_data;
+        $this->data['item_data'] = $item_data;
+
+        $this->data['grn_detail_data'] = $grn_detail_data;
+        $this->data['grn_header_data'] = $grn_header_data;
+
+
+        $this->render_template('GRN/editGRN', $this->data);
     }
 }
