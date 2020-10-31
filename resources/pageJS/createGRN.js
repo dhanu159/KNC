@@ -37,12 +37,12 @@ $(document).ready(function() {
 
     function CalculateTotal() {
         getMeasureUnitByItemID();
-        var unitPrice = $("#txtUnitPrice").val();
+        var unitPrice = $("#txtUnitPrice").val(); 
         var qty = $("#txtQty").val()
 
         if (unitPrice != "" && qty != "") {
             var total = unitPrice * qty;
-            $("#txtTotalPrice").val(parseFloat(total).toFixed(2));
+            $("#txtTotalPrice").val(currencyFormat(total));
         }
     }
 
@@ -60,8 +60,8 @@ $(document).ready(function() {
 
             discount == "" ? discount = 0 : discount;
 
-            $("#subTotal").val(parseFloat(total).toFixed(2));
-            $("#grandTotal").val(parseFloat(total - discount).toFixed(2));
+            $("#subTotal").val(currencyFormat(total));
+            $("#grandTotal").val(currencyFormat(total - discount));
 
         } else {
             $("#subTotal").val("0.00");
