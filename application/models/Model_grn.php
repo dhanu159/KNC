@@ -11,16 +11,15 @@ class Model_grn extends CI_Model
     {
         $this->db->trans_start();
 
-        $query = $this->db->query("SELECT fnGenerateGRNNo() AS GRNNo");
-        // $query = $this->db->get();
-        $ret = $query->row();
-        $GRNNo = $ret->GRNNo;
+        // $query = $this->db->query("SELECT fnGenerateGRNNo() AS GRNNo");
+        // $ret = $query->row();
+        // $GRNNo = $ret->GRNNo;
 
-        // $GRNNo = $this->db->query("SELECT fnGenerateGRNNo() AS GRNNo");
-        // $GRNNo->row_arry();
-        // var_dump($GRNNo);
-        // $GRNNo = "Test-001";
+
+        $GRNNo = "Test-001";
+
         $insertDetails = false;
+
 
         $data = array(
             'vcGRNNo' => $GRNNo,
@@ -28,9 +27,9 @@ class Model_grn extends CI_Model
             'intSupplierID' => $this->input->post('supplier'),
             'dtReceivedDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('receivedDate')))),
             'intUserID' => $this->session->userdata('user_id'),
-            'decSubTotal' => $this->input->post('subTotal'),
+            'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
             'decDiscount' => $this->input->post('txtDiscount'),
-            'decGrandTotal' => $this->input->post('grandTotal'),
+            'decGrandTotal' => str_replace(',', '', $this->input->post('grandTotal')),
         );
 
         $insert = $this->db->insert('GRNHeader', $data);
@@ -54,8 +53,10 @@ class Model_grn extends CI_Model
         return ($insertDetails == true) ? true : false;
     }
 
-    public function getGRNHeaderData($GRNID = null)
+    public function getGRNHeaderData($GRNID = null, $Status = null, $FromDate = null, $ToDate = null)
     {
+   
+
         if ($GRNID) {
             $sql = "
                     SELECT 
@@ -73,17 +74,22 @@ class Model_grn extends CI_Model
                         CreatedUser.vcFullName AS CreatedUser, 
                         GH.intApprovedBy,
                         ApprovedUser.vcFullName AS ApprovedUser, 
-                        GH.dtApprovedOn
+                        GH.dtApprovedOn,
+                        RejectedUser.vcFullName AS RejectedUser,
+                        GH.dtRejectedOn 
                     FROM 
                         KNC.GRNHeader AS GH
                         INNER JOIN KNC.Supplier AS S ON GH.intSupplierID = S.intSupplierID
                         INNER JOIN KNC.User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
                         LEFT OUTER JOIN KNC.User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
-                    WHERE intGRNHeaderID = ?";
-                    
+                        LEFT OUTER JOIN KNC.User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID
+                    WHERE GH.intGRNHeaderID = ?";
+
             $query = $this->db->query($sql, array($GRNID));
-            return $query->result_array();
+            return $query->row_array();
         }
+
+
 
         $sql = "
                     SELECT 
@@ -101,14 +107,58 @@ class Model_grn extends CI_Model
                         CreatedUser.vcFullName AS CreatedUser, 
                         GH.intApprovedBy,
                         ApprovedUser.vcFullName AS ApprovedUser, 
-                        GH.dtApprovedOn
+                        GH.dtApprovedOn,
+                        RejectedUser.vcFullName AS RejectedUser,
+                        GH.dtRejectedOn 
                     FROM 
                         KNC.GRNHeader AS GH
                         INNER JOIN KNC.Supplier AS S ON GH.intSupplierID = S.intSupplierID
                         INNER JOIN KNC.User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
-                        LEFT OUTER JOIN KNC.User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID";
+                        LEFT OUTER JOIN KNC.User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
+                        LEFT OUTER JOIN KNC.User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID";
 
-        $query = $this->db->query($sql, array(1));
+
+        $dateFilter = " WHERE CAST(GH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
+
+
+        if ($Status == 1) { // Approved
+            $statusFilter = " AND GH.intApprovedBy IS NOT NULL ";
+        } else if ($Status == 2) { // Pending
+            $statusFilter = " AND GH.intApprovedBy IS NULL AND GH.intRejectedBy IS NULL ";
+        } else if ($Status == 3) { // Rejected
+            $statusFilter = " AND GH.intRejectedBy IS NOT NULL ";
+        } else {  // All
+            $statusFilter = "";
+        }
+
+
+        $sql  = $sql . $dateFilter . $statusFilter;
+
+        $query = $this->db->query($sql, array($FromDate, $ToDate));
+        return $query->result_array();
+    }
+
+    public function getGRNDetailData($GRNHeaderID)
+    {
+        $sql = "
+                SELECT 
+                    GD.intGRNDetailID,
+                    GD.intGRNHeaderID,
+                    GD.decQty,
+                    GD.decUnitPrice,
+                    GD.decTotalPrice,
+                    I.intItemID,
+                    I.vcItemName,
+                    MU.intMeasureUnitID,
+                    MU.vcMeasureUnit
+                FROM 
+                    KNC.GRNDetail AS GD
+                    INNER JOIN KNC.Item AS I ON GD.intItemID = I.intItemID
+                    INNER JOIN KNC.MeasureUnit AS MU ON I.intMeasureUnitID = MU.intMeasureUnitID
+                WHERE 
+                    GD.intGRNHeaderID = ?";
+
+        $query = $this->db->query($sql, array($GRNHeaderID));
         return $query->result_array();
     }
 }
