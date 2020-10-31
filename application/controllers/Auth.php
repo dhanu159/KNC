@@ -42,6 +42,7 @@ class Auth extends Admin_Controller
                             'group_id' => $login['intUserGroupID'],
                             'group_name' => $login['vcGroupName'],
                             'branch_id' => $login['intBranchID'],
+                            'Is_main_branch'  => $login['IsMainBranch'],
                             'logged_in' => TRUE
                         );
 
