@@ -4,12 +4,8 @@ $(document).ready(function() {
     $('#itemTable tbody tr').each(function () {
         var value =  $(this).closest("tr").find('.itemID').val();
         $("#cmbItem option[value="+value+"]").remove();
-
     });
  
-    // $("#dtReceivedDate").datepicker().datepicker("setDate", new Date());
-    // $('#dtReceivedDate').datepicker('setDate', 'today');
-    // $("#dtReceivedDate").val(formatDate('dd-M-y', new Date()));
 
     $(document).on('keyup', 'input[type=search]', function(e) {
         $("li").attr('aria-selected', false);
@@ -178,7 +174,6 @@ $(document).ready(function() {
 
     function remove() {
         $(".red").click(function() {
-            debugger;
             // var itemID = $(this).closest("tr").find('td.itemID').text();
             // var itemName = $(this).closest("tr").find('td.itemName').text();
 
