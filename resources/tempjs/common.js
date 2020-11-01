@@ -66,7 +66,10 @@ $('#dtReceivedDate').datetimepicker({
 
 
 // Alerts
-function arcadiaConfirmAlert(message, event, isRefreshPage) {
+function arcadiaConfirmAlert(message, event, button) {
+    debugger;
+
+    $(button).prop('disabled', true);
 
     Swal.fire({
         title: 'Are you sure?',
@@ -78,7 +81,7 @@ function arcadiaConfirmAlert(message, event, isRefreshPage) {
         confirmButtonText: 'Yes, submit it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            var result = event();
+            var result = event(button);
 
             // if (result == true) {
             //     Swal.fire(
@@ -94,6 +97,8 @@ function arcadiaConfirmAlert(message, event, isRefreshPage) {
             //     toastr["error"]("GRN Saving Error !");
             // }
           
+        }else{
+            $(button).prop('disabled', false);
         }
     })
 }
