@@ -51,7 +51,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 </head>
 
-<body onload="Preloader()" class="hold-transition sidebar-mini">
+<body onload="Preloader()" class="hold-transition sidebar-mini" style="font-size: 0.9rem !important;">
 	<!-- Preloader Start-->
 	<div id="Preloader">
 		<div class="dl">
