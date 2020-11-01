@@ -43,7 +43,7 @@ class Model_measureunit extends CI_Model
     {
         $sql = "SELECT mu.intMeasureUnitID, mu.vcMeasureUnit from item IT inner join measureunit MU on IT.intMeasureUnitID = MU.intMeasureUnitID  where IT.intItemID = ?";
         $query = $this->db->query($sql, array($id));
-        return    $query->row_array();
+        return $query->row_array();
     }
 
     /* get the get Item Type Data data */
