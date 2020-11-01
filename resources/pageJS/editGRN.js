@@ -1,39 +1,40 @@
-$(document).ready(function () {
+$(document).ready(function() {
 
 
     $('#itemTable tbody tr').each(function () {
-        var value = $(this).closest("tr").find('.itemID').val();
-        $("#cmbItem option[value=" + value + "]").remove();
+        var value =  $(this).closest("tr").find('.itemID').val();
+        $("#cmbItem option[value="+value+"]").remove();
 
     });
-
-
-
+ 
     // $("#dtReceivedDate").datepicker().datepicker("setDate", new Date());
     // $('#dtReceivedDate').datepicker('setDate', 'today');
     // $("#dtReceivedDate").val(formatDate('dd-M-y', new Date()));
 
-    $(document).on('keyup', 'input[type=search]', function (e) {
+    $(document).on('keyup', 'input[type=search]', function(e) {
         $("li").attr('aria-selected', false);
     });
 
 
-    $('#cmbItem').on('select2:select', function (e) {
+    $('#cmbItem').on('select2:select', function(e) {
         $('#txtUnitPrice').focus();
     });
 
-    $('#txtQty,#txtUnitPrice').keyup(function (event) {
+    $('#txtQty,#txtUnitPrice').keyup(function(event) {
         CalculateTotal();
     });
 
-    $('#txtDiscount').keyup(function (event) {
+    $('#txtDiscount').keyup(function(event) {
         CalculateGrandTotal();
     });
-    $("#btnAddToGrid").click(function () {
+    $("#btnAddToGrid").click(function() {
         AddToGrid();
     });
+    $("#cmbItem").change(function () {
+        getMeasureUnitByItemID();
+    });
     //Bind keypress event to textbox
-    $('.add-item').keypress(function (event) {
+    $('.add-item').keypress(function(event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             AddToGrid();
@@ -45,8 +46,8 @@ $(document).ready(function () {
     });
 
     function CalculateTotal() {
-        getMeasureUnitByItemID_Edit();
-        var unitPrice = $("#txtUnitPrice").val();
+        getMeasureUnitByItemID();
+        var unitPrice = $("#txtUnitPrice").val(); 
         var qty = $("#txtQty").val()
 
         if (unitPrice != "" && qty != "") {
@@ -59,7 +60,7 @@ $(document).ready(function () {
         if ($('#itemTable tr').length > 2) { // Because table header and item add row in here
             var discount = $("#txtDiscount").val();
             var total = 0;
-            $('#itemTable tbody tr').each(function () {
+            $('#itemTable tbody tr').each(function() {
                 var value = parseInt($(this).closest("tr").find('.total').val());
                 if (!isNaN(value)) {
                     total += value;
@@ -176,7 +177,8 @@ $(document).ready(function () {
 
 
     function remove() {
-        $(".red").click(function () {
+        $(".red").click(function() {
+            debugger;
             // var itemID = $(this).closest("tr").find('td.itemID').text();
             // var itemName = $(this).closest("tr").find('td.itemName').text();
 
@@ -185,7 +187,7 @@ $(document).ready(function () {
 
             var IsAlreadyIncluded = false;
 
-            $("#cmbItem option").each(function () {
+            $("#cmbItem option").each(function() {
                 if (itemID == $(this).val()) {
                     IsAlreadyIncluded = true;
                     return false;
@@ -204,7 +206,7 @@ $(document).ready(function () {
         });
     }
 
-    $('#btnSubmit').click(function () {
+    $('#btnSubmit').click(function() {
 
         if ($('#supplier').val() == null) {
             toastr["error"]("Please select a supplier !");
@@ -218,7 +220,7 @@ $(document).ready(function () {
             toastr["error"]("Please choose the receive items !");
             $("#cmbItem").focus();
         } else {
-            arcadiaConfirmAlert("You want to be able to edit this !", function () {
+            arcadiaConfirmAlert("You want to be able to edit this !", function() {
 
                 var form = $("#editGRN");
 
@@ -227,13 +229,13 @@ $(document).ready(function () {
                     url: form.attr('action'),
                     data: form.serialize(),
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success == true) {
                             arcadiaSuccessMessage(true);
                         } else {
 
                             if (response.messages instanceof Object) {
-                                $.each(response.messages, function (index, value) {
+                                $.each(response.messages, function(index, value) {
                                     var id = $("#" + index);
 
                                     id.closest('.form-group')
@@ -270,7 +272,7 @@ $(document).ready(function () {
     });
 
 
-    $("#editGRN").unbind('submit').on('submit', function (e) {
+    $("#editGRN").unbind('submit').on('submit', function(e) {
 
         // var form = $(this);
 
@@ -290,26 +292,25 @@ $(document).ready(function () {
 });
 
 // on first focus (bubbles up to document), open the menu
-$(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
+$(document).on('focus', '.select2-selection.select2-selection--single', function(e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
 });
 
 
-function getMeasureUnitByItemID_Edit() {
+function getMeasureUnitByItemID() {
     var ItemID = $("#cmbItem").val();
     if (ItemID > 0) {
         $.ajax({
-            url: 'getMeasureUnitByItemID/' + ItemID,
+            url: base_url+'GRN/getMeasureUnitByItemID/' + ItemID,
             type: 'post',
             dataType: 'json',
-            async:true,
-            success: function (response) {
+            success: function(response) {
                 $("#txtMeasureUnit").val(response.vcMeasureUnit);
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 debugger;
-                // var err = eval("(" + xhr.responseText + ")");
-                alert(xhr.responseText);
+                //var err = eval("(" + xhr.responseText + ")");
+                alert(error);
             }
         });
     }
