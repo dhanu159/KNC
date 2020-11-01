@@ -128,7 +128,7 @@
                                 <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
                                 <td class="static">
                                     <!-- <input type="text" class="form-control" name="txtItem"> -->
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getMeasureUnitByItemID();"">
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem">
                                         <option value=" 0" disabled selected hidden>Select Item</option>
                                         <?php foreach ($item_data as $k => $v) { ?>
                                             <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
