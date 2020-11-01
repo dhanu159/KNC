@@ -65,7 +65,6 @@ function FilterItems(FromDate,ToDate){
         'order': [],
         "bDestroy": true,
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            debugger;
             if (aData[9] == "N/A" && aData[11] == "N/A") { // Pending
                 $('td', nRow).css('background-color', '#FFC108');
             } else if (aData[11] != "N/A") {
