@@ -69,7 +69,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/EditGRNDetails') ?>" id="editGRN">
                     <div class="row">
                         <div class="form-group col-md-12">
                             <label for="supplier">Supplier</label>
@@ -113,7 +113,7 @@
                     <table class="table arcadia-table" id="itemTable">
                         <thead>
                             <tr>
-                                <th hidden>Item ID</th>
+                                <th hidden>GRN Detail ID</th>
                                 <th style="text-align:center;">Item</th>
                                 <th style="width: 200px; text-align:center;">Unit Price</th>
                                 <th style="width: 100px; text-align:center;">Unit</th>
@@ -141,6 +141,21 @@
                                 <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
                                 <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                             </tr>
+                            <?php
+                            $row = 0;
+                            foreach ($grn_detail_data as $k => $v) { ?>
+                                <tr>
+                                    <td hidden><input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_<?= $row ?>" value="<?= $v['intItemID'] ?>" readonly></td>
+                                    <td><input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_<?= $row ?>" value="<?= $v['vcItemName'] ?>" readonly></td>
+                                    <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_<?= $row ?>" value="<?= $v['decUnitPrice'] ?>" readonly></td>
+                                    <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_<?= $row ?>" value="<?= $v['vcMeasureUnit'] ?>" readonly></td>
+                                    <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
+                                    <td><input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_<?= $row ?>" value="<?= $v['decTotalPrice'] ?>" readonly></td>
+                                    <td class="static"><span class="button red center-items"><i class="fas fa-times"></i></span></td>
+                                </tr>
+                            <?php
+                                $row++;
+                            } ?>
                         </tbody>
                     </table>
 
@@ -393,4 +408,4 @@
     // // });
 </script>
 
-<script src="<?php echo base_url('resources/pageJS/createGRN.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/editGRN.js') ?>"></script>
