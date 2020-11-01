@@ -36,9 +36,9 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('resources/tempcss/tempusdominus-bootstrap-4.min.css') ?>">
 
 
-	<!-- <script src="<?php echo base_url('resources/tempjs/jquery.min.js') ?>"></script> -->
+	<script src="<?php echo base_url('resources/tempjs/jquery.min.js') ?>"></script>
 
-	<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
 
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
@@ -47,6 +47,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 
 	<script>
 		$.fn.DataTable.ext.pager.numbers_length = 5;
+		var base_url = "<?php echo base_url(); ?>";
 	</script>
 
 </head>
