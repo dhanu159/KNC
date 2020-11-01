@@ -77,7 +77,8 @@ class GRN extends Admin_Controller
 
 
     // public function ViewGRN($StatusType = 0, $FromDate = "", $ToDate = "2020-10-10")
-public function ViewGRN(){
+    public function ViewGRN()
+    {
         if (!$this->isAdmin) {
             if (!in_array('viewGRN', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -85,8 +86,7 @@ public function ViewGRN(){
         }
 
         $this->render_template('GRN/viewGRN');
-
-}
+    }
 
     public function FilterGRNHeaderData($StatusType, $FromDate, $ToDate)
     {
@@ -99,7 +99,7 @@ public function ViewGRN(){
         $result = array('data' => array());
 
 
-        $grn_data = $this->model_grn->getGRNHeaderData(null,$StatusType, $FromDate, $ToDate);
+        $grn_data = $this->model_grn->getGRNHeaderData(null, $StatusType, $FromDate, $ToDate);
 
         // $this->data['grn_data'] = $grn_data;
 
@@ -107,18 +107,17 @@ public function ViewGRN(){
 
             $buttons = '';
 
-            if ($value['ApprovedUser'] == null && $value['RejectedUser'] == null) { // Pending && Edit
+            if ($value['ApprovedUser'] == null && $value['RejectedUser'] == null) { // Pending 
                 if (in_array('editGRN', $this->permission) || $this->isAdmin) {
                     $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/EditGRN/" . $value['intGRNHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
                 }
                 if (in_array('deleteGRN', $this->permission) || $this->isAdmin) {
-                    $buttons .= '<a class="button btn btn-default" onclick="removeGRN('. $value['intGRNHeaderID'] .')"><i class="fa fa-trash"></i></a>';
+                    $buttons .= '<a class="button btn btn-default" onclick="removeGRN(' . $value['intGRNHeaderID'] . ')"><i class="fa fa-trash"></i></a>';
                 }
-            }else if($value['ApprovedUser'] == null){ // Pending 
                 if (in_array('approveGRN', $this->permission) || $this->isAdmin) {
                     $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ApproveGRN/" . $value['intGRNHeaderID']) . '"><i class="far fa-thumbs-up"></i></a>';
                 }
-            }
+            } 
 
 
             $result['data'][$key] = array(
@@ -140,7 +139,6 @@ public function ViewGRN(){
         }
 
         echo json_encode($result);
-
     }
 
     //-----------------------------------
@@ -160,6 +158,12 @@ public function ViewGRN(){
         }
 
         $grn_header_data = $this->model_grn->getGRNHeaderData($GRNHeaderID);
+
+        if ($grn_header_data['dtApprovedOn'] != NULL || $grn_header_data['dtRejectedOn'] != NULL) {
+            // Notify To Admin & Redirect
+            redirect(base_url(). 'GRN/ViewGRN', 'refresh');
+        }
+
         $grn_detail_data = $this->model_grn->getGRNDetailData($GRNHeaderID);
         $supplier_data = $this->model_supplier->getSupplierData();
         $item_data = $this->model_item->getOnlyRawItemData();
@@ -173,6 +177,4 @@ public function ViewGRN(){
 
         $this->render_template('GRN/editGRN', $this->data);
     }
-
-
 }
