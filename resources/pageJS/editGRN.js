@@ -6,6 +6,7 @@ $(document).ready(function() {
         $("#cmbItem option[value="+value+"]").remove();
     });
  
+    CalculateItemCount();
 
     $(document).on('keyup', 'input[type=search]', function(e) {
         $("li").attr('aria-selected', false);
@@ -138,44 +139,11 @@ $(document).ready(function() {
             }
         }
     }
-    // $(".add-form").on('submit', function(e) {
-    //     e.preventDefault();
-    //     if ($("input[name=cmbItem]").val(0), $("input[name=txtUnitPrice]").val(), $("input[name=txtQty]").val() == "") {
-    //         toastr["error"]("Please fill in all fields !");
-    //     } else {
-    //         if ($("#cmbItem option:selected").val() > 0) {
-    //             var itemID = $("#cmbItem option:selected").val();
-    //             var item = $("#cmbItem option:selected").text();
-    //             var unitPrice = $("input[name=txtUnitPrice]").val();
-    //             var qty = $("input[name=txtQty]").val();
-    //             var total = unitPrice * qty;
-
-    //             // $("#grnItemForm").append('<tr><td class="itemID" hidden>' + itemID + '</td><td class="itemName">' + item + '</td><td style="text-align:right;">' + parseFloat(unitPrice).toFixed(2) + '</td><td style="text-align:right;">' + qty + '</td><td class="total" style="text-align:right;">' + parseFloat(total).toFixed(2) + '</td><td class="static"><span class="button red center-items"><i class="fas fa-times"></i></span></td></tr>');
-
-    //             $(".first-tr").after('<tr><td class="itemID" hidden>' + itemID + '</td><td class="itemName">' + item + '</td><td style="text-align:right;">' + parseFloat(unitPrice).toFixed(2) + '</td><td style="text-align:right;">' + qty + '</td><td class="total" style="text-align:right;">' + parseFloat(total).toFixed(2) + '</td><td class="static"><span class="button red center-items"><i class="fas fa-times"></i></span></td></tr>');
-    //             remove();
-    //             $("#cmbItem :selected").remove();
-
-    //             $("input[name=cmbItem], input[name=txtUnitPrice], input[name=txtQty]").val("");
-    //             $("input[name=txtTotalPrice]").val("0.00");
-    //             CalculateItemCount();
-    //             CalculateGrandTotal();
-    //             $("#cmbItem").focus();
-    //         } else {
-    //             toastr["error"]("Please select valid item !");
-    //             $("#cmbItem").focus();
-    //         }
-
-
-    //     }
-    // });
 
 
 
     function remove() {
         $(".red").click(function() {
-            // var itemID = $(this).closest("tr").find('td.itemID').text();
-            // var itemName = $(this).closest("tr").find('td.itemName').text();
 
             var itemID = $(this).closest("tr").find('.itemID').val();
             var itemName = $(this).closest("tr").find('.itemName').val();
@@ -252,38 +220,7 @@ $(document).ready(function() {
                 });
             }, true);
         }
-
-
-        // jQuery.trim($("#receivedDate").val()).length == 0 ||
-
-
-        // if (isNaN(Date.parse($("#dtReceivedDate").val()))) {
-        //     toastr["error"]("Please Select Received Date !");
-        // } else {
-        //     alert($("#dtReceivedDate").val());
-
-        // }
-
     });
-
-
-    $("#editGRN").unbind('submit').on('submit', function(e) {
-
-        // var form = $(this);
-
-        // $.ajax({
-        //     type: form.attr('method'),
-        //     url: form.attr('action'),
-        //     data: form.serialize(),
-        //     dataType: 'json',
-        //     success: function (response) {
-        //         alert(response.success);
-        //     }
-        // });
-        // e.preventDefault();
-    });
-    //  });
-
 });
 
 // on first focus (bubbles up to document), open the menu
