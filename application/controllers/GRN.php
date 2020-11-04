@@ -177,4 +177,33 @@ class GRN extends Admin_Controller
 
         $this->render_template('GRN/editGRN', $this->data);
     }
+
+    public function EditGRNDetails($GRNHeaderID){
+        if (!$this->isAdmin) {
+            if (!in_array('editGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $response = array();
+
+        $this->form_validation->set_rules('supplier', 'supplier', 'trim|required');
+        $this->form_validation->set_rules('invoice_no', 'invoice no', 'trim|required');
+
+        if ($this->form_validation->run() == TRUE) {
+            $result = $this->model_grn->editGRN($GRNHeaderID);
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while editing the GRN idetails. Please contact service provider.';
+            }
+        } else {
+            $response['success'] = false;
+            foreach ($_POST as $key => $value) {
+                $response['messages'][$key] = form_error($key);
+            }
+        }
+        echo json_encode($response);
+    }
 }
