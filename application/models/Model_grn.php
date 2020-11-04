@@ -55,8 +55,6 @@ class Model_grn extends CI_Model
 
     public function getGRNHeaderData($GRNID = null, $Status = null, $FromDate = null, $ToDate = null)
     {
-   
-
         if ($GRNID) {
             $sql = "
                     SELECT 
@@ -160,5 +158,56 @@ class Model_grn extends CI_Model
 
         $query = $this->db->query($sql, array($GRNHeaderID));
         return $query->result_array();
+    }
+
+
+    // Edit GRN
+
+    public function editGRN($GRNHeaderID)
+    {
+        $this->db->trans_start();
+
+        // $query = $this->db->query("SELECT fnGenerateGRNNo() AS GRNNo");
+        // $ret = $query->row();
+        // $GRNNo = $ret->GRNNo;
+
+
+        $GRNNo = "Test-001";
+
+        $insertDetails = false;
+
+
+        $data = array(
+            'vcInvoiceNo' => $this->input->post('invoice_no'),
+            'intSupplierID' => $this->input->post('supplier'),
+            'dtReceivedDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('receivedDate')))),
+            'intUserID' => $this->session->userdata('user_id'),
+            'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
+            'decDiscount' => $this->input->post('txtDiscount'),
+            'decGrandTotal' => str_replace(',', '', $this->input->post('grandTotal')),
+        );
+
+        $this->db->where('intGRNHeaderID', $GRNHeaderID);
+        $this->db->update('GRNHeader', $data);
+
+        $this->db->where('intGRNHeaderID', $GRNHeaderID);
+        $this->db->delete('GRNDetail');
+
+        $item_count = count($this->input->post('itemID'));
+
+        for ($i = 0; $i < $item_count; $i++) {
+            $items = array(
+                'intGRNHeaderID' => $GRNHeaderID,
+                'intItemID' => $this->input->post('itemID')[$i],
+                'decQty' => $this->input->post('itemQty')[$i],
+                'decUnitPrice' => $this->input->post('unitPrice')[$i],
+                'decTotalPrice' => $this->input->post('totalPrice')[$i]
+            );
+            $saveDetails = $this->db->insert('GRNDetail', $items);
+        }
+
+        $this->db->trans_complete();
+
+        return ($saveDetails == true) ? true : false;
     }
 }
