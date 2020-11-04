@@ -69,7 +69,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/EditGRNDetails') ?>" id="editGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/EditGRNDetails/'. $grn_header_data['intGRNHeaderID']) ?>" id="editGRN">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="invoice_no">GRN No</label>
