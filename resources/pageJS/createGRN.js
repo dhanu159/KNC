@@ -220,7 +220,7 @@ $(document).ready(function () {
                     dataType: 'json',
                     success: function (response) {
                         if (response.success == true) {
-                            arcadiaSuccessMessage(true);
+                            arcadiaSuccessMessage("Saved !");
                         } else {
 
                             if (response.messages instanceof Object) {
@@ -298,7 +298,7 @@ function getMeasureUnitByItemID() {
             },
             error: function (xhr, status, error) {
                 //var err = eval("(" + xhr.responseText + ")");
-                alert(xhr.responseText);
+                arcadiaErrorMessage(error);
             }
         });
     }

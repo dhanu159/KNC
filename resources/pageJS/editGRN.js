@@ -1,37 +1,37 @@
-$(document).ready(function() {
+$(document).ready(function () {
 
 
     $('#itemTable tbody tr').each(function () {
-        var value =  $(this).closest("tr").find('.itemID').val();
-        $("#cmbItem option[value="+value+"]").remove();
+        var value = $(this).closest("tr").find('.itemID').val();
+        $("#cmbItem option[value=" + value + "]").remove();
     });
- 
+
     CalculateItemCount();
 
-    $(document).on('keyup', 'input[type=search]', function(e) {
+    $(document).on('keyup', 'input[type=search]', function (e) {
         $("li").attr('aria-selected', false);
     });
 
 
-    $('#cmbItem').on('select2:select', function(e) {
+    $('#cmbItem').on('select2:select', function (e) {
         $('#txtUnitPrice').focus();
     });
 
-    $('#txtQty,#txtUnitPrice').keyup(function(event) {
+    $('#txtQty,#txtUnitPrice').keyup(function (event) {
         CalculateTotal();
     });
 
-    $('#txtDiscount').keyup(function(event) {
+    $('#txtDiscount').keyup(function (event) {
         CalculateGrandTotal();
     });
-    $("#btnAddToGrid").click(function() {
+    $("#btnAddToGrid").click(function () {
         AddToGrid();
     });
     $("#cmbItem").change(function () {
         getMeasureUnitByItemID();
     });
     //Bind keypress event to textbox
-    $('.add-item').keypress(function(event) {
+    $('.add-item').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             AddToGrid();
@@ -44,7 +44,7 @@ $(document).ready(function() {
 
     function CalculateTotal() {
         getMeasureUnitByItemID();
-        var unitPrice = $("#txtUnitPrice").val(); 
+        var unitPrice = $("#txtUnitPrice").val();
         var qty = $("#txtQty").val()
 
         if (unitPrice != "" && qty != "") {
@@ -57,7 +57,7 @@ $(document).ready(function() {
         if ($('#itemTable tr').length > 2) { // Because table header and item add row in here
             var discount = $("#txtDiscount").val();
             var total = 0;
-            $('#itemTable tbody tr').each(function() {
+            $('#itemTable tbody tr').each(function () {
                 var value = parseInt($(this).closest("tr").find('.total').val());
                 if (!isNaN(value)) {
                     total += value;
@@ -143,14 +143,14 @@ $(document).ready(function() {
 
 
     function remove() {
-        $(".red").click(function() {
+        $(".red").click(function () {
 
             var itemID = $(this).closest("tr").find('.itemID').val();
             var itemName = $(this).closest("tr").find('.itemName').val();
 
             var IsAlreadyIncluded = false;
 
-            $("#cmbItem option").each(function() {
+            $("#cmbItem option").each(function () {
                 if (itemID == $(this).val()) {
                     IsAlreadyIncluded = true;
                     return false;
@@ -169,8 +169,8 @@ $(document).ready(function() {
         });
     }
 
-    $('#btnSubmit').click(function() {
-debugger;
+    $('#btnSubmit').click(function () {
+
         if ($('#supplier').val() == null) {
             toastr["error"]("Please select a supplier !");
             $("#supplier").focus();
@@ -194,7 +194,7 @@ debugger;
                     dataType: 'json',
                     success: function (response) {
                         if (response.success == true) {
-                            arcadiaSuccessMessage(true);
+                            arcadiaSuccessMessage("Edited !","GRN/ViewGRN");
                         } else {
 
                             if (response.messages instanceof Object) {
@@ -216,6 +216,9 @@ debugger;
                             }
                         }
 
+                    },
+                    error: function (request, status, error) {
+                        arcadiaErrorMessage(error);
                     }
                 });
             }, this);
@@ -224,7 +227,7 @@ debugger;
 });
 
 // on first focus (bubbles up to document), open the menu
-$(document).on('focus', '.select2-selection.select2-selection--single', function(e) {
+$(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
 });
 
@@ -233,13 +236,13 @@ function getMeasureUnitByItemID() {
     var ItemID = $("#cmbItem").val();
     if (ItemID > 0) {
         $.ajax({
-            url: base_url+'GRN/getMeasureUnitByItemID/' + ItemID,
+            url: base_url + 'GRN/getMeasureUnitByItemID/' + ItemID,
             type: 'post',
             dataType: 'json',
-            success: function(response) {
+            success: function (response) {
                 $("#txtMeasureUnit").val(response.vcMeasureUnit);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 debugger;
                 //var err = eval("(" + xhr.responseText + ")");
                 alert(error);

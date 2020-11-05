@@ -218,6 +218,34 @@ table {
     right: -6px;
 }
 
-.form-control, select{
+.form-control, select {
     font-size: 0.9rem !important;
+}
+
+.main-sidebar {
+    /* background: linear-gradient(120deg, rgb(52, 58, 64), rgba(0, 0, 0, 0.9)), url(https://demo.cloudimg.io/v7/img.scaleflex.com/img.jpg?); */
+    background: linear-gradient(120deg, rgb(52, 58, 64, 0.9), rgba(0, 0, 0, 0.9)), url(https://i.pinimg.com/originals/a7/e4/be/a7e4be9aa6ba57563e6b95f3654815a4.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.sidebar {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0 !important;
+}
+
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active, .sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
+    background-color: #E44C70 !important;
+}
+
+
+@media (min-width: 992px) {
+    .sidebar-mini.sidebar-collapse .main-sidebar, .sidebar-mini.sidebar-collapse .main-sidebar::before {
+        margin-left: 0;
+        width: 3rem;
+    }
 }

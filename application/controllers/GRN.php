@@ -206,4 +206,44 @@ class GRN extends Admin_Controller
         }
         echo json_encode($response);
     }
+
+// Remove GRN
+
+public function removeGRN(){
+        if (!$this->isAdmin) {
+            if (!in_array('deleteGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $intGRNHeaderID = $this->input->post('intGRNHeaderID');
+        $response = array();
+        if ($intGRNHeaderID) {
+
+            $canRemove = $this->model_grn->canRemoveGRN($intGRNHeaderID);
+
+            if ($canRemove) {
+                
+                $delete = $this->model_grn->removeGRN($intGRNHeaderID);
+
+                if ($delete == true) {
+                    $response['success'] = true;
+                    $response['messages'] = "Deleted !";
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Error in the database while removing the GRN information !";
+                }
+
+            }else{
+                $response['success'] = false;
+                $response['messages'] = "You can't remove this GRN, Please check and try again !";
+            }
+
+           
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Please refersh the page again !!";
+        }
+        echo json_encode($response);
+}
+
 }

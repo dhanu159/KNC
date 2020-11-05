@@ -103,30 +103,34 @@ function arcadiaConfirmAlert(message, event, button) {
     })
 }
 
-function arcadiaSuccessMessage(isRefreshPage = false){
+function arcadiaSuccessMessage(Title = "Succeeded !",ReDirectPage = null){
     Swal.fire(
-        'Succeeded !',
+        Title,
         'Your request has been successfully processed.',
         'success'
     ).then((res) => {
         if (res.isConfirmed || res.dismiss) {
-            if (isRefreshPage == true) {
+            if (ReDirectPage == null) {
                 location.reload();
+            }else{                
+                window.location.replace(base_url + ReDirectPage);
             }
         }
     })
 }
 
 
-function arcadiaErrorMessage(Msg,isRefreshPage = false){
+function arcadiaErrorMessage(Msg, ReDirectPage = null){
     Swal.fire(
         'Something went wrong !',
         Msg,
         'error'
     ).then((res) => {
         if (res.isConfirmed || res.dismiss) {
-            if (isRefreshPage == true) {
+            if (ReDirectPage == null) {
                 location.reload();
+            }else{
+                window.location.replace(base_url + ReDirectPage);
             }
         }
     })

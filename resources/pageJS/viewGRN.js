@@ -17,7 +17,8 @@ $(document).ready(function () {
     $('input[name="daterange"]').daterangepicker({
         opens: 'center',
         startDate: new Date(date.getFullYear(), date.getMonth(), 1),
-        endDate: date
+        endDate: date,
+        maxDate: new Date()
     }, function (start, end) {
             selectedFromDate = start.format('YYYY-MM-DD');
             selectedToDate = end.format('YYYY-MM-DD');
@@ -31,22 +32,6 @@ $(document).ready(function () {
             FilterItems(selectedFromDate, selectedToDate);
         }
     });
-    // $('#manageTable').DataTable();
-
-    // var table = $('#manageTable').DataTable({
-    //     // "scrollY": "200px",
-    //     // "paging": false
-    // });
-
-    // $('a.toggle-vis').on('click', function (e) {
-    //     e.preventDefault();
-
-    //     // Get the column API object
-    //     var column = table.column($(this).attr('data-column'));
-
-    //     // Toggle the visibility
-    //     column.visible(!column.visible());
-    // });
 
 });
 
@@ -87,4 +72,29 @@ function FilterItems(FromDate,ToDate){
         }
     });
 
+}
+
+function removeGRN(GRNHeaderID){
+    arcadiaConfirmAlert("You want to be able to remove this !", function (button) {
+
+        $.ajax({
+            async: true,
+            url: base_url + 'GRN/RemoveGRN',
+            type: 'post',
+            data: {
+                intGRNHeaderID: GRNHeaderID
+            },
+            dataType: 'json',
+            success: function (response) {
+                if (response.success == true) {
+                    arcadiaSuccessMessage("Deleted !", "GRN/ViewGRN");
+                } else {
+                    toastr["error"](response.messages);
+                }
+            },
+            error: function (request, status, error) {
+                arcadiaErrorMessage(error);
+            }
+        });
+    }, this);
 }

@@ -1,6 +1,6 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header("Access-Control-Allow-Methods: GET, OPTIONS");
+// header('Access-Control-Allow-Origin: *');
+// header("Access-Control-Allow-Methods: GET, OPTIONS");
 ?>
 <!DOCTYPE html>
 <html>
@@ -50,9 +50,11 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 		var base_url = "<?php echo base_url(); ?>";
 	</script>
 
+
+
 </head>
 
-<body onload="Preloader()" class="hold-transition sidebar-mini" style="font-size: 0.9rem !important;">
+<body onload="Preloader()" class="hold-transition sidebar-mini" style="font-size: 0.8rem !important;">
 	<!-- Preloader Start-->
 	<div id="Preloader">
 		<div class="dl">
@@ -175,7 +177,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 				<span class="brand-text font-weight-light">AdminLTE 3</span>
 			</a> -->
 
-
+ 
 			<a href="#" class="brand-link">
 				<div class="user-panel pb-3 d-flex">
 					<!-- <div class="image">
@@ -223,13 +225,13 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 						</li>
 
 						<li class="nav-item">
-							<a href="<?= base_url('dashboard') ?>" class="nav-link">
+							<a href="<?= base_url('dashboard') ?>" class="nav-link <?php if ($this->uri->segment(1) == "dashboard") { echo 'active'; } ?>">
 								<i class="fas fa-tachometer-alt"></i>
 								<p>&nbsp;&nbsp;&nbsp;Dashboard</p>
 							</a>
 						</li>
 
-						<li class="nav-item has-treeview">
+						<li class="nav-item has-treeview <?php if ($this->uri->segment(1) == "User" || $this->uri->segment(2) == "UserGroup" || $this->uri->segment(2) == "MeasureUnit") { echo 'menu-open'; } ?>">
 							<a href="#" class="nav-link">
 								<i class="fas fa-tools"></i>
 								<p>&nbsp;&nbsp;&nbsp;Utilities
@@ -238,19 +240,19 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
-									<a href="<?php echo base_url('User/index') ?>" class="nav-link">
+									<a href="<?php echo base_url('User/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "User") { echo 'active'; } ?>">
 										<i class="fas fa-user"></i>
 										<p>&nbsp;&nbsp;&nbsp;User</p>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a href="<?= base_url('Utilities/UserGroup') ?>" class="nav-link">
+									<a href="<?= base_url('Utilities/UserGroup') ?>" class="nav-link <?php if ($this->uri->segment(2) == "UserGroup") { echo 'active'; } ?>">
 										<i class="fas fa-users"></i>
 										<p>&nbsp;&nbsp;User Group</p>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a href="<?= base_url('Utilities/MeasureUnit') ?>" class="nav-link">
+									<a href="<?= base_url('Utilities/MeasureUnit') ?>" class="nav-link <?php if ($this->uri->segment(2) == "MeasureUnit") { echo 'active'; } ?>">
 										<i class="fas fa-balance-scale-right"></i>
 										<p>&nbsp;&nbsp;Measure Unit</p>
 									</a>
@@ -258,33 +260,33 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 							</ul>
 						</li>
 						<li class="nav-item">
-							<a href="<?php echo base_url('Customer/index') ?>" class="nav-link">
+							<a href="<?php echo base_url('Customer/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Customer") { echo 'active'; } ?>">
 								<i class="fa fa-users" aria-hidden="true"></i>
 								<p>&nbsp;&nbsp;Customer</p>
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a href="<?php echo base_url('Supplier/index') ?>" class="nav-link">
+							<a href="<?php echo base_url('Supplier/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Supplier") { echo 'active'; } ?>">
 								<i class="fa fa-truck" aria-hidden="true"></i>
 								<p>&nbsp;&nbsp;Supplier</p>
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a href="<?php echo base_url('Branch/index') ?>" class="nav-link">
+							<a href="<?php echo base_url('Branch/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Branch") { echo 'active'; } ?>">
 								<i class="fas fa-store"></i>
 								<p>&nbsp;&nbsp;Branch</p>
 							</a>
 						</li>
 
-						<li class="nav-item has-treeview">
-							<a href="<?php echo base_url('Item/index') ?>" class="nav-link">
+						<li class="nav-item">
+							<a href="<?php echo base_url('Item/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Item") { echo 'active'; } ?>">
 								<i class="fa fa-industry" aria-hidden="true"></i>
 								<p>&nbsp;&nbsp;&nbsp;Item</p>
 							</a>
 						</li>
-						<li class="nav-item has-treeview">
+						<li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "RequestItem" || $this->uri->segment(2) == "ViewRequest") { echo 'menu-open'; } ?>">
 							<a href="#" class="nav-link">
 								<i class="fas fa-layer-group"></i>
 								<p>&nbsp;&nbsp;&nbsp;Request
@@ -293,13 +295,13 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
-									<a href="<?php echo base_url('Request/RequestItem') ?>" class="nav-link">
+									<a href="<?php echo base_url('Request/RequestItem') ?>" class="nav-link <?php if ($this->uri->segment(2) == "RequestItem") { echo 'active'; } ?>">
 										<i class="fas fa-cart-plus"></i>
 										<p>&nbsp;&nbsp;Request Item</p>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a href="<?php echo base_url('Request/ViewRequest') ?>" class="nav-link">
+									<a href="<?php echo base_url('Request/ViewRequest') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewRequest") { echo 'active'; } ?>">
 										<i class="fas fa-search"></i>
 										<p>&nbsp;&nbsp;View Request</p>
 									</a>
@@ -307,7 +309,7 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 							</ul>
 						</li>
 
-						<li class="nav-item has-treeview">
+						<li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateGRN" || $this->uri->segment(2) == "ViewGRN") { echo 'menu-open'; } ?>">
 							<a href="#" class="nav-link">
 								<i class="fas fa-layer-group"></i>
 								<p>&nbsp;&nbsp;&nbsp;Stock
@@ -316,13 +318,13 @@ header("Access-Control-Allow-Methods: GET, OPTIONS");
 							</a>
 							<ul class="nav nav-treeview">
 								<li class="nav-item">
-									<a href="<?php echo base_url('GRN/CreateGRN') ?>" class="nav-link">
+									<a href="<?php echo base_url('GRN/CreateGRN') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CreateGRN") { echo 'active'; } ?>">
 										<i class="fas fa-cart-plus"></i>
 										<p>&nbsp;&nbsp;Create GRN</p>
 									</a>
 								</li>
 								<li class="nav-item">
-									<a href="<?php echo base_url('GRN/ViewGRN') ?>" class="nav-link">
+									<a href="<?php echo base_url('GRN/ViewGRN') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewGRN") { echo 'active'; } ?>">
 										<i class="fas fa-search"></i>
 										<p>&nbsp;&nbsp;View GRN</p>
 									</a>

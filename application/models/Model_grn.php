@@ -81,7 +81,8 @@ class Model_grn extends CI_Model
                         INNER JOIN KNC.User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
                         LEFT OUTER JOIN KNC.User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
                         LEFT OUTER JOIN KNC.User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID
-                    WHERE GH.intGRNHeaderID = ?";
+                    WHERE GH.IsActive = 1 AND GH.intGRNHeaderID = ? 
+                    ORDER BY GH.intGRNHeaderID ";
 
             $query = $this->db->query($sql, array($GRNID));
             return $query->row_array();
@@ -116,7 +117,7 @@ class Model_grn extends CI_Model
                         LEFT OUTER JOIN KNC.User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID";
 
 
-        $dateFilter = " WHERE CAST(GH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
+        $dateFilter = " WHERE GH.IsActive = 1 AND CAST(GH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
 
 
         if ($Status == 1) { // Approved
@@ -130,7 +131,7 @@ class Model_grn extends CI_Model
         }
 
 
-        $sql  = $sql . $dateFilter . $statusFilter;
+        $sql  = $sql . $dateFilter . $statusFilter. " ORDER BY GH.intGRNHeaderID";
 
         $query = $this->db->query($sql, array($FromDate, $ToDate));
         return $query->result_array();
@@ -172,11 +173,9 @@ class Model_grn extends CI_Model
         // $GRNNo = $ret->GRNNo;
 
 
-        $GRNNo = "Test-001";
-
-        $insertDetails = false;
-
-
+        $editDetails = false;
+        $now = new DateTime();
+        
         $data = array(
             'vcInvoiceNo' => $this->input->post('invoice_no'),
             'intSupplierID' => $this->input->post('supplier'),
@@ -184,7 +183,7 @@ class Model_grn extends CI_Model
             'intUserID' => $this->session->userdata('user_id'),
             'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
             'decDiscount' => $this->input->post('txtDiscount'),
-            'decGrandTotal' => str_replace(',', '', $this->input->post('grandTotal')),
+            'decGrandTotal' => str_replace(',', '', $this->input->post('grandTotal'))
         );
 
         $this->db->where('intGRNHeaderID', $GRNHeaderID);
@@ -203,11 +202,33 @@ class Model_grn extends CI_Model
                 'decUnitPrice' => $this->input->post('unitPrice')[$i],
                 'decTotalPrice' => $this->input->post('totalPrice')[$i]
             );
-            $saveDetails = $this->db->insert('GRNDetail', $items);
+            $editDetails = $this->db->insert('GRNDetail', $items);
         }
 
         $this->db->trans_complete();
 
-        return ($saveDetails == true) ? true : false;
+        return ($editDetails == true) ? true : false;
+    }
+
+    public function canRemoveGRN($intGRNHeaderID){
+        $sql = "
+                SELECT * FROM GRNHeader WHERE intGRNHeaderID = ? AND intApprovedBy IS NULL AND intRejectedBy IS NULL";
+        $query = $this->db->query($sql, array($intGRNHeaderID));
+        if ($query->result_array() != null) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public function removeGRN($intGRNHeaderID){
+        if ($intGRNHeaderID) {
+            $data = [
+                'IsActive' => '0',
+            ];
+            $this->db->where('intGRNHeaderID', $intGRNHeaderID);
+            $delete = $this->db->update('GRNHeader', $data);
+            return ($delete == true) ? true : false;
+        }
     }
 }
