@@ -242,6 +242,13 @@ table {
     background-color: #E44C70 !important;
 }
 
+[class*=sidebar-dark-] .nav-sidebar>.nav-item.menu-open>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item:hover>.nav-link, [class*=sidebar-dark-] .nav-sidebar>.nav-item>.nav-link:focus {
+    background-color: #E44C70 !important;
+}
+
+.nav-treeview{
+    background-color: rgba(255, 255, 255, .1) !important;
+}
 
 @media (min-width: 992px) {
     .sidebar-mini.sidebar-collapse .main-sidebar, .sidebar-mini.sidebar-collapse .main-sidebar::before {
