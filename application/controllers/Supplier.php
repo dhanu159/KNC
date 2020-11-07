@@ -23,11 +23,7 @@ class Supplier extends Admin_Controller
 			}
 		}
 
-		$this->load->view('partials/header');
-		$this->load->view('supplier/manageSupplier',$this->data);
-		$this->load->view('partials/footer');
-
-
+		$this->render_template('supplier/manageSupplier','Manage Supplier', $this->data);
 	}
 
 	public function fetchSupplierDataById($id)

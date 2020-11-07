@@ -1,9 +1,8 @@
 $(document).ready(function() {
 
-
-    // on first focus (bubbles up to document), open the menu
-    $(document).on('keyup', 'input[type=search]', function(e) {
-        $("li").attr('aria-selected', false);
+    $('#itemTable tbody tr').each(function() {
+        var value = $(this).closest("tr").find('.itemID').val();
+        $("#cmbItem option[value=" + value + "]").remove();
     });
 
     $('#cmbItem').on('select2:select', function(e) {
@@ -89,8 +88,6 @@ $(document).ready(function() {
 
     function remove() {
         $(".red").click(function() {
-            // var itemID = $(this).closest("tr").find('td.itemID').text();
-            // var itemName = $(this).closest("tr").find('td.itemName').text();
 
             var itemID = $(this).closest("tr").find('.itemID').val();
             var itemName = $(this).closest("tr").find('.itemName').val();
@@ -121,19 +118,18 @@ $(document).ready(function() {
             toastr["error"]("Please choose the receive items !");
             $("#cmbItem").focus();
         } else {
-            arcadiaConfirmAlert("You want to be able to save this !", function(button) {
+            arcadiaConfirmAlert("You want to be able to edit this !", function(button) {
 
-                var form = $("#createGRN");
+                var form = $("#editRequest");
 
                 $.ajax({
                     type: form.attr('method'),
                     url: form.attr('action'),
                     data: form.serialize(),
                     dataType: 'json',
-                    async: true,
                     success: function(response) {
                         if (response.success == true) {
-                            arcadiaSuccessMessage(true);
+                            arcadiaSuccessMessage("Edited !", "request/ViewRequest");
                         } else {
 
                             if (response.messages instanceof Object) {
@@ -150,11 +146,14 @@ $(document).ready(function() {
                                 });
                             } else {
                                 toastr["error"](response.messages);
-
-                                arcadiaErrorMessage(response.messages);
+                                // arcadiaErrorMessage(response.messages);
+                                // $(button).prop('disabled', false);
                             }
                         }
 
+                    },
+                    error: function(request, status, error) {
+                        arcadiaErrorMessage(error);
                     }
                 });
             }, this);
@@ -175,7 +174,7 @@ function getRequestFinishedByItemID() {
     var ItemID = $("#cmbItem").val();
     if (ItemID > 0) {
         $.ajax({
-            url: 'getRequestFinishedByItemID/' + ItemID,
+            url: base_url + 'request/getRequestFinishedByItemID/' + ItemID,
             type: 'post',
             dataType: 'json',
             success: function(response) {

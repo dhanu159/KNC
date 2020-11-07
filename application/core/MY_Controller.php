@@ -60,14 +60,15 @@ class Admin_Controller extends MY_Controller
 		}
 	}
 
-	public function render_template($page = null, $data = array())
+	public function render_template($page = null,$title, $data = array())
 	{
+		$this->data['page_title']=$title;
 
-		$this->load->view('partials/header',$data);
+		$this->load->view('partials/header',$this->data);
 		// $this->load->view('templates/header_menu',$data);
 		// $this->load->view('templates/side_menubar',$data);
 		$this->load->view($page, $data);
-		$this->load->view('partials/footer',$data);
+		$this->load->view('partials/footer');
 	}
 
 	public function company_currency()

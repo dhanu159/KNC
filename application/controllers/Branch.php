@@ -21,9 +21,7 @@ class Branch extends Admin_Controller
             }
         }
 
-        $this->load->view('partials/header');
-        $this->load->view('branch/manageBranch', $this->data);
-        $this->load->view('partials/footer');
+        $this->render_template('branch/manageBranch','Manage Branch', $this->data);
     }
 
 

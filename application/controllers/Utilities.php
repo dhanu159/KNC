@@ -106,7 +106,7 @@ class Utilities extends Admin_Controller
             }
         }
 
-        $this->render_template('utilities/userGroup', $this->data);
+        $this->render_template('utilities/userGroup','User Group', $this->data);
     }
 
     public function createUserGroup()
@@ -208,7 +208,7 @@ class Utilities extends Admin_Controller
         // $this->load->view('measureunit/manageMeasureUnit');
         // $this->load->view('partials/footer');
 
-        $this->render_template('measureunit/manageMeasureUnit', $this->data);
+        $this->render_template('measureunit/manageMeasureUnit','Manage Measure Unit', $this->data);
     }
 
     public function fetchMeasureUnitDataById($id)

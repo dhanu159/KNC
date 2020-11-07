@@ -28,9 +28,7 @@ class Item extends Admin_Controller
 		$this->data["measureUnit"] = $this->Model_measureunit->getMeasureUnitData(null, false);
 		$this->data["itemType"] = $this->Model_measureunit->getItemTypeData(null, false);
 
-		$this->load->view('partials/header');
-		$this->load->view('item/manageItem', $this->data);
-		$this->load->view('partials/footer');
+		$this->render_template('item/manageItem','Manage Item',$this->data);
 	}
 
 	public function fetchItemDataById($id)
@@ -139,7 +137,7 @@ class Item extends Admin_Controller
 
 		$response = array();
 
-		$this->form_validation->set_rules('Item_name', 'Item Name', 'trim|required');
+		$this->form_validation->set_rules('Item_name', 'Item Name  gggg', 'trim|required|is_unique[item.vcItemName]');
 		$this->form_validation->set_rules('measure_unit', 'Measure Unit', 'trim|required');
 		$this->form_validation->set_rules('item_type', 'Item Type', 'trim|required');
 		if($this->input->post('edit_item_type') == 2)
@@ -188,7 +186,7 @@ class Item extends Admin_Controller
 		$response = array();
 
 		if ($id) {
-			$this->form_validation->set_rules('edit_item_name', 'Item Name', 'trim|required');
+			$this->form_validation->set_rules('edit_item_name', 'Item Name', 'trim|required|is_unique[item.vcItemName]');
 			$this->form_validation->set_rules('edit_measure_unit', 'Measure Unit', 'trim|required');
 			$this->form_validation->set_rules('edit_item_type', 'Item Type', 'trim|required');
 			if($this->input->post('edit_item_type') == 2)

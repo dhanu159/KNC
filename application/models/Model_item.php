@@ -40,7 +40,7 @@ class Model_item extends CI_Model
         return $query->result_array();
     }
 
-    public function getOnlyFinishedItemData()
+    public function getOnlyFinishItemData()
     {
         $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
@@ -49,6 +49,23 @@ class Model_item extends CI_Model
         order by it.vcItemName asc";
         $query = $this->db->query($sql, array(1));
         return $query->result_array();
+    }
+
+    public function getBranchStockItems($id)
+    {
+        if ($id) {
+        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel, BS.rv FROM branchstock AS BS
+        INNER JOIN item AS IT ON BS.intItemID = IT.intItemID
+        WHERE BS.intBranchID = ? ";
+        $query = $this->db->query($sql, array(1));
+        return $query->row_array();
+        }
+
+        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel, BS.rv FROM branchstock AS BS
+        INNER JOIN item AS IT ON BS.intItemID = IT.intItemID";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+
     }
 
     public function create($data)

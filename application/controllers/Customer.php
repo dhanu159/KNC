@@ -23,6 +23,8 @@ class Customer extends Admin_Controller
 		$this->load->view('partials/header');
 		$this->load->view('customer/manageCustomer',$this->data);
 		$this->load->view('partials/footer');
+
+		$this->render_template('customer/manageCustomer','Manage Customer', $this->data);
 	}
 
 

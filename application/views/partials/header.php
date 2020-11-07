@@ -9,7 +9,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<?php
-	if (isset($page_title)) { ?>
+	if ($page_title == null) { ?>
 		<title><?= $page_title ?> | K N C</title>
 	<?php
 	} else { ?>

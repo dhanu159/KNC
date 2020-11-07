@@ -27,9 +27,7 @@ class User extends Admin_Controller
 		$branch = $this->model_branch->getComboBranch();
 		$this->data['branch'] = $branch;
 
-		$this->load->view('partials/header');
-		$this->load->view('user/manageUserAccount', $this->data);
-		$this->load->view('partials/footer');
+		$this->render_template('user/manageUserAccount','Manage User Account', $this->data);
 	}
 	public function fetchUserDataById($id)
 	{
