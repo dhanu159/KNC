@@ -1,18 +1,27 @@
 		<!-- Small boxes (Stat box) -->
 		<div class="row">
-		    <div class="col-lg-3 col-6">
-		        <!-- small box -->
-		        <div class="small-box bg-info">
-		            <div class="inner">
-		                <h3>0</h3>
-		                <p>Pending GRN Approvals</p>
+		    <!-- Pending GRN Approvals -->
+		    <?php
+            if ($_SESSION['Is_main_branch'] == 1) { // GRN Approval Facility Can Main Branch Only
+                if ($isAdmin || in_array('approveGRN', $user_permission) || in_array('createGRN', $user_permission) || in_array('editGRN', $user_permission) || in_array('deleteGRN', $user_permission)) {
+            ?>
+		            <div class="col-lg-3 col-6">
+		                <div class="small-box bg-info">
+		                    <div class="inner">
+		                        <h3><?= $approval_pending_grn_count ?></h3>
+		                        <p>Pending GRN Approvals</p>
+		                    </div>
+		                    <div class="icon">
+		                        <i class="far fa-clock"></i>
+		                    </div>
+		                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+		                </div>
 		            </div>
-		            <div class="icon">
-		                <i class="far fa-clock"></i>
-		            </div>
-		            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-		        </div>
-		    </div>
+		    <?php
+                }
+            }
+            ?>
+
 		    <!-- ./col -->
 		    <div class="col-lg-3 col-6">
 		        <!-- small box -->
@@ -61,13 +70,13 @@
 
 
 
-        
 
-        <!--  -->
-        <!-- Dashboar partials -->
-        <!--  -->
-        
-    </div>
+
+		<!--  -->
+		<!-- Dashboar partials -->
+		<!--  -->
+
+		</div>
 		</div>
 		<!-- /.card -->
 
