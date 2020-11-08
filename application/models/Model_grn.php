@@ -231,4 +231,28 @@ class Model_grn extends CI_Model
             return ($delete == true) ? true : false;
         }
     }
+
+    public function approveGRN($intGRNHeaderID){
+        $this->db->trans_start();
+        date_default_timezone_set('Asia/Colombo');
+        $now = date('Y-m-d H:i:s');
+
+        $data = array(
+            'intApprovedBy' => $this->session->userdata('user_id'),
+            'dtApprovedOn' => $now
+        );
+        $this->db->where('intGRNHeaderID', $intGRNHeaderID);
+        $update = $this->db->update('GRNHeader', $data);
+
+        $sql = "UPDATE Item AS I
+                INNER JOIN GRNDetail AS GD ON GD.intItemID = I.intItemID
+                SET I.decStockInHand = (I.decStockInHand + GD.decQty)
+                WHERE GD.intGRNHeaderID = ?";
+
+        $update = $this->db->query($sql, array($intGRNHeaderID));
+          
+        $this->db->trans_complete();
+        return ($update == true) ? true : false;
+    }
+
 }
