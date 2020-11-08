@@ -21,7 +21,7 @@ class GRN extends Admin_Controller
     public function CreateGRN()
     {
         if (!$this->isAdmin) {
-            if (!in_array('createGRN', $this->permission)) {
+            if (!in_array('createGRN',$this->permission)) {
                 redirect('dashboard', 'refresh');
             }
         }
@@ -32,7 +32,7 @@ class GRN extends Admin_Controller
         $this->data['supplier_data'] = $supplier_data;
         $this->data['item_data'] = $item_data;
 
-        $this->render_template('GRN/createGRN', $this->data);
+        $this->render_template('GRN/createGRN', 'Create GRN',  $this->data);
     }
 
     public function SaveGRN()
@@ -85,7 +85,7 @@ class GRN extends Admin_Controller
             }
         }
 
-        $this->render_template('GRN/viewGRN');
+        $this->render_template('GRN/viewGRN','View GRN');
     }
 
     public function FilterGRNHeaderData($StatusType, $FromDate, $ToDate)
@@ -115,7 +115,7 @@ class GRN extends Admin_Controller
                     $buttons .= '<a class="button btn btn-default" onclick="removeGRN(' . $value['intGRNHeaderID'] . ')"><i class="fa fa-trash"></i></a>';
                 }
                 if (in_array('approveGRN', $this->permission) || $this->isAdmin) {
-                    $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ApproveGRN/" . $value['intGRNHeaderID']) . '"><i class="far fa-thumbs-up"></i></a>';
+                    $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ApproveOrRejectGRN/" . $value['intGRNHeaderID']) . '"><i class="far fa-thumbs-up"></i></a>';
                 }
             } 
 
@@ -175,7 +175,7 @@ class GRN extends Admin_Controller
         $this->data['grn_header_data'] = $grn_header_data;
 
 
-        $this->render_template('GRN/editGRN', $this->data);
+        $this->render_template('GRN/editGRN','Edit GRN', $this->data);
     }
 
     public function EditGRNDetails($GRNHeaderID){
@@ -239,6 +239,71 @@ public function removeGRN(){
             }
 
            
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Please refersh the page again !!";
+        }
+        echo json_encode($response);
+}
+
+public function ApproveOrRejectGRN($GRNHeaderID){
+        if (!$this->isAdmin) {
+            if (!in_array('approveGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        if (!$GRNHeaderID) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $grn_header_data = $this->model_grn->getGRNHeaderData($GRNHeaderID);
+
+        if ($grn_header_data['dtApprovedOn'] != NULL || $grn_header_data['dtRejectedOn'] != NULL) {
+            // Notify To Admin & Redirect
+            redirect(base_url() . 'GRN/ViewGRN', 'refresh');
+        }
+
+        $grn_detail_data = $this->model_grn->getGRNDetailData($GRNHeaderID);
+        // $supplier_data = $this->model_supplier->getSupplierData();
+        $item_data = $this->model_item->getOnlyRawItemData();
+
+        // $this->data['supplier_data'] = $supplier_data;
+        $this->data['item_data'] = $item_data;
+
+        $this->data['grn_detail_data'] = $grn_detail_data;
+        $this->data['grn_header_data'] = $grn_header_data;
+
+
+        $this->render_template('GRN/approveGRN', 'Approve / Reject GRN', $this->data);
+}
+
+public function ApproveGRN(){
+        if (!$this->isAdmin) {
+            if (!in_array('approveGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $intGRNHeaderID = $this->input->post('intGRNHeaderID');
+        $response = array();
+        if ($intGRNHeaderID) { 
+
+            $canApproveOrReject = $this->model_grn->canRemoveGRN($intGRNHeaderID);
+
+            if ($canApproveOrReject) {
+
+                $approved = $this->model_grn->approveGRN($intGRNHeaderID);
+
+                if ($approved == true) {
+                    $response['success'] = true;
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Error in the database while approving the GRN information !";
+                }
+            } else {
+                $response['success'] = false;
+                $response['messages'] = "You can't approve this GRN, Please check and try again !";
+            }
         } else {
             $response['success'] = false;
             $response['messages'] = "Please refersh the page again !!";
