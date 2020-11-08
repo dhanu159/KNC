@@ -34,6 +34,8 @@
 <script src="<?php echo base_url('resources/tempjs/common.js') ?>"></script>
 <!-- Sweet Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<!-- Notification  -->
+<script src="<?php echo base_url('resources/pageJS/notification.js') ?>"></script>
 
 <!-- Page script -->
 <script>
