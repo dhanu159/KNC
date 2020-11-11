@@ -1,5 +1,7 @@
 $(document).ready(function() {
 
+    CalculateItemCount();
+
     $('#itemTable tbody tr').each(function() {
         var value = $(this).closest("tr").find('.itemID').val();
         $("#cmbItem option[value=" + value + "]").remove();

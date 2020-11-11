@@ -158,7 +158,7 @@ class Supplier extends Admin_Controller
 
 				$previousRV = $this->model_supplier->chkRv($id);
 
-				if ($previousRV[0]['rv'] != $currentRV) {
+				if ($previousRV['rv'] != $currentRV) {
 					$response['success'] = false;
 					$response['messages'] = 'Another user tries to edit this supplier details, please refresh the page and try again !';
 				} else {

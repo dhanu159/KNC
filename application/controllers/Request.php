@@ -17,6 +17,9 @@ class Request extends Admin_Controller
         $this->data['user_groups_data'] = $user_group_data;
     }
 
+    //-----------------------------------
+    // Create Request
+    //-----------------------------------
     public function RequestItem($BranchID = null)
     {
         if (!$this->isAdmin) {
@@ -27,12 +30,37 @@ class Request extends Admin_Controller
         $item_data = $this->model_item->getOnlyFinishItemData();
         $this->data['item_data'] = $item_data;
 
-        // $available_item_data = $this->model_item->getBranchStockItems($BranchID);
-        // $this->data['available_item_data'] = $available_item_data;
-
-        $this->render_template('request/requestItem','Request Item', $this->data);
+        $this->render_template('request/requestItem', 'Request Item', $this->data);
     }
 
+    public function getRequestFinishedByItemID($ItemID)
+    {
+        $data = $this->model_request->getRequestFinishedByItemID($ItemID);
+        echo json_encode($data);
+    }
+
+    public function SaveRequestItem()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('createRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        $result = $this->model_request->SaveRequestItem();
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+        echo json_encode($response);
+    }
+
+    //-----------------------------------
+    // View Request
+    //-----------------------------------
     public function ViewRequest()
     {
         if (!$this->isAdmin) {
@@ -41,51 +69,7 @@ class Request extends Admin_Controller
             }
         }
 
-        $this->render_template('request/viewRequestItem','View Request Item');
-    }
-
-    public function ApprovalRequestItem($intRequestHeaderID = null)
-    {
-        if (!$this->isAdmin) {
-            if (!in_array('approveRequestItem', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
-        }
-
-        $request_header_data = $this->model_request->getRequestHeaderData($intRequestHeaderID);
-        $request_detail_data = $this->model_request->getRequestDetailData($intRequestHeaderID);
-
-        $this->data['request_header_data'] = $request_header_data;
-        $this->data['request_detail_data'] = $request_detail_data;
-
-        $this->render_template('request/ApprovalRequestItem','Approval Request Item', $this->data);
-    }
-
-    public function EditRequestItem($intRequestHeaderID = null)
-    {
-
-        if (!$this->isAdmin) {
-            if (!in_array('editRequestItem', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
-        }
-
-        if (!$intRequestHeaderID) {
-            redirect(base_url() . 'request/ViewRequest', 'refresh');
-        }
-
-        $request_header_data = $this->model_request->getRequestHeaderData($intRequestHeaderID);
-        $request_detail_data = $this->model_request->getRequestDetailData($intRequestHeaderID);
-        $item_data = $this->model_item->getOnlyFinishItemData();
-
-        $this->data['item_data'] = $item_data;
-
-
-        $this->data['request_header_data'] = $request_header_data;
-        $this->data['request_detail_data'] = $request_detail_data;
-
-
-        $this->render_template('request/editRequestItem','Edit Request Item', $this->data);
+        $this->render_template('request/viewRequestItem', 'View Request Item');
     }
 
     public function FilterRequestHeaderData($StatusType, $FromDate, $ToDate)
@@ -109,15 +93,14 @@ class Request extends Admin_Controller
             if ($this->isAdmin) {
                 $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
                 $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
-                $buttons .= '<a class="button btn btn-default" href="' . base_url("request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
-
+                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
             } else {
                 if ($this->session->userdata('Is_main_branch') == false) {
                     if (in_array('editRequestItem', $this->permission)) {
-                        $buttons .= '<a class="button btn btn-default" href="' . base_url("request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
+                        $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
                     }
                     if (in_array('deleteRequestItem', $this->permission)) {
-                        $buttons .= '<button type="button" class="btn btn-default" onclick="removeRequestItem(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
+                        $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
                     }
                 } else {
                     if (in_array('approveRequestItem', $this->permission)) {
@@ -144,11 +127,64 @@ class Request extends Admin_Controller
         echo json_encode($result);
     }
 
-    public function getRequestFinishedByItemID($ItemID)
+
+    //-----------------------------------
+    // Edit Request
+    //-----------------------------------
+    public function EditRequestItem($intRequestHeaderID = null)
     {
-        $data = $this->model_request->getRequestFinishedByItemID($ItemID);
-        echo json_encode($data);
+
+        if (!$this->isAdmin) {
+            if (!in_array('editRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $canEdit = $this->model_request->canModifiedRequest($intRequestHeaderID);
+
+        if (!$intRequestHeaderID || !$canEdit) {
+            redirect(base_url() . 'request/ViewRequest', 'refresh');
+        }
+
+        $request_header_data = $this->model_request->getRequestHeaderData($intRequestHeaderID);
+        if (!$request_header_data) {
+            redirect(base_url() . 'request/ViewRequest', 'refresh');
+        }
+        $request_detail_data = $this->model_request->getRequestDetailData($intRequestHeaderID);
+        $item_data = $this->model_item->getOnlyFinishItemData();
+
+        $this->data['item_data'] = $item_data;
+
+        $this->data['request_header_data'] = $request_header_data;
+        $this->data['request_detail_data'] = $request_detail_data;
+
+
+        $this->render_template('request/editRequestItem', 'Edit Request Item', $this->data);
     }
+
+    public function EditRequestDetails($intRequestHeaderID)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('editRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        $result = $this->model_request->EditRequest($intRequestHeaderID);
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+        echo json_encode($response);
+    }
+
+
+    //-----------------------------------
+    // Remove Request
+    //-----------------------------------
 
     public function RemoveRequest()
     {
@@ -161,7 +197,7 @@ class Request extends Admin_Controller
         $response = array();
         if ($intRequestHeaderID) {
 
-            $canRemove = $this->model_request->canRemoveRequest($intRequestHeaderID);
+            $canRemove = $this->model_request->canModifiedRequest($intRequestHeaderID);
 
             if ($canRemove) {
 
@@ -185,43 +221,172 @@ class Request extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function SaveRequestItem()
+
+    //-----------------------------------
+    // Approval Request 
+    //-----------------------------------
+
+
+    public function ApprovalRequestItem($intRequestHeaderID = null)
     {
         if (!$this->isAdmin) {
-            if (!in_array('createRequestItem', $this->permission)) {
+            if (!in_array('approveRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
             }
         }
+
+        $request_header_data = $this->model_request->getRequestHeaderData($intRequestHeaderID);
+        if (!$request_header_data) {
+            redirect(base_url() . 'request/ViewRequest', 'refresh');
+        }
+        $request_detail_data = $this->model_request->getRequestDetailData($intRequestHeaderID);
+
+        $this->data['request_header_data'] = $request_header_data;
+        $this->data['request_detail_data'] = $request_detail_data;
+
+        $this->render_template('request/ApprovalRequestItem', 'Approval Request Item', $this->data);
+    }
+
+    public function RejectRequestByDetailID($RequestDetailID, $ItemID, $rv)
+    {
+
+        if (!$this->isAdmin) {
+            if (!in_array('approveRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        // $uid =$this->input->post('RequestDetailID');
+        // $ItemID =$this->input->post('ItemID');
+        // $rv = $this->input->post('rv');
         $response = array();
 
-        $result = $this->model_request->SaveRequestItem();
-        if ($result == true) {
-            $response['success'] = true;
-        } else {
+        $previousRV = $this->model_item->chkRv($ItemID);
+
+        if ($previousRV['rv']  != $rv) {
             $response['success'] = false;
-            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
+        } else {
+            $result = $this->model_request->RejectRequestByDetailID($RequestDetailID);
+
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            }
+        }
+
+        echo json_encode($response);
+    }
+
+    public function ApprovalRequestByDetailID($RequestDetailID, $ItemID, $rv)
+    {
+
+        if (!$this->isAdmin) {
+            if (!in_array('approveRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        // $uid =$this->input->post('RequestDetailID');
+        // $ItemID =$this->input->post('ItemID');
+        // $rv = $this->input->post('rv');
+        $response = array();
+
+        $previousRV = $this->model_item->chkRv($ItemID);
+        $chkCanApproval = $this->model_request->GetRequestDetailByID($RequestDetailID);
+
+
+        if ($previousRV['rv']  != $rv) {
+            $response['success'] = false;
+            $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
+        } else {
+            if ($chkCanApproval['decQty'] > $chkCanApproval['decStockInHand']) {
+                $response['success'] = false;
+                $response['messages'] = 'Cannot Approval this Item Please Check Stock Qty !';
+            } else {
+                $result = $this->model_request->ApprovalRequestByDetailID($RequestDetailID);
+
+                if ($result == true) {
+                    $response['success'] = true;
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+                }
+            }
         }
         echo json_encode($response);
     }
 
+    public function ApprovalOrRejectRequestItems($isApproved)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('approveRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $isApproved = $this->input->post('isApproved');
+        $CanApprovalOrRejectAll = true;
+        $CheckQty = true;
+        if($isApproved == 0) //Reject All
+        {
+            $item_count = count($this->input->post('itemID'));
+         
+            for ($i = 0; $i < $item_count; $i++) {
+                $previousRV = $this->model_item->chkRv($this->input->post('itemID')[$i]);
     
-    public function EditRequestDetails($intRequestHeaderID)
-    {
-        if (!$this->isAdmin) {
-            if (!in_array('editRequestItem', $this->permission)) {
-                redirect('dashboard', 'refresh');
+                if ($previousRV['rv']  != $this->input->post('rv')[$i]) {
+                    $CanApprovalOrRejectAll = false;
+                }
             }
-        }
-        $response = array();
 
-        $result = $this->model_request->EditRequest($intRequestHeaderID);
-        if ($result == true) {
-            $response['success'] = true;
-        } else {
-            $response['success'] = false;
-            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            if($CanApprovalOrRejectAll == false)
+            {
+                $response['success'] = false;
+                $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
+            }
+            else{
+                $result = $this->model_request->ApprovalOrRejectRequestAllItems($isApproved);
+                $response['success'] = true;
+            }
+   
         }
-        echo json_encode($response);
+
+        if($isApproved == 1) //Approval All
+        {
+            $item_count = count($this->input->post('itemID'));
+         
+            for ($i = 0; $i < $item_count; $i++) {
+                $previousRV = $this->model_item->chkRv($this->input->post('itemID')[$i]);
+    
+                if ($previousRV['rv']  != $this->input->post('rv')[$i]) {
+                    $CanApprovalOrRejectAll = false;
+                }
+                else{
+                    $chkCanApproval = $this->model_request->GetRequestDetailByIDApprovalAndRejectNull($this->input->post('intRequestDetailID')[$i]);
+                    if($chkCanApproval > 0)
+                    {
+                        if ($chkCanApproval['decQty'] > $chkCanApproval['decStockInHand']) {
+                            $CheckQty = false;
+                        }
+                    }
+                  
+                }
+            }
+
+            if($CanApprovalOrRejectAll == false || $CheckQty == false)
+            {
+                $response['success'] = false;
+                $response['messages'] = 'Another user tries to edit this Item details Or Please Check Stock Qty..! please refresh the page and try again !';
+            }
+            else{
+                $result = $this->model_request->ApprovalOrRejectRequestAllItems($isApproved);
+                $response['success'] = true;
+            }
+
+        }
+ 
+        echo json_encode($response); 
     }
-
 }

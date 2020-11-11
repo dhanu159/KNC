@@ -10,6 +10,10 @@ class Utilities extends Admin_Controller
         $this->data['page_title'] = 'User Group';
         $this->load->model('model_groups');
         $this->load->model('model_measureunit');
+        $this->load->model('model_item');
+        $this->load->model('model_cuttingorder');
+
+
 
 
         $user_group_data = $this->model_groups->getUserGroupData();
@@ -106,7 +110,7 @@ class Utilities extends Admin_Controller
             }
         }
 
-        $this->render_template('utilities/userGroup','User Group', $this->data);
+        $this->render_template('utilities/userGroup', 'User Group', $this->data);
     }
 
     public function createUserGroup()
@@ -208,7 +212,7 @@ class Utilities extends Admin_Controller
         // $this->load->view('measureunit/manageMeasureUnit');
         // $this->load->view('partials/footer');
 
-        $this->render_template('measureunit/manageMeasureUnit','Manage Measure Unit', $this->data);
+        $this->render_template('measureunit/manageMeasureUnit', 'Manage Measure Unit', $this->data);
     }
 
     public function fetchMeasureUnitDataById($id)
@@ -376,6 +380,51 @@ class Utilities extends Admin_Controller
                 }
             }
             echo json_encode($response);
+        }
+    }
+
+
+    //-----------------------------------
+    // Create Cutting Order
+    //-----------------------------------
+    public function CreateCuttingOrder()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('viewCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $this->render_template('Utilities/CreateCuttingOrder', 'Manage Cutting Order');
+    }
+
+    public function SaveCuttingOrder()
+    {
+
+        try {
+
+            if (!$this->isAdmin) {
+                if (!in_array('createCuttingOrder', $this->permission)) {
+                    redirect('dashboard', 'refresh');
+                }
+            }
+            $response = array();
+
+            $result = $this->model_cuttingorder->SaveCuttingOrder();
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            }
+
+            echo json_encode($response);
+        } catch (\Throwable $th) {
+            $response['success'] = false;
+            $response['messages'] = $th->getMessage();
+
+            echo json_encode($response);
+            //    print_r($th->getMessage());
         }
     }
 }
