@@ -83,6 +83,9 @@ $(document).ready(function() {
 
     function remove() {
         $(".red").click(function() {
+
+            $(this).closest("tr").remove();
+
             CalculateItemCount();
         });
     }

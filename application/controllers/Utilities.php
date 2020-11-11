@@ -387,7 +387,7 @@ class Utilities extends Admin_Controller
     //-----------------------------------
     // Create Cutting Order
     //-----------------------------------
-    public function CreateCuttingOrder()
+    public function CuttingOrder()
     {
         if (!$this->isAdmin) {
             if (!in_array('viewCuttingOrder', $this->permission)) {
@@ -395,7 +395,7 @@ class Utilities extends Admin_Controller
             }
         }
 
-        $this->render_template('Utilities/CreateCuttingOrder', 'Manage Cutting Order');
+        $this->render_template('Utilities/CuttingOrder', 'Manage Cutting Order');
     }
 
     public function SaveCuttingOrder()
