@@ -16,7 +16,7 @@ class Model_dashboard extends CI_Model
 
     public function getMainBranchApprovalPendingData(){
         $sql = "SELECT 
-                intGRNHeaderID,
+                    intGRNHeaderID,
                     vcGRNNo,
                     TIMESTAMPDIFF(MINUTE, CASE WHEN dtLastModifiedDate IS NULL THEN dtCreatedDate ELSE dtLastModifiedDate END, NOW()) AS `Minutes`,
                     TIMESTAMPDIFF(HOUR, CASE WHEN dtLastModifiedDate IS NULL THEN dtCreatedDate ELSE dtLastModifiedDate END, NOW()) AS `Hours`,
