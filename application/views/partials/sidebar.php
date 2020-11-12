@@ -90,6 +90,14 @@
                                 <p>&nbsp;&nbsp;Measure Unit</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url('Utilities/CreateCuttingOrder') ?>" class="nav-link <?php if ($this->uri->segment(2) == "MeasureUnit") {
+                                                                                                    echo 'active';
+                                                                                                } ?>">
+                                <i class="fas fa-balance-scale-right"></i>
+                                <p>&nbsp;&nbsp;Cutting Order</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">

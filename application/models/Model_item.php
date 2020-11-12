@@ -11,7 +11,7 @@ class Model_item extends CI_Model
     public function getItemData($itemId = null) 
 	{
 		if($itemId) {
-			$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
+			$sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,REPLACE(it.rv,' ','-') as rv FROM item as it
             inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
             inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
             WHERE IsActive = 1 AND it.intItemID = ? ";
@@ -31,7 +31,7 @@ class Model_item extends CI_Model
 
     public function getOnlyRawItemData()
     {
-        $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
+        $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,REPLACE(it.rv,' ','-') as rv FROM item as it
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
         where  IsActive = 1 AND it.intItemTypeID = 1
@@ -42,7 +42,7 @@ class Model_item extends CI_Model
 
     public function getOnlyFinishItemData()
     {
-        $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,it.rv FROM item as it
+        $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,it.decStockInHand,it.decReOrderLevel,it.decUnitPrice,REPLACE(it.rv,' ','-') as rv FROM item as it
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
         where  IsActive = 1 AND it.intItemTypeID = 2
@@ -54,14 +54,14 @@ class Model_item extends CI_Model
     public function getBranchStockItems($id)
     {
         if ($id) {
-        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel, BS.rv FROM branchstock AS BS
+        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel,REPLACE(BS.rv,' ','-') as rvFROM branchstock AS BS
         INNER JOIN item AS IT ON BS.intItemID = IT.intItemID
         WHERE BS.intBranchID = ? ";
         $query = $this->db->query($sql, array(1));
         return $query->row_array();
         }
 
-        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel, BS.rv FROM branchstock AS BS
+        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel, REPLACE(BS.rv,' ','-') as rv FROM branchstock AS BS
         INNER JOIN item AS IT ON BS.intItemID = IT.intItemID";
         $query = $this->db->query($sql);
         return $query->result_array();
@@ -113,9 +113,9 @@ class Model_item extends CI_Model
     public function chkRv($id = null)
     {
         if ($id) {
-            $sql = "SELECT rv FROM `item` WHERE intItemID = ?";
+            $sql = "SELECT REPLACE(rv,' ','-') as rv FROM `item` WHERE intItemID = ?";
             $query = $this->db->query($sql, array($id));
-            return $query->result_array();
+            return $query->row_array();
         }
     }
 

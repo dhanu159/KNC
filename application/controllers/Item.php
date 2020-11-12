@@ -186,7 +186,7 @@ class Item extends Admin_Controller
 		$response = array();
 
 		if ($id) {
-			$this->form_validation->set_rules('edit_item_name', 'Item Name', 'trim|required|is_unique[item.vcItemName]');
+			$this->form_validation->set_rules('edit_item_name', 'Item Name', 'trim|required');
 			$this->form_validation->set_rules('edit_measure_unit', 'Measure Unit', 'trim|required');
 			$this->form_validation->set_rules('edit_item_type', 'Item Type', 'trim|required');
 			if($this->input->post('edit_item_type') == 2)
@@ -211,7 +211,7 @@ class Item extends Admin_Controller
 
 				$previousRV = $this->model_item->chkRv($id);
 
-				if ($previousRV[0]['rv'] != $currentRV) {
+				if ($previousRV['rv'] != $currentRV) {
 					$response['success'] = false;
 					$response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
 				} else {

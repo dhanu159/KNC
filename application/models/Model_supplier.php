@@ -67,7 +67,7 @@ class Model_supplier extends CI_Model
         if ($id) {
             $sql = "SELECT rv FROM `supplier` WHERE intSupplierID = ?";
             $query = $this->db->query($sql, array($id));
-            return $query->result_array();
+            return $query->row_array();
         }
     }
 }
