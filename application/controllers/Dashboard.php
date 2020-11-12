@@ -57,7 +57,7 @@ class Dashboard extends Admin_Controller
 				$time = $value['Days'] . ' days';
 			}
 
-			$notification .= '<a href="#" class="dropdown-item">
+			$notification .= '<a href="' . base_url() . "GRN/ApproveOrRejectGRN/" . $value['intGRNHeaderID'] . '" class="dropdown-item">
 		                    	<p class="notify-title"><i class="fas fa-file mr-2"></i>&nbsp;GRN Approval Pending</p>
 		                    	<p class="notify-message">You have pending goods received a note to approve "'.$value['vcGRNNo'].'"<span class="float-right text-muted text-sm">'.$time. '</span></p>
 							</a>
