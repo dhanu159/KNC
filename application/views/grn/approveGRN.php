@@ -90,60 +90,45 @@
                         </div>
                     </div>
 
-                    <table class="table arcadia-table" id="itemTable">
-                        <thead>
-                            <tr>
-                                <th hidden>GRN Detail ID</th>
-                                <th style="text-align:center;">Item</th>
-                                <th style="width: 200px; text-align:center;">Unit Price</th>
-                                <th style="width: 100px; text-align:center;">Unit</th>
-                                <th style="width: 100px; text-align:center;">Qty</th>
-                                <th style="width: 200px; text-align:center;">Total Price</th>
-                                <!-- <th style="width: 100px; text-align: center;">Action</th> -->
-                            </tr>
-                        </thead>
-                        <tbody>
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-striped arcadia-table" id="itemTable">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:center;">Item</th>
+                                        <th style="text-align:center;">Unit Price</th>
+                                        <th style="text-align:center;">Unit</th>
+                                        <th style="text-align:center;">Qty</th>
+                                        <th style="text-align:center;">Total Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $row = 0;
+                                    foreach ($grn_detail_data as $k => $v) { ?>
+                                        <tr>
+                                            <td><?= $v['vcItemName'] ?></td>
+                                            <td><?= $v['decUnitPrice'] ?></td>
+                                            <td><?= $v['vcMeasureUnit'] ?></td>
+                                            <td><?= $v['decQty'] ?></td>
+                                            <td><?= $v['decTotalPrice'] ?></td>
+                                        </tr>
 
-                            <!-- <tr class="first-tr">
-                                <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
-                                <td class="static">
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem">
-                                        <option value=" 0" disabled selected hidden>Select Item</option>
-                                        <?php foreach ($item_data as $k => $v) { ?>
-                                            <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;"></td>
-                                <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
-                                <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
-                                <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
-                            </tr> -->
-                            <?php
-                            $row = 0;
-                            foreach ($grn_detail_data as $k => $v) { ?>
-                                <tr>
-                                    <td hidden><input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_<?= $row ?>" value="<?= $v['intItemID'] ?>" readonly></td>
-                                    <td><input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_<?= $row ?>" value="<?= $v['vcItemName'] ?>" readonly></td>
-                                    <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_<?= $row ?>" value="<?= $v['decUnitPrice'] ?>" readonly></td>
-                                    <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_<?= $row ?>" value="<?= $v['vcMeasureUnit'] ?>" readonly></td>
-                                    <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
-                                    <td><input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_<?= $row ?>" value="<?= $v['decTotalPrice'] ?>" readonly></td>
-                                    <!-- <td class="static"><span class="button red center-items"><i class="fas fa-times"></i></span></td> -->
-                                </tr>
-                            <?php
-                                $row++;
-                            } ?>
-                        </tbody>
-                    </table>
+                                    <?php
+                                        $row++;
+                                    } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
 
                     <div class="row" style="border-top:1px solid #dee2e6;">
-                        <div class="col-6">
+                        <div class="col-md-6 col-sm-12">
                             <p style="color: #c2c7d0; position:absolute; bottom:0;" id="itemCount">Item Count : 0</p>
                         </div>
                         <!-- /.col -->
-                        <div class="col-6">
+                        <div class="col-md-6 col-sm-12">
                             <div class="table-responsive">
                                 <table class="table">
                                     <tr>
@@ -166,7 +151,14 @@
                                     </tr>
                                 </table>
                             </div>
-                            <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right" onclick="approveGRN(<?= $grn_header_data['intGRNHeaderID'] ?>)"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Approve</button>
+                            <div class="row">
+                                <div class="col-lg-6" style="padding: 10px;">
+                                    <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right col-sm-12 col-md-12" onclick="approveGRN(<?= $grn_header_data['intGRNHeaderID'] ?>)"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Approve</button>
+                                </div>
+                                <div class="col-lg-6" style="padding: 10px;">
+                                    <button type="button" id="btnSubmit" class="btn btn-lg btn-danger btn-flat float-right col-sm-12 col-md-12" onclick="rejectGRN(<?= $grn_header_data['intGRNHeaderID'] ?>)"><i class="fas fa-times"></i>&nbsp;&nbsp;&nbsp;Reject</button>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.col -->
                     </div>

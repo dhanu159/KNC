@@ -52,7 +52,7 @@ function FilterItems(FromDate,ToDate){
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             if (aData[9] == "N/A" && aData[11] == "N/A") { // Pending
                 $('td', nRow).css('background-color', '#FFC108');
-            } else if (aData[11] != "N/A") {
+            } else if (aData[11] != "N/A") {  // Rejected
                 $('td', nRow).css('background-color', '#dc3545');
             }
 
@@ -68,7 +68,10 @@ function FilterItems(FromDate,ToDate){
             $(nRow.childNodes[10]).css('text-align', 'center');
             $(nRow.childNodes[11]).css('text-align', 'center');
             $(nRow.childNodes[12]).css('text-align', 'center');
+
             $(nRow.childNodes[13]).css('padding', '0');
+            $(nRow.childNodes[13]).css('text-align', 'center');
+
         }
     });
 

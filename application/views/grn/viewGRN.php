@@ -66,7 +66,8 @@
                         <!-- <div>
                             Toggle column: <a class="toggle-vis" data-column="0">ID</a> - <a class="toggle-vis" data-column="1">GRN No</a> - <a class="toggle-vis" data-column="2">Office</a> - <a class="toggle-vis" data-column="3">Age</a> - <a class="toggle-vis" data-column="4">Start date</a> - <a class="toggle-vis" data-column="5">Salary</a>
                         </div> -->
-                        <table id="manageTable" class="table table-bordered table-striped" style="display:block !important;">
+                        <table id="manageTable" class="table table-bordered table-striped">
+                            <!-- style="display:block !important;" -->
                             <thead>
                                 <tr>
                                     <th>GRN No</th>

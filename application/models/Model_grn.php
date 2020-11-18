@@ -255,4 +255,21 @@ class Model_grn extends CI_Model
         return ($update == true) ? true : false;
     }
 
+    public function rejectGRN($intGRNHeaderID)
+    {
+        $this->db->trans_start();
+        date_default_timezone_set('Asia/Colombo');
+        $now = date('Y-m-d H:i:s');
+
+        $data = array(
+            'intRejectedBy' => $this->session->userdata('user_id'),
+            'dtRejectedOn' => $now
+        );
+        $this->db->where('intGRNHeaderID', $intGRNHeaderID);
+        $update = $this->db->update('GRNHeader', $data);
+
+        $this->db->trans_complete();
+        return ($update == true) ? true : false;
+    }
+
 }

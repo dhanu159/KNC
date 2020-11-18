@@ -88,6 +88,39 @@ class GRN extends Admin_Controller
         $this->render_template('GRN/viewGRN','View GRN');
     }
 
+    public function ViewGRNDetails($GRNHeaderID)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('viewGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        if (!$GRNHeaderID) {
+            redirect('dashboard', 'refresh');
+        }
+
+        $grn_header_data = $this->model_grn->getGRNHeaderData($GRNHeaderID);
+
+        if (isset($grn_header_data)) {
+            $grn_detail_data = $this->model_grn->getGRNDetailData($GRNHeaderID);
+            $supplier_data = $this->model_supplier->getSupplierData();
+            $item_data = $this->model_item->getOnlyRawItemData();
+
+            $this->data['supplier_data'] = $supplier_data;
+            $this->data['item_data'] = $item_data;
+
+            $this->data['grn_detail_data'] = $grn_detail_data;
+            $this->data['grn_header_data'] = $grn_header_data;
+
+            $this->render_template('GRN/viewGRNDetail', 'View GRN', $this->data);
+        }else{
+            redirect(base_url() . 'GRN/viewGRNDetail', 'refresh');
+        }
+
+       
+    }
+
     public function FilterGRNHeaderData($StatusType, $FromDate, $ToDate)
     {
         if (!$this->isAdmin) {
@@ -106,6 +139,10 @@ class GRN extends Admin_Controller
         foreach ($grn_data as $key => $value) {
 
             $buttons = '';
+
+            if (in_array('viewGRN', $this->permission) || $this->isAdmin) {
+                $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ViewGRNDetails/" . $value['intGRNHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
+            }
 
             if ($value['ApprovedUser'] == null && $value['RejectedUser'] == null) { // Pending 
                 if (in_array('editGRN', $this->permission) || $this->isAdmin) {
@@ -310,5 +347,39 @@ public function ApproveGRN(){
         }
         echo json_encode($response);
 }
+
+    public function RejectGRN()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('approveGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $intGRNHeaderID = $this->input->post('intGRNHeaderID');
+        $response = array();
+        if ($intGRNHeaderID) {
+
+            $canApproveOrReject = $this->model_grn->canRemoveGRN($intGRNHeaderID);
+
+            if ($canApproveOrReject) {
+
+                $approved = $this->model_grn->rejectGRN($intGRNHeaderID);
+
+                if ($approved == true) {
+                    $response['success'] = true;
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Error in the database while rejecting the GRN information !";
+                }
+            } else {
+                $response['success'] = false;
+                $response['messages'] = "You can't reject this GRN, Please check and try again !";
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Please refersh the page again !!";
+        }
+        echo json_encode($response);
+    }
 
 }
