@@ -92,8 +92,8 @@
                         </li>
                         <li class="nav-item">
                             <a href="<?= base_url('Utilities/CreateCuttingOrder') ?>" class="nav-link <?php if ($this->uri->segment(2) == "MeasureUnit") {
-                                                                                                    echo 'active';
-                                                                                                } ?>">
+                                                                                                            echo 'active';
+                                                                                                        } ?>">
                                 <i class="fas fa-balance-scale-right"></i>
                                 <p>&nbsp;&nbsp;Cutting Order</p>
                             </a>
@@ -164,7 +164,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateGRN" || $this->uri->segment(2) == "ViewGRN") {
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateGRN" || $this->uri->segment(2) == "ViewGRN" || $this->uri->segment(2) == "EditGRN" || $this->uri->segment(2) == "ViewGRNDetails" || $this->uri->segment(2) == "ApproveOrRejectGRN") {
                                                         echo 'menu-open';
                                                     } ?>">
                     <a href="#" class="nav-link">
@@ -183,7 +183,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo base_url('GRN/ViewGRN') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewGRN") {
+                            <a href="<?php echo base_url('GRN/ViewGRN') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewGRN" || $this->uri->segment(2) == "ViewGRNDetails" || $this->uri->segment(2) == "EditGRN" || $this->uri->segment(2) == "ApproveOrRejectGRN") {
                                                                                                 echo 'active';
                                                                                             } ?>">
                                 <i class="fas fa-search"></i>
@@ -192,6 +192,41 @@
                         </li>
                     </ul>
                 </li>
+
+                <?php
+                if ($_SESSION['Is_main_branch'] == 1) { ?>
+                    <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateDispatch" || $this->uri->segment(2) == "ViewDispatch") {
+                                                            echo 'menu-open';
+                                                        } ?>">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-layer-group"></i>
+                            <p>&nbsp;&nbsp;&nbsp;Dispatch
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('Dispatch/CreateDispatch') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CreateDispatch") {
+                                                                                                                echo 'active';
+                                                                                                            } ?>">
+                                    <i class="fas fa-cart-plus"></i>
+                                    <p>&nbsp;&nbsp;Create Dispatch</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('Dispatch/ViewDispatch') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewDispatch") {
+                                                                                                                echo 'active';
+                                                                                                            } ?>">
+                                    <i class="fas fa-search"></i>
+                                    <p>&nbsp;&nbsp;View Dispatch</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                <?php
+                }
+                ?>
+
                 <li class="nav-item">
                     <a href="<?= base_url('auth/logout') ?>" class="nav-link">
                         <i class="fas fa-power-off"></i>
