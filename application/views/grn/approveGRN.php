@@ -108,10 +108,10 @@
                                     foreach ($grn_detail_data as $k => $v) { ?>
                                         <tr>
                                             <td><?= $v['vcItemName'] ?></td>
-                                            <td><?= $v['decUnitPrice'] ?></td>
-                                            <td><?= $v['vcMeasureUnit'] ?></td>
-                                            <td><?= $v['decQty'] ?></td>
-                                            <td><?= $v['decTotalPrice'] ?></td>
+                                            <td style="text-align:right;"><?= $v['decUnitPrice'] ?></td>
+                                            <td style="text-align:center;"><?= $v['vcMeasureUnit'] ?></td>
+                                            <td style="text-align:right;"><?= $v['decQty'] ?></td>
+                                            <td style="text-align:right;"><?= $v['decTotalPrice'] ?></td>
                                         </tr>
 
                                     <?php
