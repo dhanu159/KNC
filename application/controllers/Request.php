@@ -92,8 +92,10 @@ class Request extends Admin_Controller
 
             if ($this->isAdmin) {
                 $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
-                $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
+                $buttons .= '<button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
                 $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
+                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/AcceptRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><<i class="fas fa-ambulance"></i></button>';
+                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/IssuedRequestItemCancel/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><<i class="fas fa-exchange-alt"></i></button>';
             } else {
                 if ($this->session->userdata('Is_main_branch') == false) {
                     if (in_array('editRequestItem', $this->permission)) {
@@ -102,9 +104,15 @@ class Request extends Admin_Controller
                     if (in_array('deleteRequestItem', $this->permission)) {
                         $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
                     }
+                    if (in_array('acceptRequestItem', $this->permission)) {
+                        $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/AcceptRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><<i class="fas fa-ambulance"></i></button>';
+                    }
                 } else {
                     if (in_array('approveRequestItem', $this->permission)) {
                         $buttons .= '<a class="button btn btn-default" href="' . base_url("request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
+                    }
+                    if (in_array('issuedRequestItemCancel', $this->permission)) {
+                        $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/IssuedRequestItemCancel/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><<i class="fas fa-exchange-alt"></i></button>';
                     }
                 }
             }
@@ -329,64 +337,222 @@ class Request extends Admin_Controller
         $isApproved = $this->input->post('isApproved');
         $CanApprovalOrRejectAll = true;
         $CheckQty = true;
-        if($isApproved == 0) //Reject All
+        if ($isApproved == 0) //Reject All
         {
             $item_count = count($this->input->post('itemID'));
-         
+
             for ($i = 0; $i < $item_count; $i++) {
                 $previousRV = $this->model_item->chkRv($this->input->post('itemID')[$i]);
-    
+
                 if ($previousRV['rv']  != $this->input->post('rv')[$i]) {
                     $CanApprovalOrRejectAll = false;
                 }
             }
 
-            if($CanApprovalOrRejectAll == false)
-            {
+            if ($CanApprovalOrRejectAll == false) {
                 $response['success'] = false;
                 $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
-            }
-            else{
+            } else {
                 $result = $this->model_request->ApprovalOrRejectRequestAllItems($isApproved);
                 $response['success'] = true;
             }
-   
         }
 
-        if($isApproved == 1) //Approval All
+        if ($isApproved == 1) //Approval All
         {
             $item_count = count($this->input->post('itemID'));
-         
+
             for ($i = 0; $i < $item_count; $i++) {
                 $previousRV = $this->model_item->chkRv($this->input->post('itemID')[$i]);
-    
+
                 if ($previousRV['rv']  != $this->input->post('rv')[$i]) {
                     $CanApprovalOrRejectAll = false;
-                }
-                else{
+                } else {
                     $chkCanApproval = $this->model_request->GetRequestDetailByIDApprovalAndRejectNull($this->input->post('intRequestDetailID')[$i]);
-                    if($chkCanApproval > 0)
-                    {
+                    if ($chkCanApproval > 0) {
                         if ($chkCanApproval['decQty'] > $chkCanApproval['decStockInHand']) {
                             $CheckQty = false;
                         }
                     }
-                  
                 }
             }
 
-            if($CanApprovalOrRejectAll == false || $CheckQty == false)
-            {
+            if ($CanApprovalOrRejectAll == false || $CheckQty == false) {
                 $response['success'] = false;
                 $response['messages'] = 'Another user tries to edit this Item details Or Please Check Stock Qty..! please refresh the page and try again !';
-            }
-            else{
+            } else {
                 $result = $this->model_request->ApprovalOrRejectRequestAllItems($isApproved);
                 $response['success'] = true;
             }
-
         }
- 
-        echo json_encode($response); 
+
+        echo json_encode($response);
+    }
+
+
+    //-----------------------------------
+    // Accept Request Items
+    //-----------------------------------
+
+    public function AcceptRequestItem($intRequestHeaderID = null)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('approveRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $request_header_data = $this->model_request->getRequestHeaderData($intRequestHeaderID);
+        if (!$request_header_data) {
+            redirect(base_url() . 'request/ViewRequest', 'refresh');
+        }
+        $request_detail_data = $this->model_request->getRequestDetailData($intRequestHeaderID);
+
+        $this->data['request_header_data'] = $request_header_data;
+        $this->data['request_detail_data'] = $request_detail_data;
+
+        $this->render_template('request/AcceptRequestItem', 'Accept Requested Item', $this->data);
+    }
+
+    public function AcceptRequestByDetailID($RequestDetailID, $ItemID)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('acceptRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        $canAccept = $this->model_request->canAcceptRequest($RequestDetailID);
+
+        if ($canAccept) {
+            $result = $this->model_request->AcceptRequestByDetailID($RequestDetailID, $ItemID);
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'This Item Cannt Accept.';
+        }
+
+        echo json_encode($response);
+    }
+
+    public function AcceptAllRequestItems()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('acceptRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        // $canAcceptAll = true;
+        // $item_count = count($this->input->post('intRequestDetailID'));
+
+        // for ($i = 0; $i < $item_count; $i++) {
+        //     // $canAccept = $this->model_request->canAcceptRequest($this->input->post('intRequestDetailID')[$i]);
+        //     // if(!$canAccept)
+        //     // {
+        //     //     $canAcceptAll = false;
+        //     // }
+        // }
+
+        // if($canAcceptAll == false)
+        // {
+        //     $response['success'] = false;
+        //     $response['messages'] = 'All Items Cannot Accepted, Please Try One by One..!';
+        // }
+        // else{
+        $result = $this->model_request->AcceptAllRequestItems();
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while Accept idetails. Please contact service provider.';
+        }
+        // }
+
+        echo json_encode($response);
+    }
+
+    //-----------------------------------
+    // Issued Request Item Cancel
+    //-----------------------------------
+
+    public function IssuedRequestItemCancel($intRequestHeaderID = null)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('cancelRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $request_header_data = $this->model_request->getRequestHeaderData($intRequestHeaderID);
+        if (!$request_header_data) {
+            redirect(base_url() . 'request/ViewRequest', 'refresh');
+        }
+        $request_detail_data = $this->model_request->getRequestDetailData($intRequestHeaderID);
+
+        $this->data['request_header_data'] = $request_header_data;
+        $this->data['request_detail_data'] = $request_detail_data;
+
+        $this->render_template('request/IssuedRequestItemCancel', 'Accept Requested Item', $this->data);
+    }
+
+    public function IssuedRequestCancelByDetailID($RequestDetailID, $ItemID, $rv)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('cancelRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        // $uid =$this->input->post('RequestDetailID');
+        // $ItemID =$this->input->post('ItemID');
+        // $rv = $this->input->post('rv');
+        $response = array();
+
+        $previousRV = $this->model_item->chkRv($ItemID);
+
+        if ($previousRV['rv']  != $rv) {
+            $response['success'] = false;
+            $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
+        } else {
+            $result = $this->model_request->IssuedRequestCancelByDetailID($RequestDetailID, $ItemID);
+
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            }
+        }
+
+        echo json_encode($response);
+    }
+
+    public function IssuedCancelAllRequestItems()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('cancelRequestItem', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $result = $this->model_request->issuedCancelAllRequestItems();
+
+
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+
+        echo json_encode($response);
     }
 }

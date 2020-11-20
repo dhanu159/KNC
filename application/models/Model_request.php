@@ -212,7 +212,9 @@ class Model_request extends CI_Model
                 RD.decQty,
                 IFNULL(BR.decStockInHand,' N/A') AS decStockInHand,
                 case when RD.intRejectedBy IS NULL then 0 else 1 end AS IsRejected,
-                case when RD.intApprovedBy IS NULL then 0 else 1 end AS IsApproved
+                case when RD.intApprovedBy IS NULL then 0 else 1 end AS IsApproved,
+                case when RD.intAcceptedBy IS NULL then 0 else 1 end AS IsAccepted,
+                case when RD.intCancelledBy IS NULL then 0 else 1 end AS IsCancelled
             FROM requestheader AS RH
             INNER JOIN Requestdetail AS RD ON RH.intRequestHeaderID = RD.intRequestHeaderID
             INNER JOIN Item AS IT ON RD.intItemID = IT.intItemID
@@ -375,23 +377,19 @@ class Model_request extends CI_Model
 
         if ($isApproved == 0) //Reject All
         {
-            $this->db->trans_complete();
-        
+            $this->db->trans_start();
+
             $item_count = count($this->input->post('intRequestDetailID'));
 
-            // $data = array(
-            //     'intRejectedBy' => $this->session->userdata('user_id'),
-            //     'dtRejectedOn' => $now,
-            // );
+
             for ($i = 0; $i < $item_count; $i++) {
-            
+
                 $intRequestDetailID = $this->input->post('intRequestDetailID')[$i];
 
                 $sql = "UPDATE `requestdetail` SET `intRejectedBy` = ? , `dtRejectedOn` = ? 
-                WHERE `intRejectedBy` IS NULL AND `intRequestDetailID` = ?";
+                WHERE `intRejectedBy` IS NULL AND `intApprovedBy` IS NULL AND `intRequestDetailID` = ?";
 
-                $update = $this->db->query($sql, array($this->session->userdata('user_id'),$now,$intRequestDetailID));
-
+                $update = $this->db->query($sql, array($this->session->userdata('user_id'), $now, $intRequestDetailID));
             }
             $this->db->trans_complete();
             return ($update == true) ? true : false;
@@ -399,8 +397,296 @@ class Model_request extends CI_Model
 
         if ($isApproved == 1) //Approval All
         {
-            
+            $this->db->trans_start();
+
+            $item_count = count($this->input->post('intRequestDetailID'));
+
+            for ($i = 0; $i < $item_count; $i++) {
+
+                $intRequestDetailID = $this->input->post('intRequestDetailID')[$i];
+
+                $sql = "UPDATE `requestdetail` SET `intApprovedBy` = ? , `dtApprovedOn` = ? 
+                WHERE `intApprovedBy` IS NULL AND `intRejectedBy` IS NULL  AND `intRequestDetailID` = ?";
+
+                $update = $this->db->query($sql, array($this->session->userdata('user_id'), $now, $intRequestDetailID));
+
+                $Item_data = $this->GetRequestDetailByID($intRequestDetailID);
+
+                //now decrease the item stock qty
+
+                if ($Item_data['decStockInHand'] >= $Item_data['decQty']) {
+                    $updateStockQty =  (int)$Item_data['decStockInHand'] - (int)$Item_data['decQty'];
+                    $this->db->where('intItemID', $Item_data['intItemID']);
+                    $update = $this->db->update('item', array('decStockInHand' => $updateStockQty));
+
+                    $Logdata = array(
+                        'intItemID' => $Item_data['intItemID'],
+                        'intTransactionLogTypeID' => 1, //Item Transfer
+                        'vcPerformColumn' => 'intRequestDetailID',
+                        'intPerformID' => $intRequestDetailID,
+                        'decPreviousQty' => $Item_data['decStockInHand'],
+                        'decCurrentQty' => $updateStockQty,
+                        'intLoggedBy' => $this->session->userdata('user_id'),
+                    );
+
+                    $insertLog = $this->db->insert('itemtransactionlog', $Logdata);
+                }
+            }
+
+            $this->db->trans_complete();
+
+            return ($update == true) ? true : false;
+        }
+    }
+
+    //-----------------------------------
+    // Accept Request Items
+    //-----------------------------------
+
+    public function canAcceptRequest($RequestDetailID)
+    {
+        $sql = "
+        SELECT  intApprovedBy 
+        FROM requestdetail 
+        WHERE intApprovedBy IS NOT NULL AND intRejectedBy IS NULL AND intCancelledBy IS NULL AND intRequestDetailID = ? ";
+        $query = $this->db->query($sql, array($RequestDetailID));
+        if ($query->result_array() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public function chkBranchStockItem($ItemID)
+    {
+        if ($ItemID) {
+            $sql = "SELECT EXISTS(SELECT intItemID  FROM branchstock WHERE intItemID = ?) AS value";
+            $query = $this->db->query($sql, array($ItemID));
+            return $query->row_array();
+        }
+    }
+
+    public function GetBranchStockItemWiseData($ItemID)
+    {
+        if ($ItemID) {
+            $sql = "SELECT intBranchStockID,
+                    intBranchID,
+                    intItemID,
+                    decStockInHand,
+                    decReOrderLevel,
+                    rv 
+            FROM branchstock
+            WHERE IsActive = 1 AND intItemID = ? ";
+            $query = $this->db->query($sql, array($ItemID));
+            return $query->row_array();
+        }
+    }
+
+    public function AcceptRequestByDetailID($RequestDetailID, $ItemID)
+    {
+        date_default_timezone_set('Asia/Colombo');
+        $now = date('Y-m-d H:i:s');
+
+        $this->db->trans_start();
+
+        $CanUpdateStock = $this->chkBranchStockItem($ItemID);
+        $Item_data = $this->GetRequestDetailByID($RequestDetailID);
+
+        if ($CanUpdateStock['value'] == 1) {
+            $data = array(
+                'intAcceptedBy' => $this->session->userdata('user_id'),
+                'dtAcceptedOn' => $now,
+            );
+
+            $this->db->where('intRequestDetailID', $RequestDetailID);
+            $update = $this->db->update('requestdetail', $data);
+
+            $Stockqty = $this->GetBranchStockItemWiseData($ItemID);
+            //now increase the Branch Stock item stock qty
+            $updateStockQty =  (int)$Stockqty['decStockInHand'] + (int)$Item_data['decQty'];
+            $this->db->where('intItemID', $Item_data['intItemID']);
+            $update = $this->db->update('branchstock', array('decStockInHand' => $updateStockQty));
+        } else {
+
+            $data = array(
+                'intAcceptedBy' => $this->session->userdata('user_id'),
+                'dtAcceptedOn' => $now,
+            );
+
+            $this->db->where('intRequestDetailID', $RequestDetailID);
+            $update = $this->db->update('requestdetail', $data);
+
+            $data = array(
+                'intBranchID' => 2, //Kandy
+                'intItemID' => $ItemID,
+                'decStockInHand' => $Item_data['decQty'],
+            );
+            $insetBranchStock = $this->db->insert('branchstock', $data);
         }
 
+        $this->db->trans_complete();
+
+        return ($update == true) ? true : false;
+    }
+
+    // public function GetRequestDetailByIDAcceptedNull($RequestDetailID)
+    // {
+    //     $sql = "SELECT RD.decQty , IT.decStockInHand , IT.intItemID  FROM requestdetail RD
+    //     INNER JOIN item AS IT ON RD.intItemID = IT.intItemID
+    //     WHERE RD.intRequestDetailID = ? AND RD.intAcceptedBy IS NULL AND RD.intRejectedBy IS NULL";
+
+    //     $query = $this->db->query($sql, array($RequestDetailID));
+    //     return $query->row_array();
+    // }
+
+    public function AcceptAllRequestItems()
+    {
+        date_default_timezone_set('Asia/Colombo');
+        $now = date('Y-m-d H:i:s');
+
+        $this->db->trans_start();
+
+        $item_count = count($this->input->post('intRequestDetailID'));
+
+        for ($i = 0; $i < $item_count; $i++) {
+
+            $CanUpdateStock = $this->chkBranchStockItem($this->input->post('itemID')[$i]);
+            $Item_data = $this->GetRequestDetailByID($this->input->post('intRequestDetailID')[$i]);
+
+            if ($CanUpdateStock['value'] == 1) {
+                $canAccept = $this->canAcceptRequest($this->input->post('intRequestDetailID')[$i]);
+                if ($canAccept) {
+                    $sql = "UPDATE `requestdetail` SET `intAcceptedBy` = ? , `dtAcceptedOn` = ? 
+                    WHERE `intAcceptedBy` IS NULL AND `intRejectedBy` IS NULL  AND `intRequestDetailID` = ?";
+
+                    $update = $this->db->query($sql, array($this->session->userdata('user_id'), $now, $this->input->post('intRequestDetailID')[$i]));
+
+                    $Stockqty = $this->GetBranchStockItemWiseData($this->input->post('itemID')[$i]);
+                    //now increase the Branch Stock item stock qty
+                    $updateStockQty =  (int)$Stockqty['decStockInHand'] + (int)$Item_data['decQty'];
+                    $this->db->where('intItemID', $this->input->post('itemID')[$i]);
+                    $update = $this->db->update('branchstock', array('decStockInHand' => $updateStockQty));
+                }
+            } else {
+
+                $data = array(
+                    'intAcceptedBy' => $this->session->userdata('user_id'),
+                    'dtAcceptedOn' => $now,
+                );
+
+                $this->db->where('intRequestDetailID', $this->input->post('intRequestDetailID')[$i]);
+                $update = $this->db->update('requestdetail', $data);
+
+                $data = array(
+                    'intBranchID' => 2, //Kandy
+                    'intItemID' => $this->input->post('itemID')[$i],
+                    'decStockInHand' => $Item_data['decQty'],
+                );
+                $insetBranchStock = $this->db->insert('branchstock', $data);
+            }
+        }
+
+        $this->db->trans_complete();
+        return ($update == true || $insetBranchStock == true) ? true : false;
+    }
+
+    //-----------------------------------
+    // Issued Request Item Cancel
+    //-----------------------------------
+
+    public function ChkCanIssuedRequestItemCancel($RequestDetailID)
+    {
+        $sql = "SELECT RD.intRequestDetailID, RD.decQty , IT.decStockInHand , IT.intItemID  FROM requestdetail RD
+        INNER JOIN item AS IT ON RD.intItemID = IT.intItemID
+        WHERE RD.intAcceptedBy IS NULL  AND RD.intApprovedBy IS NOT NULL 
+        AND RD.intRejectedBy IS NULL AND RD.intCancelledBy IS NULL AND RD.intRequestDetailID = ? ";
+
+        $query = $this->db->query($sql, array($RequestDetailID));
+        return $query->row_array();
+    }
+
+    public function IssuedRequestCancelByDetailID($RequestDetailID, $ItemID)
+    {
+        date_default_timezone_set('Asia/Colombo');
+        $now = date('Y-m-d H:i:s');
+
+        $this->db->trans_start();
+
+        $chkCanCancel = $this->ChkCanIssuedRequestItemCancel($RequestDetailID);
+        if ($chkCanCancel > 0) {
+            $Item_data = $this->GetRequestDetailByID($RequestDetailID);
+
+            $data = array(
+                'intCancelledBy' => $this->session->userdata('user_id'),
+                'dtCancelledOn' => $now,
+            );
+
+            $this->db->where('intRequestDetailID', $RequestDetailID);
+            $update = $this->db->update('requestdetail', $data);
+
+            //now increase the item stock qty
+            $updateStockQty =  (int)$Item_data['decStockInHand'] + (int)$Item_data['decQty'];
+            $this->db->where('intItemID', $Item_data['intItemID']);
+            $update = $this->db->update('item', array('decStockInHand' => $updateStockQty));
+
+            $Logdata = array(
+                'intItemID' => $Item_data['intItemID'],
+                'intTransactionLogTypeID' => 2, //Issued Request Item Cancel
+                'vcPerformColumn' => 'intRequestDetailID',
+                'intPerformID' => $RequestDetailID,
+                'decPreviousQty' => $Item_data['decStockInHand'],
+                'decCurrentQty' => $updateStockQty,
+                'intLoggedBy' => $this->session->userdata('user_id'),
+            );
+            $insertLog = $this->db->insert('itemtransactionlog', $Logdata);
+        }
+
+        $this->db->trans_complete();
+        return ($update == true) ? true : false;
+    }
+
+    public function issuedCancelAllRequestItems()
+    {
+        date_default_timezone_set('Asia/Colombo');
+        $now = date('Y-m-d H:i:s');
+
+        $this->db->trans_start();
+
+        $item_count = count($this->input->post('intRequestDetailID'));
+
+        for ($i = 0; $i < $item_count; $i++) {
+
+            $chkCanCancel = $this->ChkCanIssuedRequestItemCancel($this->input->post('intRequestDetailID')[$i]);
+
+            if ($chkCanCancel > 0) {
+                $intRequestDetailID = $this->input->post('intRequestDetailID')[$i];
+                $Item_data = $this->GetRequestDetailByID($this->input->post('intRequestDetailID')[$i]);
+
+                
+                $sql = "UPDATE `requestdetail` SET `intCancelledBy` = ? , `dtCancelledOn` = ? 
+                WHERE `intApprovedBy` IS NOT NULL AND `intCancelledBy` IS NULL  AND `intRequestDetailID` = ?";
+
+                $update = $this->db->query($sql, array($this->session->userdata('user_id'), $now, $intRequestDetailID));
+
+                //now increase the item stock qty
+                $updateStockQty =  (int)$Item_data['decStockInHand'] + (int)$Item_data['decQty'];
+                $this->db->where('intItemID', $Item_data['intItemID']);
+                $update = $this->db->update('item', array('decStockInHand' => $updateStockQty));
+
+                $Logdata = array(
+                    'intItemID' => $Item_data['intItemID'],
+                    'intTransactionLogTypeID' => 2, //Issued Request Item Cancel
+                    'vcPerformColumn' => 'intRequestDetailID',
+                    'intPerformID' => $intRequestDetailID,
+                    'decPreviousQty' => $Item_data['decStockInHand'],
+                    'decCurrentQty' => $updateStockQty,
+                    'intLoggedBy' => $this->session->userdata('user_id'),
+                );
+                $insertLog = $this->db->insert('itemtransactionlog', $Logdata);
+            }
+        }
+        $this->db->trans_complete();
+        return ($update == true) ? true : false;
     }
 }

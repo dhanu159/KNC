@@ -69,49 +69,55 @@
     }
 </style>
 
+
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>
-            Manage Cutting Order
-        </h1>
-
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Manage Cutting Order</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Cutting</a></li>
+                        <li class="breadcrumb-item active">Cutting Order</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section class="content">
-        <!-- Small boxes (Stat box) -->
-        <div class="row">
-            <div class="col-md-12 col-xs-12">
-                <div class="card">
-                    <div class="card-header">
-                        <!-- <?php if (in_array('createBranch', $user_permission) || $isAdmin) { ?> -->
-                        <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addCuttingModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Cutting Order</button>
-                        <!-- <?php } ?> -->
+
+        <div class="card">
+            <div class="card-header">
+                <!-- <?php if (in_array('createBranch', $user_permission) || $isAdmin) { ?> -->
+                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addCuttingModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Cutting Order</button>
+                <!-- <?php } ?> -->
+            </div>
+            <div class="card-body">
+
+                <div class="box">
+                    <div class="box-body">
+                        <table id="manageTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Order Name</th>
+                                    <th>Created Date</th>
+                                    <th>Created User</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                        </table>
                     </div>
-                    <!-- <div class="card-body">
-
-                        <div class="box">
-                            <div class="box-body">
-                                <table id="manageTable" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Branch Name</th>
-                                            <th>Address</th>
-                                            <th>Contact No</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-
-                                </table>
-                            </div>
-                            
-                        </div>
-                        
-                    </div> -->
-
+                    <!-- /.box-body -->
                 </div>
+            </div>
+        </div>
+
 
     </section>
-
     <div class="modal fade" id="addCuttingModal" tabindex="-1" role="dialog" aria-labelledby="addCuttingModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -121,7 +127,6 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-
 
                 <!-- <div class="container"> -->
                 <form role="form" method="post" action="<?= base_url('Utilities/SaveCuttingOrder') ?>" id="createCuttingOrder">
@@ -175,6 +180,8 @@
     </div><!-- /.modal -->
 
 </div>
+
+
 
 
 

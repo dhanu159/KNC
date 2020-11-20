@@ -70,81 +70,95 @@ r<style>
         <div class="card">
             <div class="card-body">
                 <form role="form" class="add-form" method="post" action="<?= base_url('request/ApprovalOrRejectRequestItems/' . $request_header_data['intRequestHeaderID']) ?>" id="approvalOrRejectRequestItems">
-                    <!-- <form role="form" class="add-form" method="post" action="<?= base_url('request/RejectAllRequestItems/' . $request_header_data['intRequestHeaderID']) ?>" id="rejectAllRequestItems"> -->
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="invoice_no">Request No</label>
-                                <input type="text" class="form-control" id="request_no" name="request_no" autocomplete="off" required value="<?= $request_header_data['vcRequestNo']; ?>">
-                            </div>
 
-                            <div class="form-group col-md-6">
-                                <label for="invoice_no">Request Date</label>
-                                <input type="text" class="form-control" id="request_date" name="request_date" autocomplete="off" required value="<?= $request_header_data['dtCreatedDate']; ?>">
-                            </div>
-                        </div> 
-
-                        <table class="table arcadia-table overflow" id="itemTable">
-                            <thead>
-                                <tr>
-                                    <th style="width:400px; text-align:center;">Item</th>
-                                    <th style="width: 100px; text-align:center;">Unit</th>
-                                    <th style="width: 100px; text-align:center;">Stock Qty</th>
-                                    <th style="width: 100px; text-align:center;">Request Qty</th>
-                                    <th style="width: 100px; text-align:center;">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                                <?php
-                                $row = 0;
-                                foreach ($request_detail_data as $k => $v) { ?>
-                                    <tr>
-                                        <td hidden><input type="text" class="form-control intRequestDetailID disable-typing" name="intRequestDetailID[]" id="intRequestDetailID_<?= $row ?>" value="<?= $v['intRequestDetailID'] ?>" readonly></td>
-                                        <td hidden><input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_<?= $row ?>" value="<?= $v['intItemID'] ?>" readonly></td>
-                                        <td hidden><input type="text" class="form-control rv disable-typing" name="rv[]" id="rv_<?= $row ?>" value="<?= $v['rv'] ?>" readonly></td>
-                                        <td><input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_<?= $row ?>" value="<?= $v['vcItemName'] ?>" readonly></td>
-                                        <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_<?= $row ?>" value="<?= $v['vcMeasureUnit'] ?>" readonly></td>
-                                        <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="stockInHand[]" id="stockInHand_<?= $row ?>" value="<?= $v['decMainStock'] ?>" readonly></td>
-                                        <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
-                                        <td class="static">
-                                            <?php
-                                            if ($v['IsRejected'] == 0 && ($v['IsApproved'] == 0)) {
-                                            ?>
-                                                <button type="button" class="button red center-items" style="position: relative; float:left;" id="btnReject" onclick="RejectRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-times"></i></button>
-                                                <button type="button" class="button green center-items" style="position: relative; float:right;" id="btnApproval" onclick="ApprovalRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-check"></i></button>
-
-                                            <?php }
-
-                                            ?>
-                                        </td>
-                                    </tr>
-                                <?php
-                                    $row++;
-                                } ?>
-                            </tbody>
-                        </table>
-
-                        <div class="row" style="border-top:1px solid #dee2e6;">
-                            <div class="col-8">
-                                <p style="color: #c2c7d0; position:absolute; bottom:0;" id="itemCount">Item Count : 0</p>
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-4">
-                                <button type="button" id="btnApprovalAll" class="btn btn-lg btn-info btn-flat float-right col-6" style="display: inline-block;"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Accept & Issue All</button>
-                                <button type="button" id="btnRejectAll" class="btn btn-lg btn-info btn-flat float-right col-6"><i class="fas fa-calendar-times"></i>&nbsp;&nbsp;&nbsp;Reject All</button>
-                            </div>
-                            <!-- /.col -->
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="invoice_no">Request No</label>
+                            <input type="text" class="form-control" id="request_no" name="request_no" style="cursor: not-allowed; color:#000000;" autocomplete="off" required value="<?= $request_header_data['vcRequestNo']; ?>" disabled>
                         </div>
-                    <!-- </form> -->
-                </form>
+
+                        <div class="form-group col-md-6">
+                            <label for="invoice_no">Request Date</label>
+                            <input type="text" class="form-control" id="request_date" name="request_date" style="cursor: not-allowed; color:#000000;" autocomplete="off" required value="<?= $request_header_data['dtCreatedDate']; ?>" disabled>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table arcadia-table overflow" id="itemTable">
+                                <thead>
+                                    <tr>
+                                        <th style="width:400px; text-align:center;">Item</th>
+                                        <th style="width: 100px; text-align:center;">Unit</th>
+                                        <th style="width: 100px; text-align:center;">Stock Qty</th>
+                                        <th style="width: 100px; text-align:center;">Request Qty</th>
+                                        <th style="width: 100px; text-align:center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <?php
+                                    $row = 0;
+                                    $buttonVisible = false;
+                                    foreach ($request_detail_data as $k => $v) { ?>
+                                        <tr>
+                                            <td hidden><input type="text" class="form-control intRequestDetailID disable-typing" name="intRequestDetailID[]" id="intRequestDetailID_<?= $row ?>" value="<?= $v['intRequestDetailID'] ?>" readonly></td>
+                                            <td hidden><input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_<?= $row ?>" value="<?= $v['intItemID'] ?>" readonly></td>
+                                            <td hidden><input type="text" class="form-control rv disable-typing" name="rv[]" id="rv_<?= $row ?>" value="<?= $v['rv'] ?>" readonly></td>
+                                            <td><input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_<?= $row ?>" value="<?= $v['vcItemName'] ?>" readonly></td>
+                                            <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_<?= $row ?>" value="<?= $v['vcMeasureUnit'] ?>" readonly></td>
+                                            <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="stockInHand[]" id="stockInHand_<?= $row ?>" value="<?= $v['decMainStock'] ?>" readonly></td>
+                                            <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
+                                            <td class="static">
+                                                <?php
+                                                if ($v['IsRejected'] == 0 && ($v['IsApproved'] == 0)) {
+                                                    $buttonVisible = true;
+                                                ?>
+                                                    <button type="button" class="button red center-items" style="position: relative; float:left;" id="btnReject" onclick="RejectRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-times"></i></button>
+                                                    <button type="button" class="button green center-items" style="position: relative; float:right;" id="btnApproval" onclick="ApprovalRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-check"></i></button>
+
+                                                <?php }
+
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                        $row++;
+                                    } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-8">
+                            <p style="color: #c2c7d0; position:absolute; bottom:0;" id="itemCount">Item Count : 0</p>
+                        </div>
+                        <!-- /.col -->
+
+                        <?php if ($buttonVisible) {
+                        ?>
+                            <div class="col-lg-6" style="padding: 10px;">
+                                <button type="button" id="btnApprovalAll" class="btn btn-lg btn-info btn-flat float-right col-sm-12 col-md-12"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Accept & Issue All</button>
+                            </div>
+                            <div class="col-lg-6" style="padding: 10px;">
+                                <button type="button" id="btnRejectAll" class="btn btn-lg btn-danger btn-flat float-right col-sm-12 col-md-12"><i class="fas fa-calendar-times"></i>&nbsp;&nbsp;&nbsp;Reject All</button>
+                            </div>
+                        <?php }
+                        ?>
+                    </div>
+                    <!-- /.col -->
             </div>
-            <!-- /.card-body -->
-
+            <!-- </form> -->
+            </form>
         </div>
-        <!-- /.card -->
+        <!-- /.card-body -->
 
-    </section>
-    <!-- /.content -->
+</div>
+<!-- /.card -->
+
+</section>
+<!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
 

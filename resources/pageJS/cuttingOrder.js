@@ -1,5 +1,20 @@
+var manageTable;
+
 $(document).ready(function() {
 
+    CalculateItemCount();
+
+    manageTable = $('#manageTable').DataTable({
+        'ajax': 'GetCuttingOrderHeaderData',
+        'order': [],
+        "bDestroy": true,
+        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+            $(nRow.childNodes[0]).css('text-align', 'center');
+            $(nRow.childNodes[1]).css('text-align', 'center');
+            $(nRow.childNodes[2]).css('text-align', 'center');
+        }
+    });
 
     // on first focus (bubbles up to document), open the menu
     $(document).on('keyup', 'input[type=search]', function(e) {
@@ -30,8 +45,6 @@ $(document).ready(function() {
     var row_id = 1;
 
     function AddToGrid() {
-
-
 
         if ($("input[name=txtOrderDescription]").val() == "", $("input[name=txtQty]").val() == "") {
             toastr["error"]("Please fill in all fields !");
@@ -75,8 +88,6 @@ $(document).ready(function() {
                 $("li").attr('aria-selected', false);
                 $("#txtOrderDescription").focus();
             }
-
-
 
         }
     }
@@ -144,7 +155,86 @@ $(document).ready(function() {
 
 });
 
+$('#btnEditSubmit').click(function() {
+
+    if ($("input[name=cutting_order_name]").val() == "") {
+        toastr["error"]("Please enter the cutting order name !");
+        $("#cutting_order_name").focus();
+    } else if ($('#itemTable tr').length == 2) {
+        toastr["error"]("Please enter the Description !");
+        $("#txtOrderDescription").focus();
+    } else {
+        arcadiaConfirmAlert("You want to be able to edit this !", function(button) {
+
+            var form = $("#editCuttingOrder");
+
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success == true) {
+                        arcadiaSuccessMessage("Edited !", "Utilities/cuttingOrder");
+                    } else {
+
+                        if (response.messages instanceof Object) {
+                            $.each(response.messages, function(index, value) {
+                                var id = $("#" + index);
+
+                                id.closest('.form-group')
+                                    .removeClass('has-error')
+                                    .removeClass('has-success')
+                                    .addClass(value.length > 0 ? 'has-error' : 'has-success');
+
+                                id.after(value);
+
+                            });
+                        } else {
+                            toastr["error"](response.messages);
+                            // arcadiaErrorMessage(response.messages);
+                            // $(button).prop('disabled', false);
+                        }
+                    }
+
+                },
+                error: function(request, status, error) {
+                    arcadiaErrorMessage(error);
+                }
+            });
+        }, this);
+    }
+
+});
+
+$("#editCuttingOrder").unbind('submit').on('submit', function(e) {});
+
 // on first focus (bubbles up to document), open the menu
 $(document).on('focus', '.select2-selection.select2-selection--single', function(e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
 });
+
+function RemoveCuttingOrder(CuttingOrderHeaderID) {
+    arcadiaConfirmAlert("You want to be able to remove this !", function(button) {
+
+        $.ajax({
+            async: true,
+            url: base_url + 'Utilities/RemoveCuttingOrder',
+            type: 'post',
+            data: {
+                intCuttingOrderHeaderID: CuttingOrderHeaderID
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success == true) {
+                    arcadiaSuccessMessage("Deleted !", "Utilities/cuttingOrder");
+                } else {
+                    toastr["error"](response.messages);
+                }
+            },
+            error: function(request, status, error) {
+                arcadiaErrorMessage(error);
+            }
+        });
+    }, this);
+}

@@ -74,12 +74,12 @@ r<style>
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="invoice_no">Request No</label>
-                            <input type="text" class="form-control" id="request_no" name="request_no"  autocomplete="off" required value="<?= $request_header_data['vcRequestNo']; ?>">
+                            <input type="text" class="form-control" id="request_no" name="request_no" style="cursor: not-allowed; color:#000000;"  autocomplete="off" required value="<?= $request_header_data['vcRequestNo']; ?>" disabled>
                         </div>
          
                         <div class="form-group col-md-6">
                             <label for="invoice_no">Request Date</label>
-                            <input type="text" class="form-control" id="request_date" name="request_date" autocomplete="off" required value="<?= $request_header_data['dtCreatedDate']; ?>">
+                            <input type="text" class="form-control" id="request_date" name="request_date" style="cursor: not-allowed; color:#000000;" autocomplete="off" required value="<?= $request_header_data['dtCreatedDate']; ?>" disabled>
                         </div>
                     </div>
 

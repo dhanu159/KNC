@@ -13,9 +13,6 @@ class Utilities extends Admin_Controller
         $this->load->model('model_item');
         $this->load->model('model_cuttingorder');
 
-
-
-
         $user_group_data = $this->model_groups->getUserGroupData();
         $this->data['user_groups_data'] = $user_group_data;
     }
@@ -427,4 +424,214 @@ class Utilities extends Admin_Controller
             //    print_r($th->getMessage());
         }
     }
+
+    public function GetCuttingOrderHeaderData($intCuttingOrderHeaderID = null)
+    {
+        
+        if (!$this->isAdmin) {
+            if (!in_array('viewCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $result = array('data' => array());
+
+        $data = $this->model_cuttingorder->getCuttingOrderHeaderData($intCuttingOrderHeaderID = null);
+        foreach ($data as $key => $value) {
+
+
+            $buttons = '';
+
+            if ($this->isAdmin) {
+                $buttons .= ' <a href="'.base_url('Utilities/EditCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-edit"></i></a>';
+                $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCuttingOrder" onclick="RemoveCuttingOrder(' . $value['intCuttingOrderHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
+                $buttons .= ' <a href="'.base_url('Utilities/ViewCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-eye"></i></a>';
+            } else {
+                if (in_array('viewCuttingOrder', $this->permission)) {
+                    $buttons .= ' <a href="'.base_url('Utilities/ViewCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-eye"></i></a>';
+                }
+                if (in_array('editCuttingOrder', $this->permission)) {
+                    $buttons .= ' <a href="'.base_url('Utilities/EditCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-edit"></i></a>';
+                }
+                if (in_array('deleteCuttingOrder', $this->permission)) {
+                    $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCuttingOrder" onclick="RemoveCuttingOrder(' . $value['intCuttingOrderHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
+                }
+            }
+
+            $result['data'][$key] = array(
+                $value['vcOrderName'],
+                $value['dtCreatedDate'],
+                $value['vcFullName'],
+                $buttons
+            );
+        }
+
+        echo json_encode($result);
+    }
+
+    public function ViewCuttingOrder($intCuttingOrderHeaderID = null)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('viewCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        // $canEdit = $this->model_cuttingorder->canModifiedCuttingOrder($intCuttingOrderHeaderID);
+
+        if (!$intCuttingOrderHeaderID) {
+            redirect(base_url() . 'Utilities/cuttingOrder', 'refresh');
+        }
+
+        $cuttingorder_header_data = $this->model_cuttingorder->getCuttingOrderHeaderData($intCuttingOrderHeaderID);
+        if (!$cuttingorder_header_data) {
+            redirect(base_url() . 'Utilities/cuttingOrder', 'refresh');
+        }
+        $cuttingorder_detail_data = $this->model_cuttingorder->getCuttingOrderDetailData($intCuttingOrderHeaderID);
+
+
+        $this->data['cuttingorder_header_data'] = $cuttingorder_header_data;
+        $this->data['cuttingorder_detail_data'] = $cuttingorder_detail_data;
+
+
+        $this->render_template('Utilities/viewCuttingOrder', 'View Cutting Order', $this->data);
+    }
+
+    public function EditCuttingOrder($intCuttingOrderHeaderID = null)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('editCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        // $canEdit = $this->model_cuttingorder->canModifiedCuttingOrder($intCuttingOrderHeaderID);
+
+        if (!$intCuttingOrderHeaderID) {
+            redirect(base_url() . 'Utilities/cuttingOrder', 'refresh');
+        }
+
+        $cuttingorder_header_data = $this->model_cuttingorder->getCuttingOrderHeaderData($intCuttingOrderHeaderID);
+        if (!$cuttingorder_header_data) {
+            redirect(base_url() . 'Utilities/cuttingOrder', 'refresh');
+        }
+        $cuttingorder_detail_data = $this->model_cuttingorder->getCuttingOrderDetailData($intCuttingOrderHeaderID);
+
+
+        $this->data['cuttingorder_header_data'] = $cuttingorder_header_data;
+        $this->data['cuttingorder_detail_data'] = $cuttingorder_detail_data;
+
+
+        $this->render_template('Utilities/editCuttingOrder', 'Edit Cutting Order', $this->data);
+    }
+
+    public function RemoveCuttingOrder()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('deleteRequest', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $intCuttingOrderHeaderID = $this->input->post('intCuttingOrderHeaderID');
+        $response = array();
+        if ($intCuttingOrderHeaderID) {
+
+            // $canRemove = $this->model_cuttingorder->canModifiedRequest($intCuttingOrderHeaderID);
+
+            $canRemove = true;
+            if ($canRemove) {
+
+                $delete = $this->model_cuttingorder->removeCuttingOrder($intCuttingOrderHeaderID);
+
+                if ($delete == true) {
+                    $response['success'] = true;
+                    $response['messages'] = "Deleted !";
+                } else {
+                    $response['success'] = false;
+                    $response['messages'] = "Error in the database while removing the Request information !";
+                }
+            } else {
+                $response['success'] = false;
+                $response['messages'] = "You can't remove this Request, Please check and try again !";
+            }
+        } else {
+            $response['success'] = false;
+            $response['messages'] = "Please refersh the page again !!";
+        }
+        echo json_encode($response);
+    }
+
+    public function EditCuttingOrderDetails($intCuttingOrderHeaderID)
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('editCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        $result = $this->model_cuttingorder->editCuttingOrder($intCuttingOrderHeaderID);
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+        echo json_encode($response);
+    }
+
+
+    //-----------------------------------
+    // Create Cutting Order Configuration
+    //-----------------------------------
+
+    public function ViewCuttingOrderConfiguration()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('viewCuttingOrderConfiguration', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $this->render_template('Utilities/viewCuttingOrderConfiguration', 'Manage Cutting Order Configuration');
+    }
+
+    public function CreateCuttingOrderConfiguration()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('createCuttingOrderConfiguration', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $item_data = $this->model_item->getOnlyRawItemData();
+        $cutting_order_header_data = $this->model_cuttingorder->cuttingOrderHeaderData();
+        $this->data['item_data'] = $item_data;
+        $this->data['cutting_order_header_data'] = $cutting_order_header_data;
+
+        $this->render_template('Utilities/createCuttingOrderConfiguration', 'Create Cutting Order Configuration', $this->data);
+    }
+
+    public function SaveCuttingOrderConfiguration()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('createCuttingOrderConfiguration', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $response = array();
+
+        $result = $this->model_cuttingorder->SaveCuttingOrderConfiguration();
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+        echo json_encode($response);
+    }
+
+
+
+
 }
