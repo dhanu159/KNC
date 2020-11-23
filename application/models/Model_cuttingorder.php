@@ -160,4 +160,18 @@ class Model_cuttingorder extends CI_Model
         return ($insertDetails == true) ? true : false;
     }
 
+    public function getCuttingOrdersByItemID($ItemID){
+        $sql = "
+                SELECT 
+                    COC.intCuttingOrderHeaderID,
+                    COH.vcOrderName 
+                FROM CuttingOrderConfiguration AS COC
+                INNER JOIN CuttingOrderHeader AS COH ON COC.intCuttingOrderHeaderID = COH.intCuttingOrderHeaderID
+                WHERE COC.isActive = 1 AND COH.isActive = 1 AND COC.intItemID = ?
+                ORDER BY COH.vcOrderName ASC";
+
+        $query = $this->db->query($sql, array($ItemID));
+        return $query->result_array();
+    }
+
 }
