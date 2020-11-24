@@ -54,7 +54,7 @@ class Model_item extends CI_Model
     public function getBranchStockItems($id)
     {
         if ($id) {
-        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel,REPLACE(BS.rv,' ','-') as rvFROM branchstock AS BS
+        $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel,REPLACE(BS.rv,' ','-') as rv FROM branchstock AS BS
         INNER JOIN item AS IT ON BS.intItemID = IT.intItemID
         WHERE BS.intBranchID = ? ";
         $query = $this->db->query($sql, array(1));
