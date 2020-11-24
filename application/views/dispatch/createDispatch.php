@@ -90,10 +90,12 @@
                             <tr>
                                 <th hidden>Item ID</th>
                                 <th style="text-align:center;">Item</th>
+                                <th style="width: 100px; text-align:center;">Unit</th>
+                                <th style="width: 100px; text-align:center;">Stock Qty</th>
                                 <th hidden>Cutting Order ID</th>
                                 <th style="text-align:center;">Cutting Order</th>
-                                <th style="width: 100px; text-align:center;">Unit</th>
                                 <th style="width: 100px; text-align:center;">Qty</th>
+                                <th hidden>rv</th>
                                 <th style="width: 100px; text-align: center;">Action</th>
                             </tr>
                         </thead>
@@ -101,21 +103,23 @@
                             <tr class="first-tr">
                                 <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
                                 <td class="static">
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getCuttingOrdersByItemID();"">
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem"">
                                         <option value=" 0" disabled selected hidden>Select Item</option>
                                         <?php foreach ($item_data as $k => $v) { ?>
                                             <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
                                         <?php } ?>
                                     </select>
                                 </td>
+                                <td class="static"><input type="text" class="form-control" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
+                                <td class="static"><input type="text" class="form-control" name="txtStockQty" id="txtStockQty" style="text-align:center;" disabled></td>
                                 <td class="static" hidden><input type="number" class="form-control" name="txtCuttingOrderID" min="0"></td>
                                 <td class="static">
                                     <select class="form-control select2" style="width: 100%;" id="cmbCuttingOrder" name="cmbCuttingOrder">
-                                        <option value=" 0" disabled selected hidden>N / A</option>
+                                        <!-- Generated Area -->
                                     </select>
                                 </td>
-                                <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
+                                <td class="static" hidden><input type="text" class="form-control" name="txtRv"></td>
                                 <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                             </tr>
                         </tbody>
