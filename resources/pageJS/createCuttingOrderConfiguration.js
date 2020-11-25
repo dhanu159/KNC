@@ -1,13 +1,23 @@
 $(document).ready(function() {
 
 
+
+    // $('#itemTable tbody tr').each(function() {
+    //     var value = $(this).closest("tr").find('.itemID').val();
+    //     $("#cmbItem option[value=" + value + "]").remove();
+    // });
+
     // on first focus (bubbles up to document), open the menu
     $(document).on('keyup', 'input[type=search]', function(e) {
         $("li").attr('aria-selected', false);
     });
 
+
     $('#cmbItem').on('select2:select', function(e) {
-        $('#cmbCuttingOrder').focus();
+        fetchCuttingConfigData();
+        // findAlreadItemAdded();
+        // $('#cmbCuttingOrder').focus();
+
     });
 
     $("#btnAddToGrid").click(function() {
@@ -24,14 +34,11 @@ $(document).ready(function() {
         event.stopPropagation();
     });
 
-    function CalculateItemCount() {
-        var rowCount = $('#itemTable tr').length;
-        $("#itemCount").text("Item Count : " + (rowCount - 2));
-    }
+
 
     function cmbItemDisable() {
         var rowCount = $('#itemTable tr').length;
-        if (rowCount == 2) {
+        if (rowCount > 1) {
             document.getElementById("cmbItem").disabled = true;
         }
         // if (rowCount == 1) {
@@ -39,12 +46,12 @@ $(document).ready(function() {
         // }
     }
 
-    // function cmbItemEnable() {
-    //     var rowCount = $('#itemTable tr').length;
-    //     if (rowCount == 0) {
-    //         document.getElementById("cmbItem").disabled = false;
-    //     }
-    // }
+    function cmbItemEnable() {
+        var rowCount = $('#itemTable tr').length;
+        if (rowCount == 1) {
+            document.getElementById("cmbItem").disabled = false;
+        }
+    }
 
 
     remove();
@@ -104,31 +111,6 @@ $(document).ready(function() {
 
 
 
-    function remove() {
-        $(".red").click(function() {
-            var cuttingorderID = $(this).closest("tr").find('.cuttingorderID').val();
-            var cuttingorder = $(this).closest("tr").find('.cuttingorder').val();
-
-            var IsAlreadyIncluded = false;
-
-            $("#cmbCuttingOrder option").each(function() {
-                if (cuttingorderID == $(this).val()) {
-                    IsAlreadyIncluded = true;
-                    return false;
-                }
-            });
-
-            if (!IsAlreadyIncluded) {
-                var cmbCuttingOrder = $('#cmbCuttingOrder');
-                cmbCuttingOrder.append(
-                    $('<option></option>').val(cuttingorderID).html(cuttingorder)
-                );
-                $(this).closest("tr").remove();
-
-            }
-            CalculateItemCount();
-        });
-    }
 
     $('#btnSubmit').click(function() {
 
@@ -180,6 +162,109 @@ $(document).ready(function() {
     $("#createCuttingOrderConfiguration").unbind('submit').on('submit', function(e) {});
 
 });
+
+function fetchCuttingConfigData() {
+    debugger;
+    var value = $("#cmbItem :selected").val();
+    $.ajax({
+        url: 'fetchCuttingConfigDataByItemID/' + value,
+        type: 'post',
+        dataType: 'json',
+        success: function(response) {
+
+            var html = '';
+            var row_id = 1;
+            for (var i = 0; i < response.length; i++) {
+                debugger;
+                html += '<tr>' +
+                    '<td hidden>' +
+                    '<input type="text" class="form-control cuttingorderID disable-typing" name="cuttingorderID[]" id="cuttingorderID_' + row_id + '" value="' + response[i].intCuttingOrderHeaderID + '" readonly>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" class="form-control cuttingorder disable-typing" name="cuttingorder[]" id="cuttingorder_' + row_id + '" value="' + response[i].vcOrderName + '" readonly>' +
+                    '</td>' +
+                    '<td class="static">' +
+                    '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
+                    '</td>' +
+                    '</tr>';
+                row_id++;
+
+                //remove();
+
+            }
+            // $('#itemTable .first-tr').first().after().empty();
+            $("#itemTable").find("tr:gt(1)").remove();
+            $('#itemTable .first-tr').first().after(html);
+            // $("#GenerateUnitPriceTextBox").html("");
+            // $("#GenerateUnitPriceTextBox").append(html);
+
+            findAlreadItemAdded();
+            remove();
+
+        },
+        error: function(data) {}
+
+
+    });
+}
+
+function findAlreadItemAdded() {
+    $('#itemTable tbody tr').each(function() {
+        var value = $(this).closest("tr").find('.cuttingorderID').val();
+        $("#cmbCuttingOrder option[value=" + value + "]").remove();
+    });
+}
+
+function remove() {
+    $(".red").click(function() {
+
+        var cuttingorderID = $(this).closest("tr").find('.cuttingorderID').val();
+        var cuttingorder = $(this).closest("tr").find('.cuttingorder').val();
+
+        var IsAlreadyIncluded = false;
+
+        $("#cmbCuttingOrder option").each(function() {
+            if (cuttingorderID == $(this).val()) {
+                IsAlreadyIncluded = true;
+                return false;
+            }
+        });
+
+        if (!IsAlreadyIncluded) {
+            var cmbCuttingOrder = $('#cmbCuttingOrder');
+            cmbCuttingOrder.append(
+                $('<option></option>').val(cuttingorderID).html(cuttingorder)
+            );
+            $(this).closest("tr").remove();
+
+        }
+        CalculateItemCount();
+        cmbItemEnable();
+    });
+}
+
+function cmbItemDisable() {
+    var rowCount = $('#itemTable tr').length;
+    if (rowCount > 1) {
+        document.getElementById("cmbItem").disabled = true;
+    }
+    // if (rowCount == 1) {
+    //     document.getElementById("cmbItem").disabled = false;
+    // }
+}
+
+function cmbItemEnable() {
+    debugger;
+    var rowCount = $('#itemTable tr').length;
+    if (rowCount == 2) {
+        document.getElementById("cmbItem").disabled = false;
+    }
+}
+
+function CalculateItemCount() {
+    var rowCount = $('#itemTable tr').length;
+    $("#itemCount").text("Item Count : " + (rowCount - 2));
+}
 
 // on first focus (bubbles up to document), open the menu
 $(document).on('focus', '.select2-selection.select2-selection--single', function(e) {
