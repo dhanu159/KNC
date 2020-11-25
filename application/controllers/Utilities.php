@@ -636,7 +636,12 @@ class Utilities extends Admin_Controller
         echo json_encode($data);
     }
 
+    public function fetchCuttingConfigDataByItemID($ItemID){
+        $data = $this->model_cuttingorder->fetchCuttingConfigDataByItemID($ItemID);
+        echo json_encode($data);
+    }
 
+    
 
 
 }
