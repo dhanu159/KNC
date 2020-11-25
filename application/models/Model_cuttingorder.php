@@ -42,7 +42,7 @@ class Model_cuttingorder extends CI_Model
         return ($insertDetails == true && $insert == true) ? true : false;
     }
 
-    
+
     public function editCuttingOrder($intCuttingOrderHeaderID)
     {
         $this->db->trans_start();
@@ -160,7 +160,8 @@ class Model_cuttingorder extends CI_Model
         return ($insertDetails == true) ? true : false;
     }
 
-    public function getCuttingOrdersByItemID($ItemID){
+    public function getCuttingOrdersByItemID($ItemID)
+    {
         $sql = "
                 SELECT 
                     COC.intCuttingOrderHeaderID,
@@ -174,4 +175,15 @@ class Model_cuttingorder extends CI_Model
         return $query->result_array();
     }
 
+    public function fetchCuttingConfigDataByItemID($ItemID)
+    {
+        $sql = "
+        SELECT CF.intCuttingOrderHeaderID,CH.vcOrderName 
+        FROM cuttingorderconfiguration AS CF
+        INNER JOIN cuttingorderheader AS CH ON CF.intCuttingOrderHeaderID = CH.intCuttingOrderHeaderID
+        WHERE CF.intItemID = ? AND CF.IsActive = 1";
+
+        $query = $this->db->query($sql, array($ItemID));
+        return $query->result_array();
+    }
 }
