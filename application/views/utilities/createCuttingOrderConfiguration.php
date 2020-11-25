@@ -134,6 +134,9 @@
                                         </td>
                                         <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                                     </tr>
+                                    <!-- <div id="GenerateUnitPriceTextBox">
+
+                                    </div> -->
                                 </tbody>
                             </table>
 
