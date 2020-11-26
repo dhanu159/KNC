@@ -427,7 +427,7 @@ class Utilities extends Admin_Controller
 
     public function GetCuttingOrderHeaderData($intCuttingOrderHeaderID = null)
     {
-        
+
         if (!$this->isAdmin) {
             if (!in_array('viewCuttingOrder', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -443,15 +443,15 @@ class Utilities extends Admin_Controller
             $buttons = '';
 
             if ($this->isAdmin) {
-                $buttons .= ' <a href="'.base_url('Utilities/EditCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-edit"></i></a>';
+                $buttons .= ' <a href="' . base_url('Utilities/EditCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-edit"></i></a>';
                 $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCuttingOrder" onclick="RemoveCuttingOrder(' . $value['intCuttingOrderHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
-                $buttons .= ' <a href="'.base_url('Utilities/ViewCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-eye"></i></a>';
+                $buttons .= ' <a href="' . base_url('Utilities/ViewCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-eye"></i></a>';
             } else {
                 if (in_array('viewCuttingOrder', $this->permission)) {
-                    $buttons .= ' <a href="'.base_url('Utilities/ViewCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-eye"></i></a>';
+                    $buttons .= ' <a href="' . base_url('Utilities/ViewCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-eye"></i></a>';
                 }
                 if (in_array('editCuttingOrder', $this->permission)) {
-                    $buttons .= ' <a href="'.base_url('Utilities/EditCuttingOrder/'.$value['intCuttingOrderHeaderID']).'" class="btn btn-default"><i class="fa fa-edit"></i></a>';
+                    $buttons .= ' <a href="' . base_url('Utilities/EditCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-edit"></i></a>';
                 }
                 if (in_array('deleteCuttingOrder', $this->permission)) {
                     $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCuttingOrder" onclick="RemoveCuttingOrder(' . $value['intCuttingOrderHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
@@ -536,29 +536,27 @@ class Utilities extends Admin_Controller
         $response = array();
         if ($intCuttingOrderHeaderID) {
 
-            // $canRemove = $this->model_cuttingorder->canModifiedRequest($intCuttingOrderHeaderID);
+            $canRemove = $this->model_cuttingorder->chkCanRemoveCuttingOrder($intCuttingOrderHeaderID);
 
-            $canRemove = true;
-            if ($canRemove) {
-
-                $delete = $this->model_cuttingorder->removeCuttingOrder($intCuttingOrderHeaderID);
-
-                if ($delete == true) {
-                    $response['success'] = true;
-                    $response['messages'] = "Deleted !";
-                } else {
+            if ($canRemove <> '') {
+                if ($canRemove[0]['value'] == 1) {
                     $response['success'] = false;
-                    $response['messages'] = "Error in the database while removing the Request information !";
+                    $response['messages'] = "You can't remove this Cutting Order, Already Configured !";
+                } else {
+
+                    $delete = $this->model_cuttingorder->removeCuttingOrder($intCuttingOrderHeaderID);
+
+                    if ($delete == true) {
+                        $response['success'] = true;
+                        $response['messages'] = "Deleted !";
+                    } else {
+                        $response['success'] = false;
+                        $response['messages'] = "Error in the database while removing the Request information !";
+                    }
                 }
-            } else {
-                $response['success'] = false;
-                $response['messages'] = "You can't remove this Request, Please check and try again !";
             }
-        } else {
-            $response['success'] = false;
-            $response['messages'] = "Please refersh the page again !!";
+            echo json_encode($response);
         }
-        echo json_encode($response);
     }
 
     public function EditCuttingOrderDetails($intCuttingOrderHeaderID)
@@ -605,11 +603,41 @@ class Utilities extends Admin_Controller
         }
 
         $item_data = $this->model_item->getOnlyRawItemData();
-        $cutting_order_header_data = $this->model_cuttingorder->cuttingOrderHeaderData();
         $this->data['item_data'] = $item_data;
-        $this->data['cutting_order_header_data'] = $cutting_order_header_data;
 
-        $this->render_template('Utilities/createCuttingOrderConfiguration', 'Create Cutting Order Configuration', $this->data);
+        $this->render_template('Utilities/createCuttingOrderConfiguration', 'Cutting Order Configuration');
+    }
+
+    public function chkAlreadyDispatched($ItemID)
+    {
+        $response = array();
+
+        $canEdit = $this->model_cuttingorder->chkAlreadyDispatched($ItemID);
+
+        if ($canEdit <> '') {
+            if ($canEdit[0]['value'] == 1) {
+                $response['success'] = false;
+                $response['messages'] = "You can't edit this Cutting Order, Already Dispatched !";
+            } else {
+                $response['success'] = true;
+                // $response['messages'] = "Error in the database while removing the Request information !";
+            }
+        }
+        echo json_encode($response);
+    }
+
+    public function SaveConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID)
+    {
+        $response = array();
+
+        $result = $this->model_cuttingorder->SaveConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID);
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+        echo json_encode($response);
     }
 
     public function SaveCuttingOrderConfiguration()
@@ -631,17 +659,21 @@ class Utilities extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function getCuttingOrdersByItemID($ItemID){
+    public function getCuttingOrdersByItemID($ItemID)
+    {
         $data = $this->model_cuttingorder->getCuttingOrdersByItemID($ItemID);
         echo json_encode($data);
     }
 
-    public function fetchCuttingConfigDataByItemID($ItemID){
+    public function fetchCuttingConfigDataByItemID($ItemID)
+    {
         $data = $this->model_cuttingorder->fetchCuttingConfigDataByItemID($ItemID);
         echo json_encode($data);
     }
 
-    
-
-
+    public function fetchCuttingOrderHeaderData()
+    {
+        $data = $this->model_cuttingorder->getCuttingOrderHeaderData($intCuttingOrderHeaderID = null);
+        echo json_encode($data);
+    }
 }
