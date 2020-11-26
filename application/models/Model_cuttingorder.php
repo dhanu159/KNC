@@ -112,6 +112,41 @@ class Model_cuttingorder extends CI_Model
         }
     }
 
+    public function chkCanRemoveCuttingOrder($intCuttingOrderHeaderID)
+    {
+        if ($intCuttingOrderHeaderID) {
+            $sql = "SELECT EXISTS(SELECT intCuttingOrderHeaderID  FROM cuttingorderconfiguration WHERE intCuttingOrderHeaderID = ?) AS value";
+            $query = $this->db->query($sql, array($intCuttingOrderHeaderID));
+            return $query->result_array();
+        }
+    }
+
+    public function chkAlreadyDispatched($ItemID)
+    {
+        if ($ItemID) {
+            $sql = "SELECT EXISTS(SELECT dtDispatchDate  FROM dispatchdetail WHERE intItemID = ?) AS value";
+            $query = $this->db->query($sql, array($ItemID));
+            return $query->result_array();
+        }
+    }
+
+    public function SaveConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID)
+    {
+        $this->db->trans_start();
+
+        $data = [
+            'intItemID' =>  $ItemID ,
+            'intCuttingOrderHeaderID' => $CuttingOrderHeaderID,
+            'intUserID' =>  $this->session->userdata('user_id'),
+        ];
+
+        $insertDetails = $this->db->insert('cuttingorderconfiguration', $data);
+
+        $this->db->trans_complete();
+
+        return ($insertDetails == true) ? true : false;
+    }
+
     public function removeCuttingOrder($intCuttingOrderHeaderID = null)
     {
         if ($intCuttingOrderHeaderID) {
@@ -143,12 +178,25 @@ class Model_cuttingorder extends CI_Model
         $this->db->trans_start();
 
         $insertDetails = false;
-        $item_ID = $this->input->post('itemID');
+
         $item_count = count($this->input->post('cuttingorderID'));
+        for ($i = 0; $i < $item_count; $i++) {
+            $item_ID = $this->input->post('itemID')[$i];
+        break;
+        }
+     
+        $data = [
+            'IsActive' => '0',
+        ];
+        $this->db->where('intItemID', $item_ID);
+        $delete = $this->db->update('cuttingorderconfiguration', $data);
+
+        // $this->db->where('intItemID', $item_ID);
+        // $update = $this->db->update('cuttingorderconfiguration', array('IsActive' => '0'));
 
         for ($i = 0; $i < $item_count; $i++) {
             $items = array(
-                'intItemID' =>  $this->input->post('itemID')[$i],
+                'intItemID' =>  $item_ID ,
                 'intCuttingOrderHeaderID' => $this->input->post('cuttingorderID')[$i],
                 'intUserID' => $this->session->userdata('user_id'),
             );
