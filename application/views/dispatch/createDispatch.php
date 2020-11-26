@@ -67,13 +67,13 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('Dispatch/SaveDispatch') ?>" id="createDispatch">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label>Dispatch Date</label>
-                            <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" name="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
-                                <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
+                            <div class="input-group date" id="dtDispatchDate" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="dispatchDate" name="dispatchDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
+                                <div class="input-group-append" data-target="#dtDispatchDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
@@ -119,42 +119,20 @@
                                     </select>
                                 </td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
-                                <td class="static" hidden><input type="text" class="form-control" name="txtRv"></td>
+                                <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
                                 <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                             </tr>
                         </tbody>
                     </table>
 
                     <div class="row" style="border-top:1px solid #dee2e6;">
-                        <!-- <div class="col-6"> -->
-                        <p style="color: #c2c7d0;" id="itemCount">Item Count : 0</p>
-                        <!-- </div> -->
+                        <div class="col-md-6">
+                            <p style="color: #c2c7d0;" id="itemCount">Item Count : 0</p>
+                        </div>
                         <!-- /.col -->
-                        <!-- <div class="col-6" style="padding-right:100px;">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <tr>
-                                        <th style="border-top:0 !important; width:180px;">Sub Total:</th>
-                                        <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right;" id="subTotal" name="subTotal" placeholder="0.00" readonly>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th style="border-top:0 !important;">Discount:</th>
-                                        <td style="border-top:0 !important;">
-                                            <input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;">
-                                        </td>
-                                    </tr>
-                                    <tr style="border-top:2px solid #dee2e6; border-bottom:2px solid #dee2e6;">
-                                        <th style="font-size:1.5em;">Grand Total:</th>
-                                        <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right; font-size:1.5em;" id="grandTotal" name="grandTotal" placeholder="0.00" readonly>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
-                        </div> -->
+                        <div class="col-md-6">
+                            <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right" style="margin-top: 10px;"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
+                        </div>
                         <!-- /.col -->
                     </div>
                 </form>
