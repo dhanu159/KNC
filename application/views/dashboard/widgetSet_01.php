@@ -3,7 +3,7 @@
 		    <!-- Pending GRN Approvals -->
 		    <?php
             if ($_SESSION['Is_main_branch'] == 1) { // GRN Approval Facility Can Main Branch Only
-                if ($isAdmin || in_array('approveGRN', $user_permission) || in_array('createGRN', $user_permission) || in_array('editGRN', $user_permission) || in_array('deleteGRN', $user_permission)) {
+                if ($isAdmin || in_array('viewGRN', $user_permission) || in_array('approveGRN', $user_permission) || in_array('createGRN', $user_permission) || in_array('editGRN', $user_permission) || in_array('deleteGRN', $user_permission)) {
             ?>
 		            <div class="col-lg-3 col-6">
 		                <div class="small-box bg-info">
@@ -14,7 +14,7 @@
 		                    <div class="icon">
 		                        <i class="far fa-clock"></i>
 		                    </div>
-		                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+		                    <a href="<?= base_url("GRN/ViewGRN")?>" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
 		                </div>
 		            </div>
 		    <?php
@@ -42,7 +42,7 @@
 		        <div class="small-box bg-warning">
 		            <div class="inner">
 		                <h3>0</h3>
-		                <p>Pending Dispatch Accepts</p>
+		                <p>Pending Dispatch Collections</p>
 		            </div>
 		            <div class="icon">
 		                <i class="fas fa-people-carry"></i>
