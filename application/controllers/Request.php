@@ -22,15 +22,22 @@ class Request extends Admin_Controller
     //-----------------------------------
     public function RequestItem($BranchID = null)
     {
-        if (!$this->isAdmin) {
-            if (!in_array('viewRequestItem', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
         }
-        $item_data = $this->model_item->getOnlyFinishItemData();
-        $this->data['item_data'] = $item_data;
+       
+            if (!$this->isAdmin) {
+                if (!in_array('viewRequestItem', $this->permission)) {
+                    redirect('dashboard', 'refresh');
+                }
+            }
+            $item_data = $this->model_item->getOnlyFinishItemData();
+            $this->data['item_data'] = $item_data;
 
-        $this->render_template('request/requestItem', 'Request Item', $this->data);
+            $this->render_template('request/requestItem', 'Request Item', $this->data);
+     
+
+
     }
 
     public function getRequestFinishedByItemID($ItemID)
@@ -41,6 +48,10 @@ class Request extends Admin_Controller
 
     public function SaveRequestItem()
     {
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
         if (!$this->isAdmin) {
             if (!in_array('createRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -142,6 +153,10 @@ class Request extends Admin_Controller
     public function EditRequestItem($intRequestHeaderID = null)
     {
 
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
         if (!$this->isAdmin) {
             if (!in_array('editRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -172,6 +187,11 @@ class Request extends Admin_Controller
 
     public function EditRequestDetails($intRequestHeaderID)
     {
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
+
         if (!$this->isAdmin) {
             if (!in_array('editRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -196,6 +216,11 @@ class Request extends Admin_Controller
 
     public function RemoveRequest()
     {
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
+
         if (!$this->isAdmin) {
             if (!in_array('deleteRequest', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -237,6 +262,10 @@ class Request extends Admin_Controller
 
     public function ApprovalRequestItem($intRequestHeaderID = null)
     {
+        if ($_SESSION['Is_main_branch'] != 1) {
+            redirect('dashboard', 'refresh');
+        }
+
         if (!$this->isAdmin) {
             if (!in_array('approveRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -257,6 +286,10 @@ class Request extends Admin_Controller
 
     public function RejectRequestByDetailID($RequestDetailID, $ItemID, $rv)
     {
+        if ($_SESSION['Is_main_branch'] != 1) {
+            redirect('dashboard', 'refresh');
+        }
+
 
         if (!$this->isAdmin) {
             if (!in_array('approveRequestItem', $this->permission)) {
@@ -290,6 +323,9 @@ class Request extends Admin_Controller
 
     public function ApprovalRequestByDetailID($RequestDetailID, $ItemID, $rv)
     {
+        if ($_SESSION['Is_main_branch'] != 1) {
+            redirect('dashboard', 'refresh');
+        }
 
         if (!$this->isAdmin) {
             if (!in_array('approveRequestItem', $this->permission)) {
@@ -329,6 +365,11 @@ class Request extends Admin_Controller
 
     public function ApprovalOrRejectRequestItems($isApproved)
     {
+        if ($_SESSION['Is_main_branch'] != 1) {
+            redirect('dashboard', 'refresh');
+        }
+
+
         if (!$this->isAdmin) {
             if (!in_array('approveRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -396,6 +437,11 @@ class Request extends Admin_Controller
 
     public function AcceptRequestItem($intRequestHeaderID = null)
     {
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
+
         if (!$this->isAdmin) {
             if (!in_array('approveRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -416,6 +462,11 @@ class Request extends Admin_Controller
 
     public function AcceptRequestByDetailID($RequestDetailID, $ItemID)
     {
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
+
         if (!$this->isAdmin) {
             if (!in_array('acceptRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -443,6 +494,11 @@ class Request extends Admin_Controller
 
     public function AcceptAllRequestItems()
     {
+        if ($_SESSION['Is_main_branch'] == 1) {
+            redirect('dashboard', 'refresh');
+        }
+
+
         if (!$this->isAdmin) {
             if (!in_array('acceptRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -485,6 +541,10 @@ class Request extends Admin_Controller
 
     public function IssuedRequestItemCancel($intRequestHeaderID = null)
     {
+        if ($_SESSION['Is_main_branch'] != 1) {
+            redirect('dashboard', 'refresh');
+        }
+
         if (!$this->isAdmin) {
             if (!in_array('cancelRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -537,6 +597,10 @@ class Request extends Admin_Controller
 
     public function IssuedCancelAllRequestItems()
     {
+        if ($_SESSION['Is_main_branch'] != 1) {
+            redirect('dashboard', 'refresh');
+        }
+
         if (!$this->isAdmin) {
             if (!in_array('cancelRequestItem', $this->permission)) {
                 redirect('dashboard', 'refresh');
