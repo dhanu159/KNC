@@ -13,8 +13,11 @@ $(document).ready(function() {
         cmbCuttingOrder();
         findAlreadItemAdded();
         remove();
-
     });
+
+
+
+
 
     $("#cmbCuttingOrder").next(".select2").mouseenter(function() {
         findAlreadItemAdded();
@@ -45,6 +48,14 @@ $(document).ready(function() {
     remove();
 
 });
+
+function RemoveRow() {
+    $(".red").click(function() {
+        var cuttingorderID = $(this).closest("tr").find('.cuttingorderID').val();
+        var cuttingorder = $(this).closest("tr").find('.cuttingorder').val();
+        $(this).closest("tr").remove();
+    });
+}
 
 function AddToGrid() {
     var row_id = 1;
@@ -118,7 +129,6 @@ function ConfigCuttingOrder() {
                     AddToGrid();
 
                 } else {
-
                     if (response.messages instanceof Object) {
                         $.each(response.messages, function(index, value) {
                             var id = $("#" + index);
@@ -133,8 +143,6 @@ function ConfigCuttingOrder() {
                         });
                     } else {
                         toastr["error"](response.messages);
-
-                        // arcadiaErrorMessage(response.messages);
                     }
                 }
 
@@ -143,6 +151,43 @@ function ConfigCuttingOrder() {
     }, this);
 }
 
+function DeleteConfigCuttingOrder(cuttingorderID) {
+    arcadiaConfirmAlert("You want to be able to delete this !", function(button) {
+        var ItemID = $("#cmbItem :selected").val();
+        $.ajax({
+            type: 'post',
+            url: base_url + 'Utilities/DeleteConfigCuttingOrderUsingFunction/' + ItemID + '/' + cuttingorderID,
+            dataType: 'json',
+            async: true,
+            success: function(response) {
+                if (response.success == true) {
+                    arcadiaSuccessMessage(true);
+                    // toastr["success"](response.messages);
+                    // RemoveRow();
+                    // location.reload();
+
+                } else {
+                    if (response.messages instanceof Object) {
+                        $.each(response.messages, function(index, value) {
+                            var id = $("#" + index);
+
+                            id.closest('.form-group')
+                                .removeClass('has-error')
+                                .removeClass('has-success')
+                                .addClass(value.length > 0 ? 'has-error' : 'has-success');
+
+                            id.after(value);
+
+                        });
+                    } else {
+                        toastr["error"](response.messages);
+                    }
+                }
+
+            }
+        });
+    }, this);
+}
 
 
 function fetchCuttingConfigData() {
@@ -265,11 +310,14 @@ function chkAlreadyDispatched() {
 
 }
 
+
+
 function remove() {
     $(".red").click(function() {
-
         var cuttingorderID = $(this).closest("tr").find('.cuttingorderID').val();
         var cuttingorder = $(this).closest("tr").find('.cuttingorder').val();
+
+        DeleteConfigCuttingOrder(cuttingorderID);
 
         var IsAlreadyIncluded = false;
 
@@ -285,30 +333,12 @@ function remove() {
             cmbCuttingOrder.append(
                 $('<option></option>').val(cuttingorderID).html(cuttingorder)
             );
-            $(this).closest("tr").remove();
 
         }
         CalculateItemCount();
 
     });
 }
-
-// function cmbItemDisable() {
-//     var rowCount = $('#itemTable tr').length;
-//     if (rowCount > 1) {
-//         document.getElementById("cmbItem").disabled = true;
-//     }
-//     // if (rowCount == 1) {
-//     //     document.getElementById("cmbItem").disabled = false;
-//     // }
-// }
-
-// function cmbItemEnable() {
-//     var rowCount = $('#itemTable tr').length;
-//     if (rowCount == 2) {
-//         document.getElementById("cmbItem").disabled = false;
-//     }
-// }
 
 function CalculateItemCount() {
     var rowCount = $('#itemTable tr').length;
