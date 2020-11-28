@@ -35,41 +35,60 @@ class Model_dispatch extends CI_Model
 
         $item_count = count($this->input->post('itemID'));
 
+
         $anotherUserAccess = false;
         $exceedStockQty = false;
+
+        $itemArray = array();
 
         for ($i = 0; $i < $item_count; $i++) {
 
             $itemID = $this->input->post('itemID')[$i];
+            $dispatchQty = 0;
 
-            $currentRV = $this->model_item->chkRv($itemID);
-            $previousRV =  $this->input->post('Rv')[$i];
+            // $items = array_unique($this->input->post('itemID'));
 
+            for ($x = $i; $x < ($item_count - $i); $x++) {
+                if (!in_array($itemID, $itemArray)) {
+                    if ($itemID == $this->input->post('itemID')[$x]) {
 
-            if ($currentRV['rv'] != $previousRV) {
-                $anotherUserAccess = true;
+                        $dispatchQty += $this->input->post('itemQty')[$x];
+                    }
+                }
             }
 
-            $stockInHandQty = $this->model_item->getItemData($itemID);
-            $dispatchQty = $this->input->post('itemQty')[$i];
+            if (!in_array($itemID, $itemArray)) {
+                array_push($itemArray, $itemID);
 
-            if ($stockInHandQty['decStockInHand'] < $dispatchQty) {
-                $exceedStockQty = true;
-            }
+                $currentRV = $this->model_item->chkRv($itemID);
+                $previousRV =  $this->input->post('Rv')[$i];
 
-            $items = array(
-                'intDispatchHeaderID' => $DispatchHeaderID,
-                'intCuttingOrderHeaderID' => $this->input->post('cuttingOrderId')[$i],
-                'intItemID' => $itemID,
-                'decDispatchQty' => $dispatchQty
-            );
-            $this->db->insert('DispatchDetail', $items);
 
-            $sql = "UPDATE Item AS I
-            SET I.decStockInHand = (I.decStockInHand - " . $dispatchQty . ")
+                if ($currentRV['rv'] != $previousRV) {
+                    $anotherUserAccess = true;
+                }
+
+                $stockInHandQty = $this->model_item->getItemData($itemID);
+
+                if ($stockInHandQty['decStockInHand'] < $dispatchQty) {
+                    $exceedStockQty = true;
+                }
+
+                $items = array(
+                    'intDispatchHeaderID' => $DispatchHeaderID,
+                    'intCuttingOrderHeaderID' => $this->input->post('cuttingOrderId')[$i],
+                    'intItemID' => $itemID,
+                    'decDispatchQty' => $dispatchQty
+                );
+                $this->db->insert('DispatchDetail', $items);
+
+                $sql = "UPDATE Item AS I SET I.decStockInHand = (I.decStockInHand - " . $dispatchQty . ")
                 WHERE I.intItemID = ?";
 
-            $this->db->query($sql, array($itemID));
+                $this->db->query($sql, array($itemID));
+
+            }
+
         }
 
         if ($anotherUserAccess == true) {
