@@ -1,6 +1,7 @@
 <?php
 
-class Model_dispatch extends CI_Model{
+class Model_dispatch extends CI_Model
+{
 
     public function __construct()
     {
@@ -35,31 +36,51 @@ class Model_dispatch extends CI_Model{
         $item_count = count($this->input->post('itemID'));
 
         $anotherUserAccess = false;
+        $exceedStockQty = false;
 
         for ($i = 0; $i < $item_count; $i++) {
 
-            $currentRV = $this->model_item->chkRv($this->input->post('itemID')[$i]);
+            $itemID = $this->input->post('itemID')[$i];
+
+            $currentRV = $this->model_item->chkRv($itemID);
             $previousRV =  $this->input->post('Rv')[$i];
 
 
             if ($currentRV['rv'] != $previousRV) {
-                $anotherUserAccess = true; 
+                $anotherUserAccess = true;
+            }
+
+            $stockInHandQty = $this->model_item->getItemData($itemID);
+            $dispatchQty = $this->input->post('itemQty')[$i];
+
+            if ($stockInHandQty['decStockInHand'] < $dispatchQty) {
+                $exceedStockQty = true;
             }
 
             $items = array(
                 'intDispatchHeaderID' => $DispatchHeaderID,
                 'intCuttingOrderHeaderID' => $this->input->post('cuttingOrderId')[$i],
-                'intItemID' => $this->input->post('itemID')[$i],
-                'decDispatchQty' => $this->input->post('itemQty')[$i]
+                'intItemID' => $itemID,
+                'decDispatchQty' => $dispatchQty
             );
-            $insertDetails = $this->db->insert('DispatchDetail', $items);
+            $this->db->insert('DispatchDetail', $items);
+
+            $sql = "UPDATE Item AS I
+            SET I.decStockInHand = (I.decStockInHand - " . $dispatchQty . ")
+                WHERE I.intItemID = ?";
+
+            $this->db->query($sql, array($itemID));
         }
 
         if ($anotherUserAccess == true) {
             $response['success'] = false;
             $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
             $this->db->trans_rollback();
-        }else{
+        } else if ($exceedStockQty == true) {
+            $response['success'] = false;
+            $response['messages'] = 'Stock quantity over exceeds error, please refresh the page and try again !';
+            $this->db->trans_rollback();
+        } else {
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
                 $response['success'] = false;
@@ -70,7 +91,6 @@ class Model_dispatch extends CI_Model{
                 $response['messages'] = 'Succesfully created !';
             }
         }
-
 
         return $response;
     }
