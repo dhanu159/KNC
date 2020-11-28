@@ -93,6 +93,7 @@
             <div class="card-header">
                 <!-- <?php if (in_array('createBranch', $user_permission) || $isAdmin) { ?> -->
                 <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addCuttingModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Cutting Order</button>
+                <a href="<?= base_url("Utilities/CuttingOrderConfiguration") ?>" class="btn btn-info btn-flat"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Cutting Order Configuration</a>
                 <!-- <?php } ?> -->
             </div>
             <div class="card-body">
