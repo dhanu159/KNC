@@ -130,6 +130,24 @@ class Model_cuttingorder extends CI_Model
         }
     }
 
+    public function chkCanRemoveCuttingOrderConfig($ItemID,$CuttingOrderHeaderID)
+    {
+        if ($CuttingOrderHeaderID) {
+            $sql = "SELECT EXISTS(SELECT intDispatchDetailID  FROM dispatchdetail WHERE intItemID = ? AND intCuttingOrderHeaderID = ?)  as value";
+            $query = $this->db->query($sql, array($ItemID,$CuttingOrderHeaderID));
+            return $query->result_array();
+        }
+    }
+
+    public function DeleteConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID)
+    {
+        $sql = "UPDATE `cuttingorderconfiguration` SET `IsActive` = '0' 
+        WHERE `intItemID` =  $ItemID AND `intCuttingOrderHeaderID` =  $CuttingOrderHeaderID ";
+
+        $update = $this->db->query($sql);
+        return ($update == true) ? true : false;
+    }
+
     public function SaveConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID)
     {
         $this->db->trans_start();
