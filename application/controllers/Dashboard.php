@@ -14,7 +14,7 @@ class Dashboard extends Admin_Controller
 
 		$approval_pending_grn_count = $this->model_dashboard->getApprovalPendingGRNCount();
 		// $approval_pending_requesition_count = $this->model_dashboard->getApprovalPendingRequesitionCount();
-		// $approval_pending_dispatch_count = $this->model_dashboard->getApprovalPendingDispatchCount();
+		// $pending_dispatch_count = $this->model_dashboard->getPendingDispatchCount();
 		// $reorder_item_count = $this->model_dashboard->getReOrderItemCount();
 
 		$this->data['page_title'] = 'K N C | Business Management System';
