@@ -7,12 +7,23 @@ class Model_dashboard extends CI_Model
         parent::__construct(); 
     }
 
+    /////////////////////
+    // Pending Counts
+    ////////////////////
+
     public function getApprovalPendingGRNCount(){
         $sql = "SELECT COUNT(intGRNHeaderID) AS PendingGRNCount FROM GRNHeader WHERE dtApprovedOn IS NULL AND dtRejectedOn IS NULL AND isActive = 1";
         $query = $this->db->query($sql);
         $data = $query->row_array();
         return $data['PendingGRNCount'];
     }
+
+// public function getPendingDispatchCount(){
+//         $sql = "";
+//         $query = $this->db->query($sql);
+//         $data = $query->row_array();
+//         return $data['PendingGRNCount'];
+// }
 
     public function getMainBranchApprovalPendingData(){
         $sql = "SELECT 
