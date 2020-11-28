@@ -92,20 +92,12 @@
                         </li>
                         <li class="nav-item">
                             <a href="<?= base_url('Utilities/CuttingOrder') ?>" class="nav-link <?php if ($this->uri->segment(2) == "MeasureUnit") {
-                                                                                                            echo 'active';
-                                                                                                        } ?>">
+                                                                                                    echo 'active';
+                                                                                                } ?>">
                                 <i class="fas fa-balance-scale-right"></i>
                                 <p>&nbsp;&nbsp;Cutting Order</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="<?= base_url('Utilities/viewCuttingOrderConfiguration') ?>" class="nav-link <?php if ($this->uri->segment(2) == "MeasureUnit") {
-                                                                                                    echo 'active';
-                                                                                                } ?>">
-                                <i class="fas fa-balance-scale-right"></i>
-                                <p>&nbsp;&nbsp;Cutting Order Configuration</p>
-                            </a>
-                        </li>   
                     </ul>
                 </li>
                 <li class="nav-item">
@@ -234,6 +226,35 @@
                 <?php
                 }
                 ?>
+
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateIssue" || $this->uri->segment(2) == "ViewIssue") {
+                                                        echo 'menu-open';
+                                                    } ?>">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-layer-group"></i>
+                        <p>&nbsp;&nbsp;&nbsp;Issue
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Issue/CreateIssue') ?>" class="nav-link <?php if ($this->uri->segment(2) == "RequestItem") {
+                                                                                                        echo 'active';
+                                                                                                    } ?>">
+                                <i class="fas fa-cart-plus"></i>
+                                <p>&nbsp;&nbsp;Issue Item</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Request/ViewRequest') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewRequest") {
+                                                                                                        echo 'active';
+                                                                                                    } ?>">
+                                <i class="fas fa-search"></i>
+                                <p>&nbsp;&nbsp;View Issue</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
                 <li class="nav-item">
                     <a href="<?= base_url('auth/logout') ?>" class="nav-link">
