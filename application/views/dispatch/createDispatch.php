@@ -42,6 +42,14 @@
         background: #ffffff;
         border-color: #ffffff;
     }
+
+    /* .select2-results__option:nth-child(4) {
+        background-color: red !important;
+    } */
+
+    .select2-results__option[id*="Test"] {
+        color: red;
+    }
 </style>
 
 <!-- Content Wrapper. Contains page content -->
@@ -105,9 +113,13 @@
                                 <td class="static">
                                     <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem"">
                                         <option value=" 0" disabled selected hidden>Select Item</option>
-                                        <?php foreach ($item_data as $k => $v) { ?>
-                                            <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
-                                        <?php } ?>
+                                        <?php foreach ($item_data as $k => $v) {
+                                            if ($v['decStockInHand'] > 0) { ?>
+                                                <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
+                                            <?php } else { ?>
+                                                <option value="<?= $v['intItemID'] ?>" class="icons_select2" name="icons_select2"><?= $v['vcItemName'] ?></option>
+                                        <?php }
+                                        } ?>
                                     </select>
                                 </td>
                                 <td class="static"><input type="text" class="form-control" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
@@ -150,6 +162,20 @@
 <script src="<?php echo base_url('resources/pageJS/createDispatch.js') ?>"></script>
 
 <script>
+    $(document).ready(function() {
+
+        $('.icons_select2').select2({
+            width: "100%",
+            templateSelection: $('<span><i class="fas fa-calendar-check"></i></span>'),
+            templateResult: $('<span><i class="fas fa-calendar-check"></i></span>'),
+            allowHtml: true
+        });
+    });
+
+
+
+
+
     // $(document).ready(function() {
 
     //     // $("#dtReceivedDate").datepicker().datepicker("setDate", new Date());
