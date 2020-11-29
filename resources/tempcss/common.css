@@ -310,3 +310,25 @@ table {
         width: 3rem;
     }
 }
+
+/* Select 2 Overriding  */
+
+/* .ABC .select2-container--default .select2-results {
+    background-color: red !important;
+    color: #fff;
+} */
+
+/* .select2-results__options[class*="ABC"] .select2-results__option:nth-child(1) {
+    background-color: red !important;
+    color: #fff;
+} */
+
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: #1f2d3d;
+    color: #fff;
+}
+
+.select2-container--default .select2-results__option--highlighted[aria-selected]:hover {
+    background-color: #1f2d3d;
+    color: #fff;
+}
