@@ -145,14 +145,19 @@
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('Request/RequestItem') ?>" class="nav-link <?php if ($this->uri->segment(2) == "RequestItem") {
-                                                                                                        echo 'active';
-                                                                                                    } ?>">
-                                <i class="fas fa-cart-plus"></i>
-                                <p>&nbsp;&nbsp;Request Item</p>
-                            </a>
-                        </li>
+                        <?php
+                        if ($_SESSION['Is_main_branch'] != 1) { ?>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('Request/RequestItem') ?>" class="nav-link <?php if ($this->uri->segment(2) == "RequestItem") {
+                                                                                                            echo 'active';
+                                                                                                        } ?>">
+                                    <i class="fas fa-cart-plus"></i>
+                                    <p>&nbsp;&nbsp;Request Item</p>
+                                </a>
+                            </li>
+                        <?php }
+                        ?>
+
                         <li class="nav-item">
                             <a href="<?php echo base_url('Request/ViewRequest') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewRequest") {
                                                                                                         echo 'active';
