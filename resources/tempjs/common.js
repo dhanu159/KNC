@@ -156,6 +156,25 @@ function convertToShortDate(str) {
     return [date.getFullYear(), mnth, day].join("-");
 }
 
+
+// Ajax Common Functions
+
+function ajaxCall(url, parameters, successCallback) {
+    $.ajax({
+        type: 'POST',
+        url: base_url + url,
+        timeout: 0,
+        data: JSON.stringify(parameters),
+        contentType: 'application/json;',
+        dataType: 'json',
+        success: successCallback,
+        error: function (request, status, error) {
+            console.log(request.responseText);
+            arcadiaErrorMessage(error);
+        }
+    });
+}
+
 $(function () {
     // //Initialize Select2 Elements
     // $('.select2').select2()
