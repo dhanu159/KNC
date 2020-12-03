@@ -80,7 +80,7 @@ function getItemData() {
                         }
                     });
 
-                } 
+                }
 
 
                 $("#txtMeasureUnit").val(response.vcMeasureUnit);
@@ -124,34 +124,45 @@ function AddToGrid(IsMouseClick = false) {
                     var qty = $("input[name=txtQty]").val();
                     var Rv = $("input[name=txtRv]").val();
 
-                    $(".first-tr").after('<tr>' +
+                    $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;">' +
                         '<td hidden>' +
-                        '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '" readonly>' +
+                            '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '"  readonly>' +
                         '</td>' +
                         '<td>' +
-                        '<input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
+                            '<input type="text" style="cursor: pointer;" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
                         '</td>' +
                         '<td>' +
-                        '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
+                        '   <input type="text" style="cursor: pointer;" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
                         '</td>' +
                         '<td>' +
-                        '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="stockQty[]" id="stockQty_' + row_id + '"  value="' + stockQty + '" readonly>' +
-                        '</td>' +
-                        '<td hidden>' +
-                        '<input type="text" class="form-control cuttingOrderId disable-typing" name="cuttingOrderId[]" id="cuttingOrderId_' + row_id + '" value="' + cuttingOrderId + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '<input type="text" class="form-control cuttingOrderName disable-typing" name="cuttingOrderName[]" id="cuttingOrderName_' + row_id + '" value="' + cuttingOrderName + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '<input type="text" class="form-control stockQty disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
+                        '   <input type="text" style="cursor: pointer;" class="form-control disable-typing" style="text-align:center;" name="stockQty[]" id="stockQty_' + row_id + '"  value="' + stockQty + '" readonly>' +
                         '</td>' +
                         '<td hidden>' +
-                        '<input type="text" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
+                        '<input type="text" style="cursor: pointer;" class="form-control cuttingOrderId disable-typing" name="cuttingOrderId[]" id="cuttingOrderId_' + row_id + '" value="' + cuttingOrderId + '" readonly>' +
+                        '</td>' +
+                        '<td>' +
+                        '<input type="text" style="cursor: pointer;" class="form-control cuttingOrderName disable-typing" name="cuttingOrderName[]" id="cuttingOrderName_' + row_id + '" value="' + cuttingOrderName + '" readonly>' +
+                        '</td>' +
+                        '<td>' +
+                        '<input type="text" style="cursor: pointer;" class="form-control stockQty disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
+                        '</td>' +
+                        '<td hidden>' +
+                        '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
                         '</td>' +
                         '<td class="static">' +
-                        '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
+                        '<button class="button red center-items"><i class="fas fa-times" onclick="removeCuttingOrder(' + row_id + ')"></i></span>' +
                         '</td>' +
+                            '<tr id="' + row_id + '" style="border:0; margin:0; padding:0; background-color:#cfd8dc;">' +
+                                '<td colspan="6" style="border:0; margin:0; padding:0;">'+
+                                    '<div id="collapse' + row_id + '" class="collapse" aria-labelledby="heading' + row_id + '" data-parent="#accordion">' +
+                                        '<table class="table" style="margin-bottom:0;">'+
+                                            '<tr> <td colspan="2"> Cutting Description </td> <td style="text-align:center;"> 12 x 12 </td> <td style="text-align:right;"> 20 </td> </tr>'+
+                                            '<tr> <td colspan="2"> Cutting Description 2 </td> <td style="text-align:center;"> 2 x 4 </td> <td style="text-align:right;"> 54 </td> </tr>'+
+                                        '</table>'+
+                                    '</div>' +
+                                '</td>'+
+                                // '</tr>'+
+                            '</tr>' +
                         '</tr>');
 
                     row_id++;
@@ -211,6 +222,10 @@ function remove() {
     });
 }
 
+function removeCuttingOrder(id) {
+    $("#" + id).remove();
+}
+
 $('#btnSubmit').click(function () {
 
     if ($('#itemTable tr').length == 2) {
@@ -230,7 +245,7 @@ $('#btnSubmit').click(function () {
                     if (response.success == true) {
                         arcadiaSuccessMessage("Created !");
                     } else {
-                            toastr["error"](response.messages);      
+                        toastr["error"](response.messages);
                     }
 
                 }

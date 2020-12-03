@@ -322,6 +322,7 @@ public function ApproveGRN(){
             }
         }
         $intGRNHeaderID = $this->input->post('intGRNHeaderID');
+
         $response = array();
         if ($intGRNHeaderID) { 
 

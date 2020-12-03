@@ -56,6 +56,7 @@ $('.select2bs4').select2({
     theme: 'bootstrap4'
 })
 
+
 //Date picker
 $('#dtReceivedDate').datetimepicker({
     format: 'L',
@@ -160,15 +161,19 @@ function convertToShortDate(str) {
 // Ajax Common Functions
 
 function ajaxCall(url, parameters, successCallback) {
+    debugger;
     $.ajax({
+        async: true,
         type: 'POST',
         url: base_url + url,
-        timeout: 0,
-        data: JSON.stringify(parameters),
-        contentType: 'application/json;',
+        // timeout: 0,
+        // data: JSON.stringify(parameters),
+        data: parameters,
+        // contentType: 'application/json;',
         dataType: 'json',
         success: successCallback,
         error: function (request, status, error) {
+            debugger;
             console.log(request.responseText);
             arcadiaErrorMessage(error);
         }

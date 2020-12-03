@@ -43,6 +43,17 @@
         border-color: #ffffff;
     }
 
+    .card {
+        box-shadow: none;
+        margin: 0;
+    }
+
+    /* .table td, .table th {
+    padding: 0;
+    vertical-align: top;
+    border:0;
+} */
+
     /* .select2-results__option:nth-child(4) {
         background-color: red !important;
     } */
@@ -59,7 +70,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Create Dispatch</h1>
+                    <!-- <h1>Create Dispatch</h1> -->
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -108,32 +119,36 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="first-tr">
-                                <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
-                                <td class="static">
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem"">
+                            <!--Accordion wrapper-->
+                            <div id="accordion">
+                                <tr class="first-tr">
+                                    <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
+                                    <td class="static">
+                                        <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem"">
                                         <option value=" 0" disabled selected hidden>Select Item</option>
-                                        <?php foreach ($item_data as $k => $v) {
-                                            if ($v['decStockInHand'] > 0) { ?>
-                                                <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
-                                            <?php } else { ?>
-                                                <option value="<?= $v['intItemID'] ?>" class="icons_select2" name="icons_select2"><?= $v['vcItemName'] ?></option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                </td>
-                                <td class="static"><input type="text" class="form-control" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
-                                <td class="static"><input type="text" class="form-control" name="txtStockQty" id="txtStockQty" style="text-align:center;" disabled></td>
-                                <td class="static" hidden><input type="number" class="form-control" name="txtCuttingOrderID" min="0"></td>
-                                <td class="static">
-                                    <select class="form-control select2" style="width: 100%;" id="cmbCuttingOrder" name="cmbCuttingOrder">
-                                        <!-- Generated Area -->
-                                    </select>
-                                </td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
-                                <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
-                                <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
-                            </tr>
+                                            <?php foreach ($item_data as $k => $v) {
+                                                if ($v['decStockInHand'] > 0) { ?>
+                                                    <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
+                                                <?php } else { ?>
+                                                    <option value="<?= $v['intItemID'] ?>" class="icons_select2" name="icons_select2"><?= $v['vcItemName'] ?></option>
+                                            <?php }
+                                            } ?>
+                                        </select>
+                                    </td>
+                                    <td class="static"><input type="text" class="form-control" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control" name="txtStockQty" id="txtStockQty" style="text-align:center;" disabled></td>
+                                    <td class="static" hidden><input type="number" class="form-control" name="txtCuttingOrderID" min="0"></td>
+                                    <td class="static">
+                                        <select class="form-control select2" style="width: 100%;" id="cmbCuttingOrder" name="cmbCuttingOrder">
+                                            <!-- Generated Area -->
+                                        </select>
+                                    </td>
+                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
+                                    <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
+                                    <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
+                                </tr>
+
+                            </div>
                         </tbody>
                     </table>
 
