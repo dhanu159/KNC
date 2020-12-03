@@ -91,27 +91,62 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('Issue/SaveIssue') ?>" id="createIssue">
                     <div class="row">
-                        <div class="form-group col-md-12">
-                            <label for="supplier">Customer</label>
-                            <select class="form-control select2" style="width: 100%;" id="supplier" name="supplier">
+                        <div class="form-group col-md-6">
+                            <label for="customer">Customer</label>
+                            <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
                                 <option value="0" disabled selected hidden>Select Customer</option>
-                                <?php foreach ($supplier_data as $k => $v) { ?>
-                                    <option value="<?= $v['intSupplierID'] ?>"><?= $v['vcSupplierName'] ?></option>
+                                <?php foreach ($customer_data as $k => $v) { ?>
+                                    <option value="<?= $v['intCustomerID'] ?>"><?= $v['vcCustomerName'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
+                        <div class="form-group col-md-3">
+                            <label for="credit_limit">Credit Limit</label>
+                            <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" required />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="credit_limit">Available Credit</label>
+                            <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" required />
+                        </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="invoice_no">Invoice No</label>
-                            <input type="text" class="form-control" id="invoice_no" name="invoice_no" placeholder="Enter Invoice Number" autocomplete="off" required />
+                        <!-- <div class="btn-group col-md-6" data-toggle="buttons">
+                            <label for="customer">Payment Mode </label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                                <label class="form-check-label" for="inlineRadio1">1</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                <label class="form-check-label" for="inlineRadio2">2</label>
+                            </div> 
+                        </div> -->
+                        <div class="form-group col-md-6 col-sm-12">
+                            
+                            <label for="customer">Payment Mode </label>
+                            <!-- <div class="col-sm-10"> -->
+                                <div class="form-check col-xs-2">
+                                    <input class="form-check-input" type="radio" name="paymentmode" id="cash" value="1" checked>
+                                    <label class="form-check-label" for="gridRadios1">
+                                        Cash
+                                    </label>
+                                </div>
+                                <div class="form-check col-xs-2">
+                                    <input class="form-check-input" type="radio" name="paymentmode" id="credit" value="2">
+                                    <label class="form-check-label" for="gridRadios2">
+                                        Credit
+                                    </label>
+                                </div>
+
+                            <!-- </div> -->
+                           
                         </div>
                         <div class="form-group col-md-6">
-                            <label>Received Date</label>
+                            <label>Issued Date</label>
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="receivedDate" name="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
+                                <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
                                 <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -126,9 +161,11 @@
                                 <th hidden>Item ID</th>
                                 <th style="text-align:center;">Item</th>
                                 <th style="width: 200px; text-align:center;">Unit Price</th>
+                                <th style="width: 200px; text-align:center;">Stock Qty</th>
                                 <th style="width: 100px; text-align:center;">Unit</th>
                                 <th style="width: 100px; text-align:center;">Qty</th>
                                 <th style="width: 200px; text-align:center;">Total Price</th>
+                                <th hidden>rv</th>
                                 <th style="width: 100px; text-align: center;">Action</th>
                             </tr>
                         </thead>
@@ -138,17 +175,19 @@
                                 <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
                                 <td class="static">
                                     <!-- <input type="text" class="form-control" name="txtItem"> -->
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getMeasureUnitByItemID();"">
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getMeasureUnitByItemID();">
                                         <option value=" 0" disabled selected hidden>Select Item</option>
                                         <?php foreach ($item_data as $k => $v) { ?>
                                             <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
                                         <?php } ?>
                                     </select>
                                 </td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;"></td>
+                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>
+                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtStockQty" id="txtStockQty" style="text-align:right;" disabled></td>
                                 <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
                                 <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
+                                <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
                                 <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                             </tr>
                         </tbody>
@@ -196,3 +235,6 @@
     </section>
     <!-- /.content -->
 </div>
+
+
+<script src="<?php echo base_url('resources/pageJS/createIssue.js') ?>"></script>
