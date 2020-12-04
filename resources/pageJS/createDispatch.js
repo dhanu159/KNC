@@ -11,12 +11,16 @@ $(document).ready(function () {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
             AddToGrid();
+            $("#cmbItem li").attr('aria-selected', false);
+        event.preventDefault()
         }
         event.stopPropagation();
     });
 
     $('#cmbItem').on('select2:select', function (e) {
         getCuttingOrdersByItemID();
+        // $("#cmbCuttingOrder").focus();
+        // $("#cmbCuttingOrder li").attr('aria-selected', false);
     });
 
     $('#cmbCuttingOrder').on('select2:select', function (e) {
@@ -36,6 +40,10 @@ $(document).ready(function () {
     });
 });
 
+var Dispatch = function () {
+    this.intCuttingOrderHeaderID = 0;
+}
+
 function getCuttingOrdersByItemID() {
     getItemData();
     $('#txtQty').val(null);
@@ -52,6 +60,9 @@ function getCuttingOrdersByItemID() {
                 for (let index = 0; index < response.length; index++) {
                     $("#cmbCuttingOrder").append('<option value="' + response[index].intCuttingOrderHeaderID + '">' + response[index].vcOrderName + '</option>');
                 }
+
+                $("#cmbCuttingOrder").focus();
+                $("#cmbCuttingOrder li").attr('aria-selected', false);
             },
             error: function (xhr, status, error) {
                 arcadiaErrorMessage(error);
@@ -99,6 +110,7 @@ function getItemData() {
 var row_id = 1;
 
 function AddToGrid(IsMouseClick = false) {
+    debugger;
     if ($("#cmbItem option:selected").val() == 0 || $("#cmbCuttingOrder option:selected").val() == 0 || $("#txtQty").val() == "") {
         toastr["error"]("Please fill in all fields !");
     } else {
@@ -122,9 +134,18 @@ function AddToGrid(IsMouseClick = false) {
                     var cuttingOrderId = $("#cmbCuttingOrder option:selected").val();
                     var cuttingOrderName = $("#cmbCuttingOrder option:selected").text();
                     var qty = $("input[name=txtQty]").val();
-                    var Rv = $("input[name=txtRv]").val();
+                    var Rv = $("input[name=txtRv]").val(); 
 
-                    $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;">' +
+                    var model = new Dispatch(); 
+                    model.intCuttingOrderHeaderID = cuttingOrderId;
+ 
+
+                    ajaxCall('Utilities/getCuttingOrderDetailsByCuttingOrderHeaderID', model, function (response) {
+                        var cuttingOrderHTML = '<thead><tr><th style="text-align:center; background-color:#a5d6a7 !Important; color:#000000;">Cutting Size</th><th style="text-align:center; background-color:#a5d6a7 !Important; color:#000000;">Qty</th><tr></thead><tbody>';
+                        for (let index = 0; index < response.length; index++) {
+                            cuttingOrderHTML += '<tr> <td style="text-align:center;">'+response[index].vcSizeDescription+'</td><td style="text-align:center;">'+response[index].decQty+'</td> </tr>';
+                        }
+                        $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;" class="gridItem">' +
                         '<td hidden>' +
                             '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '"  readonly>' +
                         '</td>' +
@@ -152,33 +173,100 @@ function AddToGrid(IsMouseClick = false) {
                         '<td class="static">' +
                         '<button class="button red center-items"><i class="fas fa-times" onclick="removeCuttingOrder(' + row_id + ')"></i></span>' +
                         '</td>' +
-                            '<tr id="' + row_id + '" style="border:0; margin:0; padding:0; background-color:#cfd8dc;">' +
+                            '<tr id="' + row_id + '" style="border:0; margin:0; padding:0; background-color:#c8e6c9;">' +
                                 '<td colspan="6" style="border:0; margin:0; padding:0;">'+
                                     '<div id="collapse' + row_id + '" class="collapse" aria-labelledby="heading' + row_id + '" data-parent="#accordion">' +
-                                        '<table class="table" style="margin-bottom:0;">'+
-                                            '<tr> <td colspan="2"> Cutting Description </td> <td style="text-align:center;"> 12 x 12 </td> <td style="text-align:right;"> 20 </td> </tr>'+
-                                            '<tr> <td colspan="2"> Cutting Description 2 </td> <td style="text-align:center;"> 2 x 4 </td> <td style="text-align:right;"> 54 </td> </tr>'+
+                                        '<table style="margin-bottom:0; width:100%;">'+
+                                            cuttingOrderHTML+'</tbody>'+
+                                            // '<thead style="text-align:center; background-color:#a5d6a7 !Important;"><tr><th>Cutting Size</th><th style="text-align:center;">Qty</th><tr></thead><tbody><tr> <td style="text-align:center;">ee</td><td style="text-align:center;">34.00</td> </tr><tr> <td style="text-align:center;">dy</td><td style="text-align:center;">5.00</td> </tr></tbody>'+
+                                            //'<thead style="text-align:center; background-color:#a5d6a7 !Important;"><th>Cutting Size</th><th style="text-align:center;">Qty</th></thead>'+
+                                            //'<tr> <td style="text-align:center;"> 12 x 12 </td><td style="text-align:center;"> 20 </td> </tr>'+
+                                            //'<tr> <td style="text-align:center;"> 2 x 4 </td><td style="text-align:center;"> 54 </td> </tr>'+
                                         '</table>'+
                                     '</div>' +
                                 '</td>'+
-                                // '</tr>'+
                             '</tr>' +
                         '</tr>');
 
+
+
                     row_id++;
                     remove();
-                    // $("#cmbItem :selected").remove();
 
                     $("input[name=cmbItem],input[name=cmbCuttingOrder], input[name=txtMeasureUnit],input[name=txtStockQty],input[name=txtQty]").val("");
                     CalculateItemCount();
                     $("#cmbCuttingOrder").empty();
                     $("#cmbCuttingOrder").append('<option value=" 0" disabled selected hidden>Select Cutting Order</option>');
                     $("#cmbItem").focus();
-                    $("li").attr('aria-selected', false);
+                    $("#cmbItem li").attr('aria-selected', false);
+                    });
+                    debugger;
+
+                    
+
+//                     $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;" class="gridItem">' +
+//                         '<td hidden>' +
+//                             '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '"  readonly>' +
+//                         '</td>' +
+//                         '<td>' +
+//                             '<input type="text" style="cursor: pointer;" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
+//                         '</td>' +
+//                         '<td>' +
+//                         '   <input type="text" style="cursor: pointer;" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
+//                         '</td>' +
+//                         '<td>' +
+//                         '   <input type="text" style="cursor: pointer;" class="form-control disable-typing" style="text-align:center;" name="stockQty[]" id="stockQty_' + row_id + '"  value="' + stockQty + '" readonly>' +
+//                         '</td>' +
+//                         '<td hidden>' +
+//                         '<input type="text" style="cursor: pointer;" class="form-control cuttingOrderId disable-typing" name="cuttingOrderId[]" id="cuttingOrderId_' + row_id + '" value="' + cuttingOrderId + '" readonly>' +
+//                         '</td>' +
+//                         '<td>' +
+//                         '<input type="text" style="cursor: pointer;" class="form-control cuttingOrderName disable-typing" name="cuttingOrderName[]" id="cuttingOrderName_' + row_id + '" value="' + cuttingOrderName + '" readonly>' +
+//                         '</td>' +
+//                         '<td>' +
+//                         '<input type="text" style="cursor: pointer;" class="form-control stockQty disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
+//                         '</td>' +
+//                         '<td hidden>' +
+//                         '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
+//                         '</td>' +
+//                         '<td class="static">' +
+//                         '<button class="button red center-items"><i class="fas fa-times" onclick="removeCuttingOrder(' + row_id + ')"></i></span>' +
+//                         '</td>' +
+//                             '<tr id="' + row_id + '" style="border:0; margin:0; padding:0; background-color:#c8e6c9;">' +
+//                                 '<td colspan="6" style="border:0; margin:0; padding:0;">'+
+//                                     '<div id="collapse' + row_id + '" class="collapse" aria-labelledby="heading' + row_id + '" data-parent="#accordion">' +
+//                                         '<table class="table" style="margin-bottom:0; width:100%;">'+
+//                                             cuttingOrderHTML+'</tbody>'+
+
+// // '<thead style="text-align:center; background-color:#a5d6a7 !Important;"><tr><th>Cutting Size</th><th style="text-align:center;">Qty</th><tr></thead><tbody><tr> <td style="text-align:center;">ee</td><td style="text-align:center;">34.00</td> </tr><tr> <td style="text-align:center;">dy</td><td style="text-align:center;">5.00</td> </tr></tbody>'+
+
+//                                             //'<thead style="text-align:center; background-color:#a5d6a7 !Important;"><th>Cutting Size</th><th style="text-align:center;">Qty</th></thead>'+
+//                                             //'<tr> <td style="text-align:center;"> 12 x 12 </td><td style="text-align:center;"> 20 </td> </tr>'+
+//                                             //'<tr> <td style="text-align:center;"> 2 x 4 </td><td style="text-align:center;"> 54 </td> </tr>'+
+//                                         '</table>'+
+//                                     '</div>' +
+//                                 '</td>'+
+//                             '</tr>' +
+//                         '</tr>');
+
+
+//                     //  $('table .cuttingOrderDetails').innerHTML = cuttingOrderHTML;
+
+//                     row_id++;
+//                     remove();
+//                     // $("#cmbItem :selected").remove();
+
+//                     $("input[name=cmbItem],input[name=cmbCuttingOrder], input[name=txtMeasureUnit],input[name=txtStockQty],input[name=txtQty]").val("");
+//                     CalculateItemCount();
+//                     $("#cmbCuttingOrder").empty();
+//                     $("#cmbCuttingOrder").append('<option value=" 0" disabled selected hidden>Select Cutting Order</option>');
+//                     $("#cmbItem").focus();
+//                     $("#cmbItem li").attr('aria-selected', false);
                 } else {
                     toastr["error"]("Please select valid item !");
                     $("#cmbItem").focus();
-                    $("li").attr('aria-selected', false);
+                    // $("li").attr('aria-selected', false);
+                    $("#cmbItem li").attr('aria-selected', false);
                 }
             }
         } else {
@@ -189,13 +277,12 @@ function AddToGrid(IsMouseClick = false) {
 }
 
 function CalculateItemCount() {
-    var rowCount = $('#itemTable tr').length;
-    $("#itemCount").text("Item Count : " + (rowCount - 2));
+    var rowCount = $('#itemTable .gridItem').length;
+    $("#itemCount").text("Item Count : " + rowCount);
 }
 
 function remove() {
     $(".red").click(function () {
-
         // var itemID = $(this).closest("tr").find('.itemID').val();
         // var itemName = $(this).closest("tr").find('.itemName').val();
 
@@ -219,6 +306,7 @@ function remove() {
         $(this).closest("tr").remove();
 
         CalculateItemCount();
+        $("#cmbItem li").attr('aria-selected', false);
     });
 }
 

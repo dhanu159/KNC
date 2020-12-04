@@ -178,7 +178,7 @@ class Model_cuttingorder extends CI_Model
     }
 
     //-----------------------------------
-    // Create Cutting Order Configuration
+    // Create Cutting Order - Configuration
     //-----------------------------------
 
     public function cuttingOrderHeaderData()
@@ -252,4 +252,5 @@ class Model_cuttingorder extends CI_Model
         $query = $this->db->query($sql, array($ItemID));
         return $query->result_array();
     }
+
 }

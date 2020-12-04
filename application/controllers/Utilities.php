@@ -384,6 +384,7 @@ class Utilities extends Admin_Controller
     //-----------------------------------
     // Create Cutting Order
     //-----------------------------------
+
     public function CuttingOrder()
     {
         if (!$this->isAdmin) {
@@ -578,9 +579,20 @@ class Utilities extends Admin_Controller
         echo json_encode($response);
     }
 
+    public function getCuttingOrderDetailsByCuttingOrderHeaderID(){
+        if (!$this->isAdmin) {
+            if (!in_array('viewCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+        $intCuttingOrderHeaderID = $this->input->post('intCuttingOrderHeaderID');
+        $cuttingorder_detail_data = $this->model_cuttingorder->getCuttingOrderDetailData($intCuttingOrderHeaderID);
+        echo json_encode($cuttingorder_detail_data);
+    }
+
 
     //-----------------------------------
-    // Create Cutting Order Configuration
+    // Create Cutting Order - Configuration
     //-----------------------------------
 
     public function ViewCuttingOrderConfiguration()
