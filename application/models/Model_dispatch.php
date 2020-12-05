@@ -48,11 +48,13 @@ class Model_dispatch extends CI_Model
 
             // $items = array_unique($this->input->post('itemID'));
 
-            for ($x = $i; $x < ($item_count - $i); $x++) {
+            // for ($x = $i; $x < ($item_count - $i); $x++) {
+            for ($x = $i; $x < ($item_count); $x++) {
+
                 if (!in_array($itemID, $itemArray)) {
                     if ($itemID == $this->input->post('itemID')[$x]) {
 
-                        $dispatchQty += $this->input->post('itemQty')[$x];
+                        $dispatchQty = $dispatchQty + $this->input->post('itemQty')[$x];
                     }
                 }
             }
