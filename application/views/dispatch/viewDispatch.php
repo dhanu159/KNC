@@ -12,12 +12,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>View GRN</h1>
+                    <h1>View Dispatch</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Stock</a></li>
-                        <li class="breadcrumb-item active">View GRN</li>
+                        <li class="breadcrumb-item"><a href="#">Dispatch</a></li>
+                        <li class="breadcrumb-item active">View Dispatch</li>
                     </ol>
                 </div>
             </div>
@@ -34,9 +34,9 @@
                             <label>Status :</label>
                             <select class="custom-select" id="cmbStatus">
                                 <option value="0">All</option>
-                                <option value="1">Approved</option>
-                                <option value="2">Pending</option>
-                                <option value="3">Rejected</option>
+                                <option value="1">To Be Received</option>
+                                <option value="2">Received</option>
+                                <option value="2">Canceled</option>
                             </select>
                         </div>
                     </div>
@@ -70,19 +70,14 @@
                             <!-- style="display:block !important;" -->
                             <thead>
                                 <tr>
-                                    <th>GRN No</th>
-                                    <th>Invoice No</th>
-                                    <th>Supplier</th>
-                                    <th>Sub Total</th>
-                                    <th>Discount</th>
-                                    <th>Grand Total</th>
-                                    <th>Received Date</th>
+                                    <th>Dispatch No</th>
+                                    <th>Dispatched Date</th>
                                     <th>Created Date</th>
                                     <th>Created User</th>
-                                    <th>Approved Date</th>
-                                    <th>Approved User</th>
-                                    <th>Rejected Date</th>
-                                    <th>Rejected User</th>
+                                    <th>Cancelled Date</th>
+                                    <th>Cancelled User</th>
+                                    <th>Receive Completed Date</th>
+                                    <th>Receive Completed User</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -127,7 +122,7 @@
                             </tbody> -->
                         </table>
                         <hr>
-                        Color tags : <span class="badge badge-pill badge-warning">Pending Approvals</span> <span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">Approved GRNs</span> <span class="badge badge-pill badge-danger">Rejected GRNs</span>
+                        Color tags : <span class="badge badge-pill badge-warning">To Be Received</span> <span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">Received</span> <span class="badge badge-pill badge-danger">Canceled</span>
                     </div>
                     <!-- /.box-body -->
                 </div>
@@ -159,4 +154,4 @@
 </script> -->
 
 
-<script src="<?php echo base_url('resources/pageJS/viewGRN.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/viewDispatch.js') ?>"></script>
