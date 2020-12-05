@@ -4,6 +4,7 @@ class Model_customer extends CI_Model
     public function __construct()
     {
         parent::__construct();
+    
     }
 
     public function create($data)
@@ -18,12 +19,12 @@ class Model_customer extends CI_Model
     public function getCustomerData($id = null)
     {
         if ($id) {
-            $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,vcContactNo2,decCreditLimit FROM customer WHERE intCustomerID = ? AND IsActive = 1";
+            $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,vcContactNo2,decCreditLimit,decAvailableCredit FROM customer WHERE intCustomerID = ? AND IsActive = 1";
             $query = $this->db->query($sql, array($id));
             return $query->row_array();
         }
 
-        $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,IFNULL(vcContactNo2,'N/A') AS vcContactNo2,decCreditLimit FROM customer WHERE IsActive = 1";
+        $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,IFNULL(vcContactNo2,'N/A') AS vcContactNo2,decCreditLimit,decAvailableCredit FROM customer WHERE IsActive = 1";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

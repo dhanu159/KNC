@@ -2,63 +2,63 @@
 
 class Issue extends Admin_Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
+  public function __construct()
+  {
+    parent::__construct();
 
-        $this->not_logged_in();
-        $this->data['page_title'] = 'Issue';
-        $this->load->model('model_supplier');
-        $this->load->model('model_item');
-        $this->load->model('model_measureunit');
-        $this->load->model('model_customer');
-        $this->load->model('model_issue');
+    $this->not_logged_in();
+    $this->data['page_title'] = 'Issue';
+    $this->load->model('model_supplier');
+    $this->load->model('model_item');
+    $this->load->model('model_measureunit');
+    $this->load->model('model_customer');
+    $this->load->model('model_issue');
+  }
+
+  //-----------------------------------
+  // Create Issue
+  //-----------------------------------
+
+  public function CreateIssue()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('createIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
     }
 
-    //-----------------------------------
-    // Create Issue
-    //-----------------------------------
+    $customer_data = $this->model_customer->getCustomerData();
+    $item_data = $this->model_item->getOnlyFinishItemData();
 
-    public function CreateIssue()
-    {
-        if (!$this->isAdmin) {
-            if (!in_array('createIssue', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
-        }
+    $this->data['customer_data'] = $customer_data;
+    $this->data['item_data'] = $item_data;
 
-        $customer_data = $this->model_customer->getCustomerData();
-        $item_data = $this->model_item->getOnlyFinishItemData();
+    $this->render_template('Issue/createIssue', 'Create Issue',  $this->data);
+  }
 
-        $this->data['customer_data'] = $customer_data;
-        $this->data['item_data'] = $item_data;
 
-        $this->render_template('Issue/createIssue', 'Create Issue',  $this->data);
+  public function SaveIssue()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('createIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
     }
 
+    $response = $this->model_issue->saveIssue();
 
-    public function SaveIssue()
-    {
-        if (!$this->isAdmin) {
-            if (!in_array('createIssue', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
-        }
+    echo json_encode($response);
+  }
 
-        $response = $this->model_issue->saveIssue();
+  public function PrintIssueDiv($intIssueHeaderID)
+  {
+    if ($intIssueHeaderID) {
 
-        echo json_encode($response);
-    }
+      $issue_Header_Date =  $this->model_issue->GetIssueHeaderData($intIssueHeaderID);
+      $issue_Detail_Date =  $this->model_issue->GetIssueDetailsData($intIssueHeaderID);
 
-    public function PrintIssueDiv($intIssueHeaderID)
-    {
-        if ($intIssueHeaderID) {
 
-            $issue_Header_Date =  $this->model_issue->GetIssueHeaderData($intIssueHeaderID);
-            $issue_Detail_Date =  $this->model_issue->GetIssueDetailsData($intIssueHeaderID);
-         
-
-            $html = '
+      $html = '
 
             <div id="myDiv" class="wrapper">
             <section class="invoice">
@@ -66,7 +66,7 @@ class Issue extends Admin_Controller
               <div class="row">
                 <div class="col-xs-12">
                   <h2 class="page-header">
-                    "KNC"
+                    "KNC Cake Boards"
                   </h2>
                 </div>
                 <!-- /.col -->
@@ -76,9 +76,9 @@ class Issue extends Admin_Controller
                 
                 <div class="col-sm-4 invoice-col">
 
-                  <b>Date:</b> '.$issue_Header_Date['dtCreatedDate'].'<br>
-                  <b>Issue No:</b> '.$issue_Header_Date['vcIssueNo'].'<br>
-                  <b>Customer Name:</b> '.$issue_Header_Date['vcCustomerName'].'<br>
+                  <b>Date:</b> ' . $issue_Header_Date['dtCreatedDate'] . '<br>
+                  <b>Issue No:</b> ' . $issue_Header_Date['vcIssueNo'] . '<br>
+                  <b>Customer Name:</b> ' . $issue_Header_Date['vcCustomerName'] . '<br>
              
                 </div>
                 <!-- /.col -->
@@ -97,43 +97,88 @@ class Issue extends Admin_Controller
                       <th>Amount</th>
                     </tr>
                     </thead>
-                    <tbody>'; 
+                    <tbody>';
 
-                    foreach ($issue_Detail_Date as $k => $v) {
+      foreach ($issue_Detail_Date as $k => $v) {
 
-                        // $product_data = $this->model_products->getProductData($v['product_id']); 
-                        
-                        $html .= '<tr>
-                          <td>'.$v['vcItemName'].'</td>
-                          <td>'.$v['decUnitPrice'].'</td>
-                          <td>'.$v['decIssueQty'].'</td>
-                          <td>'.$v['decTotalPrice'].'</td>
+        // $product_data = $this->model_products->getProductData($v['product_id']); 
+
+        $html .= '<tr>
+                          <td>' . $v['vcItemName'] . '</td>
+                          <td>' . $v['decUnitPrice'] . '</td>
+                          <td>' . $v['decIssueQty'] . '</td>
+                          <td>' . $v['decTotalPrice'] . '</td>
                         </tr>';
-                    }
-                    
-                    $html .= '</tbody>
+      }
+
+      $html .= '</tbody>
                   </table>
                 </div>
                 <!-- /.col -->
               </div>';
 
-              echo $html;
-        }
+      echo $html;
+    }
+  }
+
+  //-----------------------------------
+  // View Issue
+  //-----------------------------------
+
+  public function ViewIssue()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('viewIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+    $payment_data = $this->model_issue->getPaymentTypes();
+    $customer_data = $this->model_customer->getCustomerData();
+    $this->data['payment_data'] = $payment_data;
+    $this->data['customer_data'] = $customer_data;
+    $this->render_template('Issue/ViewIssue', 'View Issue', $this->data);
+  }
+
+  public function FilterIssueHeaderData($PaymentType, $CustomerID, $FromDate, $ToDate)
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('viewIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
     }
 
-    //-----------------------------------
-    // View Issue
-    //-----------------------------------
+    $result = array('data' => array());
 
-    public function ViewIssue()
-    {
-        if (!$this->isAdmin) {
-            if (!in_array('viewIssue', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
-        }
-        $customer_data = $this->model_customer->getCustomerData();
-        $this->data['customer_data'] = $customer_data;
-        $this->render_template('Issue/ViewIssue', 'View Issue', $this->data);
+
+    $issue_data = $this->model_issue->GetIssueHeaderData(null,$PaymentType, $CustomerID, $FromDate, $ToDate);
+
+    // $this->data['grn_data'] = $grn_data;
+
+    foreach ($issue_data as $key => $value) {
+
+      $buttons = '';
+
+      if (in_array('viewIssue', $this->permission) || $this->isAdmin) {
+        $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ViewGRNDetails/" . $value['intIssueHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
+      }
+
+
+      $result['data'][$key] = array(
+        $value['vcIssueNo'],
+        $value['vcCustomerName'],
+        $value['dtIssueDate'],
+        $value['dtCreatedDate'],
+        $value['vcFullName'],
+        $value['vcPayment'],
+        number_format((float)$value['decSubTotal'], 2, '.', ''),
+        number_format((float)$value['decDiscount'], 2, '.', ''),
+        number_format((float)$value['decGrandTotal'], 2, '.', ''),
+        number_format((float)$value['decPaidAmount'], 2, '.', ''),
+        number_format((float)$value['decBalance'], 2, '.', ''),
+        $buttons
+      );
     }
+
+    echo json_encode($result);
+  }
 }
