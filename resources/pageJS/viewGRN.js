@@ -58,9 +58,9 @@ function FilterItems(FromDate,ToDate){
 
             $(nRow.childNodes[0]).css('text-align', 'center');
             $(nRow.childNodes[2]).css('text-align', 'center');
-            $(nRow.childNodes[3]).css('text-align', 'right');
-            $(nRow.childNodes[4]).css('text-align', 'right');
-            $(nRow.childNodes[5]).css('text-align', 'right');
+            $(nRow.childNodes[3]).css('text-align', 'center');
+            $(nRow.childNodes[4]).css('text-align', 'center');
+            $(nRow.childNodes[5]).css('text-align', 'center');
             $(nRow.childNodes[6]).css('text-align', 'center');
             $(nRow.childNodes[7]).css('text-align', 'center');
             $(nRow.childNodes[8]).css('text-align', 'center');
