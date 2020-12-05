@@ -88,9 +88,7 @@ class Model_dispatch extends CI_Model
                 WHERE I.intItemID = ?";
 
                 $this->db->query($sql, array($itemID));
-
             }
-
         }
 
         if ($anotherUserAccess == true) {
@@ -114,5 +112,68 @@ class Model_dispatch extends CI_Model
         }
 
         return $response;
+    }
+
+    public function getDispatchHeaderData($DispatchHeaderID = null, $Status = null, $FromDate = null, $ToDate = null)
+    {
+        if ($DispatchHeaderID) {
+            $sql = "
+                SELECT 
+                    DH.intDispatchHeaderID, 
+                    DH.vcDispatchNo,
+                    DH.dtDispatchDate, 
+                    DH.dtCreatedDate,
+                    CreatedUser.vcFullName AS CreatedUser,
+                    IFNULL(DH.dtCancelledDate,'') AS dtCancelledDate,
+                    IFNULL(CancledUser.vcFullName,'') AS CancledUser,
+                    IFNULL(DH.dtReceiveCompletedDate,'') AS dtReceiveCompletedDate,
+                    IFNULL(ReceiveCompletedUser.vcFullName,'') AS ReceiveCompletedUser
+                FROM DispatchHeader AS DH
+                INNER JOIN User AS CreatedUser ON DH.intUserID = CreatedUser.intUserID
+                LEFT OUTER JOIN User AS CancledUser ON DH.intCancelledBy = CancledUser.intUserID
+                LEFT OUTER JOIN User AS ReceiveCompletedUser ON DH.intReceiveCompletedBy = ReceiveCompletedUser.intUserID
+                WHERE DH.intDispatchHeaderID = ?";
+
+            $query = $this->db->query($sql, array($DispatchHeaderID));
+            return $query->row_array();
+        }
+
+
+
+        $sql = "
+                SELECT 
+                    DH.intDispatchHeaderID, 
+                    DH.vcDispatchNo,
+                    DH.dtDispatchDate, 
+                    DH.dtCreatedDate,
+                    CreatedUser.vcFullName AS CreatedUser,
+                    IFNULL(DH.dtCancelledDate,'') AS dtCancelledDate,
+                    IFNULL(CancledUser.vcFullName,'') AS CancledUser,
+                    IFNULL(DH.dtReceiveCompletedDate,'') AS dtReceiveCompletedDate,
+                    IFNULL(ReceiveCompletedUser.vcFullName,'') AS ReceiveCompletedUser
+                FROM DispatchHeader AS DH
+                INNER JOIN User AS CreatedUser ON DH.intUserID = CreatedUser.intUserID
+                LEFT OUTER JOIN User AS CancledUser ON DH.intCancelledBy = CancledUser.intUserID
+                LEFT OUTER JOIN User AS ReceiveCompletedUser ON DH.intReceiveCompletedBy = ReceiveCompletedUser.intUserID ";
+
+
+        $dateFilter = " WHERE CAST(DH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
+
+
+        if ($Status == 1) { // To Be Received
+            $statusFilter = " AND DH.dtReceiveCompletedDate IS NULL AND DH.dtCancelledDate IS NULL ";
+        } else if ($Status == 2) { // Received
+            $statusFilter = " AND DH.dtReceiveCompletedDate IS NOT NULL ";
+        } else if ($Status == 3) { // Canceld
+            $statusFilter = " AND DH.dtCancelledDate IS NOT NULL ";
+        } else {  // All
+            $statusFilter = "";
+        }
+
+
+        $sql  = $sql . $dateFilter . $statusFilter . " ORDER BY DH.intDispatchHeaderID";
+
+        $query = $this->db->query($sql, array($FromDate, $ToDate));
+        return $query->result_array();
     }
 }
