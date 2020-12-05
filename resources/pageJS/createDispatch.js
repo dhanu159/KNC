@@ -145,7 +145,7 @@ function AddToGrid(IsMouseClick = false) {
                         for (let index = 0; index < response.length; index++) {
                             cuttingOrderHTML += '<tr> <td style="text-align:center;">'+response[index].vcSizeDescription+'</td><td style="text-align:center;">'+response[index].decQty+'</td> </tr>';
                         }
-                        $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;" class="gridItem">' +
+                        $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;" name="gridItem" class="row'+row_id+'">' +
                         '<td hidden>' +
                             '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '"  readonly>' +
                         '</td>' +
@@ -171,9 +171,9 @@ function AddToGrid(IsMouseClick = false) {
                         '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
                         '</td>' +
                         '<td class="static">' +
-                        '<button class="button red center-items"><i class="fas fa-times" onclick="removeCuttingOrder(' + row_id + ')"></i></span>' +
+                        '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
                         '</td>' +
-                            '<tr id="' + row_id + '" style="border:0; margin:0; padding:0; background-color:#c8e6c9;">' +
+                            '<tr class="row' + row_id +'" style="border:0; margin:0; padding:0; background-color:#c8e6c9;">' +
                                 '<td colspan="6" style="border:0; margin:0; padding:0;">'+
                                     '<div id="collapse' + row_id + '" class="collapse" aria-labelledby="heading' + row_id + '" data-parent="#accordion">' +
                                         '<table style="margin-bottom:0; width:100%;">'+
@@ -188,7 +188,7 @@ function AddToGrid(IsMouseClick = false) {
                             '</tr>' +
                         '</tr>');
 
-
+ 
 
                     row_id++;
                     remove();
@@ -200,7 +200,6 @@ function AddToGrid(IsMouseClick = false) {
                     $("#cmbItem").focus();
                     $("#cmbItem li").attr('aria-selected', false);
                     });
-                    debugger;
 
                     
 
@@ -277,42 +276,34 @@ function AddToGrid(IsMouseClick = false) {
 }
 
 function CalculateItemCount() {
-    var rowCount = $('#itemTable .gridItem').length;
+    $("#itemCount").text("Item Count : 0");
+    var rowCount = $('tr[name ="gridItem"]').length;
     $("#itemCount").text("Item Count : " + rowCount);
 }
 
 function remove() {
     $(".red").click(function () {
-        // var itemID = $(this).closest("tr").find('.itemID').val();
-        // var itemName = $(this).closest("tr").find('.itemName').val();
 
-        // var IsAlreadyIncluded = false;
+        var row = $(this).closest("tr").attr('class');
+        // alert(row);
+        
+        $("."+row).remove();
 
-        // $("#cmbItem option").each(function () {
-        //     if (itemID == $(this).val()) {
-        //         IsAlreadyIncluded = true;
-        //         return false;
-        //     }
-        // });
 
-        // if (!IsAlreadyIncluded) {
-        //     var cmbItem = $('#cmbItem');
-        //     cmbItem.append(
-        //         $('<option></option>').val(itemID).html(itemName)
-        //     );
-        //     $(this).closest("tr").remove();
-        // }
+        // $(this).closest("tr").remove();
 
-        $(this).closest("tr").remove();
+        // $(this).closest(".row" + id).remove();
+
 
         CalculateItemCount();
         $("#cmbItem li").attr('aria-selected', false);
     });
 }
 
-function removeCuttingOrder(id) {
-    $("#" + id).remove();
-}
+// function removeCuttingOrder(id) {
+//     // alert("2");
+//     // $(".row" + id).remove();
+// }
 
 $('#btnSubmit').click(function () {
 
