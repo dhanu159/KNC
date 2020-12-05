@@ -11,13 +11,13 @@ class Model_issue extends CI_Model
     {
         $this->db->trans_begin();
 
-        // $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
-        // $ret = $query->row();
-        // $DispatchNo = $ret->DispatchNo;
+        $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
+        $ret = $query->row();
+        $IssueNo = $ret->IssueNo;
 
         $response = array();
 
-        $IssueNo = "Issue-001";
+        // $IssueNo = "Issue-001";
 
         $insertDetails = false;
 
@@ -26,7 +26,7 @@ class Model_issue extends CI_Model
         $data = array(
             'vcIssueNo' => $IssueNo,
             'intCustomerID' => $this->input->post('cmbcustomer'),
-            'dtIssueDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('receivedDate')))),
+            'dtIssueDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('issuedDate')))),
             'intUserID' => $this->session->userdata('user_id'),
             'intPaymentTypeID' =>  $paymentType,
             'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
@@ -91,6 +91,12 @@ class Model_issue extends CI_Model
                 $response['success'] = false;
                 $response['messages'] = 'Error in the database while create the issue details';
             } else {
+
+                $IssueHeaderData = $this->GetIssueHeaderData($IssueHeaderID);
+
+                $response['vcIssueNo'] =  $IssueHeaderData['vcIssueNo'];
+                $response['intIssueHeaderID'] =  $IssueHeaderData['intIssueHeaderID'];
+
                 $this->db->trans_commit();
                 $response['success'] = true;
                 $response['messages'] = 'Succesfully created !';
@@ -98,5 +104,51 @@ class Model_issue extends CI_Model
         }
 
         return $response;
+    }
+
+    public function GetIssueHeaderData($IssueHeaderID = null)
+    {
+        if ($IssueHeaderID) {
+            $sql = "
+                    SELECT  IH.intIssueHeaderID,
+                    IH.vcIssueNo,
+                    CU.vcCustomerName,
+                    IH.dtIssueDate,
+                    IH.dtCreatedDate,
+                    U.vcFullName,
+                    IH.intPaymentTypeID,
+                    PY.vcPayment,
+                    IH.decSubTotal,
+                    IH.decDiscount,
+                    IH.decGrandTotal,
+                    IH.decPaidAmount,
+                    IH.decBalance
+            FROM Issueheader AS IH
+            INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
+            INNER JOIN user as U ON IH.intUserID = U.intUserID
+            INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
+            WHERE intIssueHeaderID = ? AND IH.IsActive = 1;";
+
+            $query = $this->db->query($sql, array($IssueHeaderID));
+            return $query->row_array();
+        }
+    }
+
+    public function GetIssueDetailsData($IssueHeaderID = null)
+    {
+        if ($IssueHeaderID) {
+            $sql = "
+            SELECT I.vcItemName,
+            ID.decUnitPrice,
+            ID.decIssueQty,
+            ID.decTotalPrice
+            FROM IssueDetail AS ID
+            INNER JOIN Issueheader AS IH ON ID.intIssueHeaderID = IH.intIssueHeaderID
+            INNER JOIN Item AS I ON ID.intItemID = I.intItemID
+            WHERE ID.intIssueHeaderID = ?";
+
+            $query = $this->db->query($sql, array($IssueHeaderID));
+            return $query->result_array();
+        }
     }
 }

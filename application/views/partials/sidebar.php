@@ -243,7 +243,7 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="<?php echo base_url('Issue/CreateIssue') ?>" class="nav-link <?php if ($this->uri->segment(2) == "RequestItem") {
+                            <a href="<?php echo base_url('Issue/CreateIssue') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CreateIssue") {
                                                                                                         echo 'active';
                                                                                                     } ?>">
                                 <i class="fas fa-cart-plus"></i>
@@ -251,7 +251,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?php echo base_url('Request/ViewRequest') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewRequest") {
+                            <a href="<?php echo base_url('Issue/ViewIssue') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewIssue") {
                                                                                                         echo 'active';
                                                                                                     } ?>">
                                 <i class="fas fa-search"></i>

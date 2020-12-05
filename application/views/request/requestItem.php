@@ -20,6 +20,10 @@
         /* background-color: #c2c7d0; */
         border: 2px solid #3d9970;
     }
+    .select2-results span[lowstock="true"] { 
+  color: red;
+}
+
 
     .button {
         width: 35px;
@@ -92,7 +96,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('Request/SaveRequestItem') ?>" id="createGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('Request/SaveRequestItem') ?>" id="createRequestItem">
                     
                     <table class="table arcadia-table" id="itemTable">
                         <thead>
@@ -112,10 +116,19 @@
                                 <td class="static">
                                     <!-- <input type="text" class="form-control" name="txtItem"> -->
                                     <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getRequestFinishedByItemID();">
-                                        <option value=" 0" disabled selected hidden>Select Item</option>
-                                        <?php foreach ($item_data as $k => $v) { ?>
-                                            <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
+                                        <option value="0" disabled selected hidden>Select Item</option>
+                                        <?php foreach ($item_data as $k => $v) { 
+                                             if( $v['decStockInHand']<=50 ){
+                                                $lowstock="true";
+                                             }else{
+                                                $lowstock="false";
+                                             }
+                                             
+                                             
+                                             ?>
+                                            <option value="<?= $v['intItemID'] ?>"  lowstock="<?=  $lowstock ?>"  ><?= $v['vcItemName'] ?></option>
                                         <?php } ?>
+
                                     </select>
                                 </td>
                                 <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
@@ -149,3 +162,17 @@
 </div>
 
 <script src="<?php echo base_url('resources/pageJS/request.js') ?>"></script>
+<script>
+function formatState (state) {
+  if(!state.element) return;
+  var os = $(state.element).attr('lowstock');
+  return $('<span lowstock="' + os + '">' + state.text + '</span>');
+}
+
+$(document).ready(function() {
+    $('select').select2({
+      templateResult: formatState
+    });
+});
+
+</script>

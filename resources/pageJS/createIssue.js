@@ -17,19 +17,36 @@ $(document).ready(function () {
         CalculateGrandTotal();
     });
 
+    $('.add-item').keypress(function(event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            // getRequestFinishedByItemID();
+            if ($("#cmbcustomer option:selected").val() == 0) {
+                toastr["error"]("Please select customer !");
+                return;
+            }
+            if ($("input[name=txtStockQty]").val() == "N/A" || $("input[name=txtStockQty]").val() == "0.00") {
+                toastr["error"]("Please can't Add Stock Qty N/A");
+                return;
+            }
+            AddToGrid();
+        }
+
+        event.stopPropagation();
+    });
     // $('input[type=radio][name=paymentmode]').change(function () {
-        // if (document.getElementById('credit').checked) {
-        //     if ($("#cmbcustomer option:selected").val() == 0) {
-        //         toastr["error"]("Please select customer !"); 
-        //         return;
-        //     }
-        //     if (chkCreditLimit() == true) {
-        //         alert("can Check");
-        //     }
-        //     else {
-        //         alert("block");
-        //     }
-        // }
+    // if (document.getElementById('credit').checked) {
+    //     if ($("#cmbcustomer option:selected").val() == 0) {
+    //         toastr["error"]("Please select customer !"); 
+    //         return;
+    //     }
+    //     if (chkCreditLimit() == true) {
+    //         alert("can Check");
+    //     }
+    //     else {
+    //         alert("block");
+    //     }
+    // }
     // });
 
 
@@ -43,6 +60,19 @@ $(document).ready(function () {
             $("#txtTotalPrice").val(currencyFormat(total));
         }
     }
+
+
+    $('#txtQty').on('keyup', function (e) {
+        if ($('#txtStockQty').val() == 0) {
+            $('#txtQty').val(null);
+            toastr["error"]("You can't Issue this. Because this item stock quantity is zero!");
+        } else if ($('#txtStockQty').val() > 0) {
+            if (parseFloat($('#txtQty').val()) > parseFloat($('#txtStockQty').val())) {
+                toastr["error"]("You can't exceed stock quantity  !");
+            }
+        }
+
+    });
 
     function remove() {
         $(".red").click(function () {
@@ -81,15 +111,14 @@ $(document).ready(function () {
             toastr["error"]("Please select customer !");
             return;
         }
-        if($("input[name=txtStockQty]").val() == "N/A" || $("input[name=txtStockQty]").val() == "0.00")
-        {
+        if ($("input[name=txtStockQty]").val() == "N/A" || $("input[name=txtStockQty]").val() == "0.00") {
             toastr["error"]("Please can't Add Stock Qty N/A");
             return;
         }
         if (document.getElementById('credit').checked) {
             debugger;
             if (chkCreditLimit() == true) {
-                AddToGrid();
+                AddToGrid(true);
             }
             else {
 
@@ -98,82 +127,94 @@ $(document).ready(function () {
 
         }
         else {
-            AddToGrid();
+            AddToGrid(true);
         }
 
     });
 
+
     var row_id = 1;
 
-
-    function AddToGrid() {
+    function AddToGrid(IsMouseClick = false) {
         debugger;
         if ($("#cmbcustomer option:selected").val() == 0) {
             toastr["error"]("Please select customer !");
             return;
         }
-        if ($("#cmbItem option:selected").val() == 0 || $("input[name=txtQty]").val() == "") {
-            toastr["error"]("Please fill in all fields !");
-        } else {
-            if ($("#cmbItem option:selected").val() > 0) {
-                var itemID = $("#cmbItem option:selected").val();
-                var item = $("#cmbItem option:selected").text();
-                var measureUnit = $("input[name=txtMeasureUnit]").val();
-                var stockQty = $("input[name=txtStockQty]").val();
-                var unitPrice = $("input[name=txtUnitPrice]").val();
-                var qty = $("input[name=txtQty]").val();
-                var Rv = $("input[name=txtRv]").val();
-                var total = unitPrice * qty;
-
-                $(".first-tr").after('<tr>' +
-                    '<td hidden>' +
-                    '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '" readonly>' +
-                    '</td>' +
-                    '<td>' +
-                    '<input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
-                    '</td>' +
-                    '<td>' +
-                    '<input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_' + row_id + '" value="' + parseFloat(unitPrice).toFixed(2) + '" readonly>' +
-                    '</td>' +
-                    '<td>' +
-                    '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="stockQty[]" id="stockQty_' + row_id + '"  value="' + stockQty + '" readonly>' +
-                    '</td>' +
-                    '<td>' +
-                    '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
-                    '</td>' +
-                    '<td>' +
-                    '<input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
-                    '</td>' +
-                    '<td>' +
-                    '<input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_' + row_id + '"  value="' + parseFloat(total).toFixed(2) + '" readonly>' +
-                    '</td>' +
-                    '<td hidden>' +
-                    '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
-                    '</td>' +
-                    '<td class="static">' +
-                    '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
-                    '</td>' +
-                    '</tr>');
-
-                row_id++;
-                remove();
-                $("#cmbItem :selected").remove();
-
-                $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty]").val("");
-                $("input[name=txtTotalPrice]").val("0.00");
-                CalculateItemCount();
-                CalculateGrandTotal();
-                $("#cmbItem").focus();
-                $("li").attr('aria-selected', false);
-            } else {
-                toastr["error"]("Please select valid item !");
-                $("#cmbItem").focus();
-                $("li").attr('aria-selected', false);
+        else {
+            if ($("#txtQty").val() > 0) {
+    
+                if ($('#txtStockQty').val() == 0) {
+                    if (IsMouseClick) {
+                        $('#txtQty').val(null);
+                        toastr["error"]("You can't dispatch this. Because this item stock quantity is zero!");
+                    }
+                } else if (parseFloat($('#txtQty').val()) > parseFloat($('#txtStockQty').val())) {
+                    if (IsMouseClick) {
+                        toastr["error"]("You can't exceed stock quantity  !");
+                    }
+                } else {
+                    if ($("#cmbItem option:selected").val() > 0) {
+                        var itemID = $("#cmbItem option:selected").val();
+                        var item = $("#cmbItem option:selected").text();
+                        var measureUnit = $("input[name=txtMeasureUnit]").val();
+                        var stockQty = $("input[name=txtStockQty]").val();
+                        var unitPrice = $("input[name=txtUnitPrice]").val();
+                        var qty = $("input[name=txtQty]").val();
+                        var Rv = $("input[name=txtRv]").val();
+                        var total = unitPrice * qty;
+    
+                        $(".first-tr").after('<tr>' +
+                            '<td hidden>' +
+                            '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '" readonly>' +
+                            '</td>' +
+                            '<td>' +
+                            '<input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
+                            '</td>' +
+                            '<td>' +
+                            '<input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_' + row_id + '" value="' + parseFloat(unitPrice).toFixed(2) + '" readonly>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="stockQty[]" id="stockQty_' + row_id + '"  value="' + stockQty + '" readonly>' +
+                            '</td>' +
+                            '<td>' +
+                            '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
+                            '</td>' +
+                            '<td>' +
+                            '<input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
+                            '</td>' +
+                            '<td>' +
+                            '<input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_' + row_id + '"  value="' + parseFloat(total).toFixed(2) + '" readonly>' +
+                            '</td>' +
+                            '<td hidden>' +
+                            '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
+                            '</td>' +
+                            '<td class="static">' +
+                            '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
+                            '</td>' +
+                            '</tr>');
+    
+                        row_id++;
+                        remove();
+                        $("#cmbItem :selected").remove();
+    
+                        $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty]").val("");
+                        $("input[name=txtTotalPrice]").val("0.00");
+                        CalculateItemCount();
+                        CalculateGrandTotal();
+                        $("#cmbItem").focus();
+                        $("li").attr('aria-selected', false);
+    
+                    } else {
+                        toastr["error"]("Please select valid item !");
+                        $("#cmbItem").focus();
+                        $("li").attr('aria-selected', false);
+                    }
+                }
             }
         }
     }
-
-  
+    
 
     function CalculateGrandTotal() {
         if ($('#itemTable tr').length > 2) { // Because table header and item add row in here
@@ -204,7 +245,7 @@ function getDetailByCustomerID() {
     var customerID = $("#cmbcustomer").val();
     if (customerID > 0) {
         $.ajax({
-            async:false,
+            async: false,
             url: base_url + 'customer/fetchCustomerDataById/' + customerID,
             type: 'post',
             dataType: 'json',
@@ -253,7 +294,7 @@ function getMeasureUnitByItemID() {
 
 function chkCreditLimit() {
     var canAdd = false;
-debugger;
+    debugger;
     if ($("#grandTotal").val("0.00")) {
         var Total = parseFloat($("#txtTotalPrice").val().replace(/,/g, ''));
     }
@@ -266,7 +307,7 @@ debugger;
     if (customerID > 0) {
 
         $.ajax({
-            async:false,
+            async: false,
             url: base_url + 'customer/fetchCustomerDataById/' + customerID,
             type: 'post',
             dataType: 'json',
@@ -307,13 +348,15 @@ $('#btnSubmit').click(function () {
             var form = $("#createIssue");
 
             $.ajax({
+                async: false,
                 type: form.attr('method'),
                 url: form.attr('action'),
                 data: form.serialize(),
                 dataType: 'json',
                 success: function (response) {
                     if (response.success == true) {
-                        arcadiaSuccessMessage("Created !");
+                        arcadiaSuccessMessagePrint("Issue No : "+ response.vcIssueNo, response.intIssueHeaderID);
+                        // $('#printpage', window.parent.document).hide();
                     } else {
                         toastr["error"](response.messages);
                     }

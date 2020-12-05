@@ -126,6 +126,37 @@ function arcadiaSuccessMessage(Title = "Succeeded !",ReDirectPage = null){
     })
 }
 
+function arcadiaSuccessMessagePrint(Title = "Succeeded !",intIssueHeaderID = null){
+    Swal.fire(
+        Title,
+        'Your request has been successfully processed.',
+        'success'
+    ).then((res) => {
+        if (res.isConfirmed || res.dismiss) {
+            swal.close();
+        $.ajax({
+            async: false,
+            url: base_url + 'Issue/PrintIssueDiv/' + intIssueHeaderID,
+            success: function (response) {
+               var headstr = "<html><head><title>Booking Details</title></head><body>";
+               var footstr = "</body>";
+               var newstr = response;
+               var oldstr = document.body.innerHTML;
+               document.body.innerHTML = headstr+newstr+footstr;
+               window.print();
+               document.body.innerHTML = oldstr;
+               return false;
+            },
+            error: function(XMLHttpRequest, textStatus, errorThrown) { 
+                alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+            }
+        });
+
+    }
+       
+    })
+}
+
 
 function arcadiaErrorMessage(Msg, ReDirectPage = null){
     Swal.fire(
