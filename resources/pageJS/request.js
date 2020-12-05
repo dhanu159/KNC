@@ -123,7 +123,7 @@ $(document).ready(function() {
         } else {
             arcadiaConfirmAlert("You want to be able to save this !", function(button) {
 
-                var form = $("#createGRN");
+                var form = $("#createRequestItem");
 
                 $.ajax({
                     type: form.attr('method'),
@@ -133,7 +133,7 @@ $(document).ready(function() {
                     async: true,
                     success: function(response) {
                         if (response.success == true) {
-                            arcadiaSuccessMessage(true);
+                            arcadiaSuccessMessage("Request No : "+ response.vcRequestNo);
                         } else {
 
                             if (response.messages instanceof Object) {
@@ -162,7 +162,7 @@ $(document).ready(function() {
 
     });
 
-    $("#createGRN").unbind('submit').on('submit', function(e) {});
+    $("#createRequestItem").unbind('submit').on('submit', function(e) {});
 
 });
 

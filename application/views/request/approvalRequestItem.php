@@ -18,6 +18,7 @@ r<style>
     .red,
     .remove {
         background: #e74c3c;
+        margin-left: 10px !important;
     }
 
     .green {
@@ -114,7 +115,7 @@ r<style>
                                                 if ($v['IsRejected'] == 0 && ($v['IsApproved'] == 0)) {
                                                     $buttonVisible = true;
                                                 ?>
-                                                    <button type="button" class="button red center-items" style="position: relative; float:left;" id="btnReject" onclick="RejectRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-times"></i></button>
+                                                    <button type="button" class="button red center-items" style="position: relative; float:right;" id="btnReject" onclick="RejectRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-times"></i></button>
                                                     <button type="button" class="button green center-items" style="position: relative; float:right;" id="btnApproval" onclick="ApprovalRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-check"></i></button>
 
                                                 <?php }
@@ -131,19 +132,23 @@ r<style>
                     </div>
 
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-12">
                             <p style="color: #c2c7d0; position:absolute; bottom:0;" id="itemCount">Item Count : 0</p>
                         </div>
+                    </div>
+                    <div class="row">
                         <!-- /.col -->
 
                         <?php if ($buttonVisible) {
                         ?>
-                            <div class="col-lg-6" style="padding: 10px;">
+                        <div class="col-12">
+                            <div class="col-lg-3 float-right" style="padding: 10px;">
                                 <button type="button" id="btnApprovalAll" class="btn btn-lg btn-info btn-flat float-right col-sm-12 col-md-12"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Accept & Issue All</button>
                             </div>
-                            <div class="col-lg-6" style="padding: 10px;">
+                            <div class="col-lg-3 float-right" style="padding: 10px;">
                                 <button type="button" id="btnRejectAll" class="btn btn-lg btn-danger btn-flat float-right col-sm-12 col-md-12"><i class="fas fa-calendar-times"></i>&nbsp;&nbsp;&nbsp;Reject All</button>
                             </div>
+                        </div>
                         <?php }
                         ?>
                     </div>

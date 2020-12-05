@@ -59,6 +59,8 @@ class Model_request extends CI_Model
 
     public function getRequestHeaderData($RequestID = null, $Status = null, $FromDate = null, $ToDate = null)
     {
+     
+      
 
         if ($RequestID) {
             $sql = "
@@ -228,12 +230,12 @@ class Model_request extends CI_Model
 
     public function SaveRequestItem()
     {
+        $response = array();
         $this->db->trans_start();
 
         $query = $this->db->query("SELECT fnGenerateRequestNo() AS RquestNo");
         $ret = $query->row();
         $RquestNo = $ret->RquestNo;
-
 
         $insertDetails = false;
 
@@ -257,9 +259,13 @@ class Model_request extends CI_Model
             $insertDetails = $this->db->insert('requestDetail', $items);
         }
 
+         $HeaderData = $this->getRequestHeaderData($RequestHeaderID);
+         $response['vcRequestNo'] =  $HeaderData['vcRequestNo'];
+
         $this->db->trans_complete();
 
-        return ($insertDetails == true) ? true : false;
+        return $response;
+        //return ($insertDetails == true) ? true : false;
     }
 
     public function EditRequest($intRequestHeaderID)

@@ -146,7 +146,7 @@
                         <div class="form-group col-md-6">
                             <label>Issued Date</label>
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
+                                <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Issue Date" style="pointer-events: none !important;" />
                                 <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
