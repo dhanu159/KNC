@@ -51,7 +51,7 @@ $(document).ready(function () {
             var discount = $("#txtDiscount").val();
             var total = 0;
             $('#itemTable tbody tr').each(function () {
-                var value = parseInt($(this).closest("tr").find('.total').val());
+                var value = parseFloat($(this).closest("tr").find('.total').val());
                 if (!isNaN(value)) {
                     total += value;
                 }

@@ -34,20 +34,18 @@ $(document).ready(function () {
 
         event.stopPropagation();
     });
-    // $('input[type=radio][name=paymentmode]').change(function () {
-    // if (document.getElementById('credit').checked) {
-    //     if ($("#cmbcustomer option:selected").val() == 0) {
-    //         toastr["error"]("Please select customer !"); 
-    //         return;
-    //     }
-    //     if (chkCreditLimit() == true) {
-    //         alert("can Check");
-    //     }
-    //     else {
-    //         alert("block");
-    //     }
-    // }
-    // });
+
+    $('input[type=radio][name=paymentmode]').change(function () {
+    if (document.getElementById('credit').checked) {
+        if ($("#cmbcustomer option:selected").val() == 0) {
+            toastr["error"]("Please select customer !"); 
+            return;
+        }
+        if (chkCreditLimit() == false) {
+            toastr["error"]("Customer CreditLimit Exceed !");
+        }
+    }
+    });
 
 
     function CalculateTotal() {
@@ -118,11 +116,12 @@ $(document).ready(function () {
         if (document.getElementById('credit').checked) {
             debugger;
             if (chkCreditLimit() == true) {
+                debugger;
                 AddToGrid(true);
             }
             else {
 
-                toastr["error"]("Please Check CreditLimit Exceed");
+                toastr["error"]("Customer CreditLimit Exceed !");
             }
 
         }
@@ -199,7 +198,7 @@ $(document).ready(function () {
                         $("#cmbItem :selected").remove();
     
                         $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty]").val("");
-                        $("input[name=txtTotalPrice]").val("0.00");
+                        // $("input[name=txtTotalPrice]").val("0.00");
                         CalculateItemCount();
                         CalculateGrandTotal();
                         $("#cmbItem").focus();
@@ -221,7 +220,7 @@ $(document).ready(function () {
             var discount = $("#txtDiscount").val();
             var total = 0;
             $('#itemTable tbody tr').each(function () {
-                var value = parseInt($(this).closest("tr").find('.total').val());
+                var value = parseFloat($(this).closest("tr").find('.total').val());
                 if (!isNaN(value)) {
                     total += value;
                 }
@@ -251,10 +250,10 @@ function getDetailByCustomerID() {
             dataType: 'json',
             success: function (response) {
                 $("#credit_limit").val(response.decCreditLimit);
-                $("#available_limit").val(response.decCreditLimit);
+                $("#available_limit").val(response.decAvailableCredit);
 
                 if (response.decCreditLimit < $("#grandTotal").val()) {
-                    toastr["error"]("Please Check CreditLimit Exceed");
+                    toastr["error"]("Customer CreditLimit Exceed !");
                 }
 
             },
@@ -294,13 +293,24 @@ function getMeasureUnitByItemID() {
 
 function chkCreditLimit() {
     var canAdd = false;
-    debugger;
-    if ($("#grandTotal").val("0.00")) {
-        var Total = parseFloat($("#txtTotalPrice").val().replace(/,/g, ''));
-    }
-    else {
-        var Total = $("#grandTotal").val()
-    }
+    // debugger;
+    // if ($("#grandTotal").val() == "0.00") {
+    //     var Total = parseFloat($("#txtTotalPrice").val().replace(/,/g, ''));
+    // }
+    // else {
+    //     var Total = $("#grandTotal").val()
+    // }
+    var discount = $("#txtDiscount").val();
+    var total = 0;
+    $('#itemTable tbody tr').each(function () {
+        var value = parseFloat($(this).closest("tr").find('.total').val());
+        if (!isNaN(value)) {
+            total += value;
+        }
+    });
+
+    discount == "" ? discount = 0 : discount;
+    total = (total - discount);
 
     var customerID = $("#cmbcustomer").val();
 
@@ -312,7 +322,7 @@ function chkCreditLimit() {
             type: 'post',
             dataType: 'json',
             success: function (response) {
-                if (response.decCreditLimit < Total) {
+                if (response.decAvailableCredit < total) {
                     canAdd = false;
                 }
                 else {
@@ -344,6 +354,11 @@ $('#btnSubmit').click(function () {
         toastr["error"]("Please add the issue items !");
         $("#cmbItem").focus();
     } else {
+        debugger;
+        if ($("#credit").prop("checked")  && chkCreditLimit() == false) {
+            toastr["error"]("Customer CreditLimit Exceed !");
+            return;
+        }
         arcadiaConfirmAlert("You want to be able to create this !", function (button) {
             var form = $("#createIssue");
 

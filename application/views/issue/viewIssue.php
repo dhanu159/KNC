@@ -32,11 +32,11 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Payment Mode :</label>
-                            <select class="custom-select" id="cmbStatus">
-                                <option value="0">All</option>
-                                <option value="1">Cash</option>
-                                <option value="2">Credit</option>
-                                <!-- <option value="3">Rejected</option> -->
+                            <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
+                            <option value="0" selected hidden>All Payments</option>
+                                <?php foreach ($payment_data as $k => $v) { ?>
+                                    <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPayment'] ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -82,13 +82,16 @@
                             <thead>
                                 <tr>
                                     <th>Issue No</th>
-                                    <th>Invoice No</th>
-                                    <th>Supplier</th>
+                                    <th>Customer Name</th>
+                                    <th>Issue Date</th>
+                                    <th>Created Date</th>
+                                    <th>Created User</th>
+                                    <th>Payment Type</th>
                                     <th>Sub Total</th>
                                     <th>Discount</th>
                                     <th>Grand Total</th>
-                                    <th>Created Date</th>
-                                    <th>Created User</th>
+                                    <th>Paid Amount</th>
+                                    <th>Balance</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -108,4 +111,4 @@
 
 </div>
 
-<script src="<?php echo base_url('resources/pageJS/viewGRN.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/viewIssue.js') ?>"></script>

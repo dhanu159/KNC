@@ -124,7 +124,7 @@ class Model_cuttingorder extends CI_Model
     public function chkAlreadyDispatched($ItemID)
     {
         if ($ItemID) {
-            $sql = "SELECT EXISTS(SELECT dtDispatchDate  FROM dispatchdetail WHERE intItemID = ?) AS value";
+            $sql = "SELECT EXISTS(SELECT intDispatchDetailID  FROM dispatchdetail WHERE intItemID = ?) AS value";
             $query = $this->db->query($sql, array($ItemID));
             return $query->result_array();
         }

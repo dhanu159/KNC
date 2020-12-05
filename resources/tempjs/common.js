@@ -145,6 +145,7 @@ function arcadiaSuccessMessagePrint(Title = "Succeeded !",intIssueHeaderID = nul
                document.body.innerHTML = headstr+newstr+footstr;
                window.print();
                document.body.innerHTML = oldstr;
+               location.reload();
                return false;
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) { 

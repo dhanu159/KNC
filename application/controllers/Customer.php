@@ -51,6 +51,7 @@ class Customer extends Admin_Controller
 				'vcContactNo1' => $this->input->post('contact_no_1'),
 				'vcContactNo2' => $this->input->post('contact_no_2'),
 				'decCreditLimit' => $this->input->post('credit_limit'),
+				'decAvailableCredit' => $this->input->post('credit_limit'),
 				'intUserID' => $this->session->userdata('user_id'),
 			);
 			$create = $this->model_customer->create($data);

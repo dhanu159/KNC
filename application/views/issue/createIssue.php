@@ -107,7 +107,7 @@
                             <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" required />
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="credit_limit">Available Credit</label>
+                            <label for="credit_limit">Credit Balace</label>
                             <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" required />
                         </div>
                     </div>
