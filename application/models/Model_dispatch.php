@@ -13,13 +13,13 @@ class Model_dispatch extends CI_Model
     {
         $this->db->trans_begin();
 
-        // $query = $this->db->query("SELECT fnGenerateDispatchNo() AS DispatchNo");
-        // $ret = $query->row();
-        // $DispatchNo = $ret->DispatchNo;
+        $query = $this->db->query("SELECT fnGenerateDispatchNo() AS DispatchNo");
+        $ret = $query->row();
+        $DispatchNo = $ret->DispatchNo;
 
         $response = array();
 
-        $DispatchNo = "Dispatch-001";
+        // $DispatchNo = "Dispatch-001";
 
         $insertDetails = false;
 
@@ -105,6 +105,12 @@ class Model_dispatch extends CI_Model
                 $response['success'] = false;
                 $response['messages'] = 'Error in the database while create the dispatch details';
             } else {
+
+                $DispatchHeaderData = $this->getDispatchHeaderData($DispatchHeaderID, null, null, null, null);
+
+                $response['vcDispatchNo'] =  $DispatchHeaderData['vcDispatchNo'];
+                $response['intDispatchHeaderID'] =  $DispatchHeaderData['intDispatchHeaderID'];
+
                 $this->db->trans_commit();
                 $response['success'] = true;
                 $response['messages'] = 'Succesfully created !';
@@ -175,5 +181,25 @@ class Model_dispatch extends CI_Model
 
         $query = $this->db->query($sql, array($FromDate, $ToDate));
         return $query->result_array();
+    }
+
+    public function getDispatcDetailsData($DispatchHeaderID = null)
+    {
+        if ($DispatchHeaderID) {
+            $sql = "
+            SELECT CD.vcOrderName,
+                    IT.vcItemName,
+                    MU.vcMeasureUnit,
+                    DD.decDispatchQty
+            FROM dispatchdetail AS DD
+            INNER JOIN dispatchheader AS DH ON DH.intDispatchHeaderID = DD.intDispatchHeaderID
+            INNER JOIN cuttingorderheader AS CD ON DD.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
+            INNER JOIN item AS IT ON DD.intItemID = IT.intItemID
+            INNER JOIN measureunit AS MU ON IT.intMeasureUnitID = MU.intMeasureUnitID
+            WHERE DD.intDispatchHeaderID = ?";
+
+            $query = $this->db->query($sql, array($DispatchHeaderID));
+            return $query->result_array();
+        }
     }
 }

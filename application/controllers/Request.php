@@ -101,31 +101,31 @@ class Request extends Admin_Controller
             $Rejected  = '';
 
 
-            if ($this->isAdmin) {
-                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
-                $buttons .= '<button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
-                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
-                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/AcceptRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-ambulance"></i></button>';
-                $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/IssuedRequestItemCancel/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-exchange-alt"></i></button>';
-            } else {
+            // if ($this->isAdmin) {
+            //     $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
+            //     $buttons .= '<button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
+            //     $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
+            //     $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/AcceptRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-ambulance"></i></button>';
+            //     $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/IssuedRequestItemCancel/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-exchange-alt"></i></button>';
+            // } else {
                 if ($this->session->userdata('Is_main_branch') == false) {
-                    if (in_array('editRequestItem', $this->permission)) {
+                    if (in_array('editRequestItem', $this->permission)|| ($this->isAdmin)) {
                         $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/EditRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
                     }
-                    if (in_array('deleteRequestItem', $this->permission)) {
+                    if (in_array('deleteRequestItem', $this->permission)|| ($this->isAdmin)) {
                         $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveRequestItem" onclick="RemoveRequest(' . $value['intRequestHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
                     }
-                    if (in_array('acceptRequestItem', $this->permission)) {
+                    if (in_array('acceptRequestItem', $this->permission)|| ($this->isAdmin)) {
                         $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/AcceptRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-ambulance"></i></button>';
                     }
                 } else {
-                    if (in_array('approveRequestItem', $this->permission)) {
+                    if (in_array('approveRequestItem', $this->permission) || ($this->isAdmin)) {
                         $buttons .= '<a class="button btn btn-default" href="' . base_url("request/ApprovalRequestItem/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="far fa-thumbs-up"></i></button>';
                     }
-                    if (in_array('issuedRequestItemCancel', $this->permission)) {
+                    if (in_array('issuedRequestItemCancel', $this->permission) || ($this->isAdmin)) {
                         $buttons .= '<a class="button btn btn-default" href="' . base_url("Request/IssuedRequestItemCancel/" . $value['intRequestHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-exchange-alt"></i></button>';
                     }
-                }
+                // }
             }
 
             $Pending .= ($value['Pending'] == 0) ? "N/A"  : $value['Pending'];

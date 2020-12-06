@@ -57,7 +57,6 @@ class Issue extends Admin_Controller
       $issue_Header_Date =  $this->model_issue->GetIssueHeaderData($intIssueHeaderID);
       $issue_Detail_Date =  $this->model_issue->GetIssueDetailsData($intIssueHeaderID);
 
-
       $html = '
 
             <div id="myDiv" class="wrapper">
@@ -101,8 +100,6 @@ class Issue extends Admin_Controller
 
       foreach ($issue_Detail_Date as $k => $v) {
 
-        // $product_data = $this->model_products->getProductData($v['product_id']); 
-
         $html .= '<tr>
                           <td>' . $v['vcItemName'] . '</td>
                           <td>' . $v['decUnitPrice'] . '</td>
@@ -111,11 +108,32 @@ class Issue extends Admin_Controller
                         </tr>';
       }
 
-      $html .= '</tbody>
-                  </table>
-                </div>
-                <!-- /.col -->
-              </div>';
+      $html .= ' <tr align="right">
+			              <th>Payment Mode:</th>
+			              <td>' . $issue_Header_Date['vcPayment'] . '</td>
+			            </tr>
+			            <tr align="right">
+			              <th>Sub Total:</th>
+			              <td>' . $issue_Header_Date['decSubTotal'] . '</td>
+			            </tr>
+			            <tr align="right">
+			              <th>Discount:</th>
+			              <td>' . $issue_Header_Date['decDiscount'] . '</td>
+                  </tr>
+                  <tr align="right">
+                  <th>Grand Total:</th>
+                  <td>' . $issue_Header_Date['decGrandTotal'] . '</td>
+                </tr>';
+
+      $html .= '  </table>
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+    <!-- /.content -->
+    </div>';
 
       echo $html;
     }
@@ -150,7 +168,7 @@ class Issue extends Admin_Controller
     $result = array('data' => array());
 
 
-    $issue_data = $this->model_issue->GetIssueHeaderData(null,$PaymentType, $CustomerID, $FromDate, $ToDate);
+    $issue_data = $this->model_issue->GetIssueHeaderData(null, $PaymentType, $CustomerID, $FromDate, $ToDate);
 
     // $this->data['grn_data'] = $grn_data;
 
@@ -159,7 +177,7 @@ class Issue extends Admin_Controller
       $buttons = '';
 
       if (in_array('viewIssue', $this->permission) || $this->isAdmin) {
-        $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ViewGRNDetails/" . $value['intIssueHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
+        $buttons .= '<a class="button btn btn-default" href="' . base_url("Issue/ViewIssueetails/" . $value['intIssueHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
       }
 
 
@@ -180,5 +198,34 @@ class Issue extends Admin_Controller
     }
 
     echo json_encode($result);
+  }
+
+  public function ViewIssueetails($IssueHeaderID)
+  {
+      if (!$this->isAdmin) {
+          if (!in_array('viewIssue', $this->permission)) {
+              redirect('dashboard', 'refresh');
+          }
+      }
+
+      if (!$IssueHeaderID) {
+          redirect('dashboard', 'refresh');
+      }
+
+      $issue_header_data = $this->model_issue->GetIssueHeaderData($IssueHeaderID, null, null, null, null);
+
+      if (isset($issue_header_data)) {
+
+        $issue_detail_Date =  $this->model_issue->GetIssueDetailsData($IssueHeaderID);
+
+          $this->data['issue_detail_Date'] = $issue_detail_Date;
+          $this->data['issue_header_data'] = $issue_header_data;
+
+          $this->render_template('Issue/viewIssueDetail', 'View Issue', $this->data);
+      }else{
+          redirect(base_url() . 'Issue/viewIssueDetail', 'refresh');
+      }
+
+     
   }
 }

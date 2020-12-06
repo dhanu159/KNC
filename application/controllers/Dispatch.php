@@ -104,4 +104,93 @@ class Dispatch extends Admin_Controller
 
         echo json_encode($result);
     }
+
+    public function PrintDispatchDiv($intDispatchHeaderID)
+    {
+      if ($intDispatchHeaderID) {
+  
+        $dispatch_Header_Date =   $this->model_dispatch->getDispatchHeaderData($intDispatchHeaderID);
+        $dispatch_Detail_Date =  $this->model_dispatch->getDispatcDetailsData($intDispatchHeaderID);
+  
+        $html = '
+  
+              <div id="myDiv" class="wrapper">
+              <section class="invoice">
+                <!-- title row -->
+                <div class="row">
+                  <div class="col-xs-12">
+                    <h2 class="page-header">
+                      "KNC Cake Boards - Dispatch Note"
+                    </h2>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- info row -->
+                <div class="row invoice-info">
+                  
+                  <div class="col-sm-4 invoice-col">
+  
+                    <b>Date:</b> ' . $dispatch_Header_Date['dtCreatedDate'] . '<br>
+                    <b>DispatchNo No:</b> ' . $dispatch_Header_Date['vcDispatchNo'] . '<br>
+                    <b>Create User:</b> ' . $dispatch_Header_Date['CreatedUser'] . '<br>
+               
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+  
+                <!-- Table row -->
+                <div class="row">
+                  <div class="col-xs-12 table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                      <tr>
+                        <th>Item name</th>
+                        <th>Order Name</th>
+                        <th>Unit</th>
+                        <th>Dispatch Qty</th>
+                      </tr>
+                      </thead>
+                      <tbody>';
+  
+        foreach ($dispatch_Detail_Date as $k => $v) {
+  
+          $html .= '<tr>
+                            <td>' . $v['vcItemName'] . '</td>
+                            <td>' . $v['vcOrderName'] . '</td>
+                            <td>' . $v['vcMeasureUnit'] . '</td>
+                            <td>' . $v['decDispatchQty'] . '</td>
+                          </tr>';
+        }
+  
+        // $html .= ' <tr align="right">
+        //                     <th>Payment Mode:</th>
+        //                     <td>' . $issue_Header_Date['vcPayment'] . '</td>
+        //                   </tr>
+        //                   <tr align="right">
+        //                     <th>Sub Total:</th>
+        //                     <td>' . $issue_Header_Date['decSubTotal'] . '</td>
+        //                   </tr>
+        //                   <tr align="right">
+        //                     <th>Discount:</th>
+        //                     <td>' . $issue_Header_Date['decDiscount'] . '</td>
+        //             </tr>
+        //             <tr align="right">
+        //             <th>Grand Total:</th>
+        //             <td>' . $issue_Header_Date['decGrandTotal'] . '</td>
+        //           </tr>';
+  
+        $html .= '  </table>
+        </div>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+  </div>';
+  
+        echo $html;
+      }
+    }
 }

@@ -4,13 +4,24 @@
 
 $(document).ready(function () {
 
+
+        // $('#manageTable').DataTable( {
+        //     dom: 'Bfrtip',
+        //     buttons: [
+        //         'copy', 'csv', 'excel', 'pdf', 'print'
+        //     ]
+        // } );
+
+
+
+
     var date = new Date();
     var monthStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
 
     var selectedFromDate = "";
     var selectedToDate = "";
 
-    
+
 
     FilterItems(convertToShortDate(monthStartDate), convertToShortDate(date));
 
@@ -20,15 +31,15 @@ $(document).ready(function () {
         endDate: date,
         maxDate: new Date()
     }, function (start, end) {
-            selectedFromDate = start.format('YYYY-MM-DD');
-            selectedToDate = end.format('YYYY-MM-DD');
-            FilterItems(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'))
+        selectedFromDate = start.format('YYYY-MM-DD');
+        selectedToDate = end.format('YYYY-MM-DD');
+        FilterItems(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'))
     });
-     
+
     $('#cmbpayment').on('change', function () {
         if (selectedFromDate == "" && selectedToDate == "") {
             FilterItems(convertToShortDate(monthStartDate), convertToShortDate(date));
-        }else{
+        } else {
             FilterItems(selectedFromDate, selectedToDate);
         }
     });
@@ -36,7 +47,7 @@ $(document).ready(function () {
     $('#cmbcustomer').on('change', function () {
         if (selectedFromDate == "" && selectedToDate == "") {
             FilterItems(convertToShortDate(monthStartDate), convertToShortDate(date));
-        }else{
+        } else {
             FilterItems(selectedFromDate, selectedToDate);
         }
     });
@@ -45,7 +56,7 @@ $(document).ready(function () {
 
 
 
-function FilterItems(FromDate,ToDate){
+function FilterItems(FromDate, ToDate) {
 
     var PaymentType = $('#cmbpayment').val();
     var CustomerID = $('#cmbcustomer').val();
@@ -55,7 +66,11 @@ function FilterItems(FromDate,ToDate){
 
 
     $('#manageTable').DataTable({
-        'ajax': 'FilterIssueHeaderData/'+PaymentType+'/'+CustomerID+'/'+'/'+FromDate+'/'+ToDate,
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print'
+        ],
+        'ajax': 'FilterIssueHeaderData/' + PaymentType + '/' + CustomerID + '/' + '/' + FromDate + '/' + ToDate,
         'order': [],
         "bDestroy": true,
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {

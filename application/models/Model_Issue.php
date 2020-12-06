@@ -140,7 +140,9 @@ class Model_issue extends CI_Model
                     IH.decDiscount,
                     IH.decGrandTotal,
                     IH.decPaidAmount,
-                    IH.decBalance
+                    IH.decBalance,      
+                    CU.decCreditLimit,
+                    CU.decAvailableCredit
             FROM Issueheader AS IH
             INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
             INNER JOIN user as U ON IH.intUserID = U.intUserID
@@ -208,10 +210,12 @@ class Model_issue extends CI_Model
             SELECT I.vcItemName,
             ID.decUnitPrice,
             ID.decIssueQty,
+            MU.vcMeasureUnit,
             ID.decTotalPrice
             FROM IssueDetail AS ID
             INNER JOIN Issueheader AS IH ON ID.intIssueHeaderID = IH.intIssueHeaderID
             INNER JOIN Item AS I ON ID.intItemID = I.intItemID
+            INNER JOIN measureunit AS MU ON I.intMeasureUnitID = MU.intMeasureUnitID
             WHERE ID.intIssueHeaderID = ?";
 
             $query = $this->db->query($sql, array($IssueHeaderID));

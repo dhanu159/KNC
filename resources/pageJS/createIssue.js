@@ -370,7 +370,7 @@ $('#btnSubmit').click(function () {
                 dataType: 'json',
                 success: function (response) {
                     if (response.success == true) {
-                        arcadiaSuccessMessagePrint("Issue No : "+ response.vcIssueNo, response.intIssueHeaderID);
+                        arcadiaSuccessAfterIssuePrint("Issue No : "+ response.vcIssueNo, response.intIssueHeaderID);
                         // $('#printpage', window.parent.document).hide();
                     } else {
                         toastr["error"](response.messages);

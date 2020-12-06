@@ -33,7 +33,7 @@
                         <div class="form-group">
                             <label>Payment Mode :</label>
                             <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
-                            <option value="0" selected hidden>All Payments</option>
+                                <option value="0" selected hidden>All Payments</option>
                                 <?php foreach ($payment_data as $k => $v) { ?>
                                     <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPayment'] ?></option>
                                 <?php } ?>
@@ -42,7 +42,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                        <label for="customer">Customer</label>
+                            <label for="customer">Customer</label>
                             <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
                                 <option value="0" selected hidden>All Customers</option>
                                 <?php foreach ($customer_data as $k => $v) { ?>
@@ -112,3 +112,5 @@
 </div>
 
 <script src="<?php echo base_url('resources/pageJS/viewIssue.js') ?>"></script>
+
+

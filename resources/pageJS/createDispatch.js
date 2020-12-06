@@ -316,13 +316,14 @@ $('#btnSubmit').click(function () {
             var form = $("#createDispatch");
 
             $.ajax({
+                async: false,
                 type: form.attr('method'),
                 url: form.attr('action'),
                 data: form.serialize(),
                 dataType: 'json',
                 success: function (response) {
                     if (response.success == true) {
-                        arcadiaSuccessMessage("Created !");
+                        arcadiaSuccessAfterDispatchPrint("Dispatch No : "+ response.vcDispatchNo, response.intDispatchHeaderID);
                     } else {
                         toastr["error"](response.messages);
                     }

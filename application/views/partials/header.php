@@ -8,7 +8,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	
+
 	<title><?= $page_title ?></title>
 
 	<!-- Tell the browser to be responsive to screen width -->
@@ -34,6 +34,11 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 	<!-- jquery.dataTables -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css">
+
+
+<!-- <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.4.1/js/buttons.flash.min.js"></script> -->
+
 	<!-- Tempusdominus Bbootstrap 4 -->
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('resources/tempcss/tempusdominus-bootstrap-4.min.css') ?>">
 
@@ -46,6 +51,7 @@
 
 	<script type="text/javascript" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
 
 	<script>
 		$.fn.DataTable.ext.pager.numbers_length = 5;
