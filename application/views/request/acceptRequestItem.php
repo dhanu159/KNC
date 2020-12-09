@@ -115,9 +115,33 @@ r<style>
  
                                                 <button type="button" class="button green center-items" style="position: relative; float:right;" id="btnAccept" onclick="acceptRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-check"></i></button>
 
-                                            <?php }
+                                            <?php } ?>
 
-                                            ?>
+                                            <?php if ($v['IsApproved'] == 0 && ($v['IsRejected'] == 0)) { ?>
+                                                <h5><span class="badge badge-pill badge-warning">Pending Approval</span></h5>
+                                            <?php } ?>
+
+                                            <?php if ($v['IsRejected'] == 1) { ?>
+                                                <!-- <button type="button" class="btn btn-primary">
+                                                Reject<span class="badge badge-light"></span>
+                                                </button> -->
+                                                <h5><span class="badge badge-pill badge-danger">Rejected</span></h5>
+                                            <?php } ?>
+
+                                            <?php if ($v['IsCancelled'] == 1) { ?>
+                                                <!-- <button type="button" class="btn btn-primary">
+                                                Reject<span class="badge badge-light"></span>
+                                                </button> -->
+                                                <h5><span class="badge badge-pill badge-danger">Cancelled</span></h5>
+                                            <?php } ?>
+
+                                            <?php if ($v['IsAccepted'] == 1) { ?>
+                                                <!-- <button type="button" class="btn btn-primary">
+                                                Reject<span class="badge badge-light"></span>
+                                                </button> -->
+                                                <h5><span class="badge badge-pill badge-secondary">Accepted</span></h5>
+                                            <?php } ?>
+
                                         </td>
                                     </tr>
                                 <?php

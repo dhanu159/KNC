@@ -112,15 +112,31 @@ r<style>
                                             <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
                                             <td class="static">
                                                 <?php
-                                                if ($v['IsRejected'] == 0 && ($v['IsApproved'] == 0)) {
+                                                if ($v['IsRejected'] == 0 && $v['IsApproved'] == 0) {
                                                     $buttonVisible = true;
                                                 ?>
                                                     <button type="button" class="button red center-items" style="position: relative; float:right;" id="btnReject" onclick="RejectRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-times"></i></button>
                                                     <button type="button" class="button green center-items" style="position: relative; float:right;" id="btnApproval" onclick="ApprovalRequestByDetailID(<?= $v['intRequestDetailID'] ?>,<?= $v['intItemID'] ?>,'<?= $v['rv'] ?>')"><i class="fas fa-check"></i></button>
 
-                                                <?php }
-
-                                                ?>
+                                                <?php } ?>  
+                                                <?php if ($v['IsRejected'] == 1) { ?>
+                                                    <!-- <button type="button" class="btn btn-primary">
+                                                     Reject<span class="badge badge-light"></span>
+                                                    </button> -->
+                                                    <h5><span class="badge badge-pill badge-danger">Rejected</span></h5>
+                                                  <?php } ?>
+                                                  <?php if ($v['IsApproved'] == 1 && $v['IsCancelled'] == 1){ ?>
+                                                    <!-- <button type="button" class="btn btn-primary">
+                                                     Reject<span class="badge badge-light"></span>
+                                                    </button> -->
+                                                    <h5><span class="badge badge-pill badge-danger">Canceled After Issuing</span></h5>
+                                                  <?php } ?>
+                                                  <?php if ($v['IsApproved'] == 1 && $v['IsCancelled'] == 0){ ?>
+                                                    <!-- <button type="button" class="btn btn-primary">
+                                                     Reject<span class="badge badge-light"></span>
+                                                    </button> -->
+                                                    <h5><span class="badge badge-pill badge-success">Approved</span></h5>
+                                                  <?php } ?>
                                             </td>
                                         </tr>
                                     <?php

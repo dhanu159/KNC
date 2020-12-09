@@ -83,7 +83,7 @@
                                 </table>
 
                                 <hr>
-                                Color tags : <span class="badge badge-pill badge-warning">Pending Approvals</span>&nbsp;&nbsp;<span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">All Items Approved</span>&nbsp;&nbsp;<span class="badge badge-pill badge-danger">All Items Rejected</span>
+                                Color tags : <span class="badge badge-pill badge-warning">Pending Approvals</span>&nbsp;&nbsp;<span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">All Items Completed</span>&nbsp;&nbsp;<span class="badge badge-pill badge-danger">All Items Rejected</span>
 
                             </div>
                             <!-- /.box-body -->

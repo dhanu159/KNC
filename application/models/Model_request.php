@@ -209,7 +209,7 @@ class Model_request extends CI_Model
                 IT.intItemID,
                 IT.vcItemName,
                 MU.vcMeasureUnit,
-                IT.decStockInHand AS decMainStock,
+                IFNULL(IT.decStockInHand,' N/A') AS decMainStock,
                 REPLACE(IT.rv,' ','-') as rv,
                 RD.decQty,
                 IFNULL(BR.decStockInHand,' N/A') AS decStockInHand,

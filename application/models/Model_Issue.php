@@ -6,6 +6,8 @@ class Model_issue extends CI_Model
     {
         parent::__construct();
         $this->load->model('model_customer');
+        $this->load->model('model_item');
+    
     }
 
     public function saveIssue()
@@ -82,12 +84,26 @@ class Model_issue extends CI_Model
                 'decTotalPrice' => ($this->input->post('itemQty')[$i] * $UnitPrice)
             );
             $insertDetails = $this->db->insert('IssueDetail', $items);
+            $IssueDetailID = $this->db->insert_id();
+            
+            $Logdata = array(
+                'intItemID' => $itemData['intItemID'],
+                'intTransactionLogTypeID' => 3, //Item Issue
+                'vcPerformColumn' => 'intIssueDetailID',
+                'intPerformID' => $IssueDetailID,
+                'decPreviousQty' => $itemData['decStockInHand'],
+                'decCurrentQty' => $itemData['decStockInHand'] - $decIssuQty,
+                'intLoggedBy' => $this->session->userdata('user_id'),
+            );
+
+            $insertLog = $this->db->insert('itemtransactionlog', $Logdata);
 
             $sql = "UPDATE Item AS I
             SET I.decStockInHand = (I.decStockInHand - " . $decIssuQty . ")
                 WHERE I.intItemID = ?";
 
             $this->db->query($sql, array($itemID));
+
         }
 
 
