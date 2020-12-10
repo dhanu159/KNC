@@ -142,7 +142,7 @@
                             <thead>
                                 <tr>
                                     <th hidden>Item ID</th>
-                                    <th style="text-align:center;">Description</th>
+                                    <th style="text-align:center;">Item Name</th>
                                     <th style="width: 100px; text-align:center;">Qty</th>
                                     <th style="width: 100px; text-align: center;">Action</th>
                                 </tr>
@@ -151,7 +151,15 @@
 
                                 <tr class="first-tr">
                                     <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
-                                    <td class="static"><input type="text" class="form-control  add-item" name="txtOrderDescription" id="txtOrderDescription" placeholder="Example : 12 in X 18 in"></td>
+                                    <td class="static">
+                                    <!-- <input type="text" class="form-control" name="txtItem"> -->
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem">
+                                        <option value=" 0" disabled selected hidden>Select Item</option>
+                                        <?php foreach ($item_data as $k => $v) { ?>
+                                            <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </td>
                                     <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
                                     <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                                 </tr>
