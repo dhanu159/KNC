@@ -393,37 +393,30 @@ class Utilities extends Admin_Controller
             }
         }
 
-        $this->render_template('Utilities/CuttingOrder', 'Manage Cutting Order');
+        $item_data = $this->model_item->getOnlyFinishItemData();
+
+
+        $this->data['item_data'] = $item_data;
+        $this->render_template('Utilities/CuttingOrder', 'Manage Cutting Order',  $this->data);
     }
 
     public function SaveCuttingOrder()
     {
-
-        try {
-
-            if (!$this->isAdmin) {
-                if (!in_array('createCuttingOrder', $this->permission)) {
-                    redirect('dashboard', 'refresh');
-                }
+        if (!$this->isAdmin) {
+            if (!in_array('createCuttingOrder', $this->permission)) {
+                redirect('dashboard', 'refresh');
             }
-            $response = array();
-
-            $result = $this->model_cuttingorder->SaveCuttingOrder();
-            if ($result == true) {
-                $response['success'] = true;
-            } else {
-                $response['success'] = false;
-                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
-            }
-
-            echo json_encode($response);
-        } catch (\Throwable $th) {
-            $response['success'] = false;
-            $response['messages'] = $th->getMessage();
-
-            echo json_encode($response);
-            //    print_r($th->getMessage());
         }
+        $response = array();
+
+        $result = $this->model_cuttingorder->SaveCuttingOrder();
+        if ($result == true) {
+            $response['success'] = true;
+        } else {
+            $response['success'] = false;
+            $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+        }
+        echo json_encode($response);
     }
 
     public function GetCuttingOrderHeaderData($intCuttingOrderHeaderID = null)
@@ -579,7 +572,8 @@ class Utilities extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function getCuttingOrderDetailsByCuttingOrderHeaderID(){
+    public function getCuttingOrderDetailsByCuttingOrderHeaderID()
+    {
         if (!$this->isAdmin) {
             if (!in_array('viewCuttingOrder', $this->permission)) {
                 redirect('dashboard', 'refresh');
@@ -638,11 +632,11 @@ class Utilities extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function SaveConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID)
+    public function SaveConfigCuttingOrderUsingFunction($ItemID, $CuttingOrderHeaderID)
     {
         $response = array();
 
-        $result = $this->model_cuttingorder->SaveConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID);
+        $result = $this->model_cuttingorder->SaveConfigCuttingOrderUsingFunction($ItemID, $CuttingOrderHeaderID);
         if ($result == true) {
             $response['success'] = true;
             $response['messages'] = 'Cutting Order Saved.';
@@ -653,22 +647,22 @@ class Utilities extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function DeleteConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID)
+    public function DeleteConfigCuttingOrderUsingFunction($ItemID, $CuttingOrderHeaderID)
     {
         $response = array();
 
-        $canDelete = $this->model_cuttingorder->chkCanRemoveCuttingOrderConfig($ItemID,$CuttingOrderHeaderID);
+        $canDelete = $this->model_cuttingorder->chkCanRemoveCuttingOrderConfig($ItemID, $CuttingOrderHeaderID);
 
         if ($canDelete <> '') {
             if ($canDelete[0]['value'] == 1) {
                 $response['success'] = false;
                 $response['messages'] = "You can't delete this Cutting Order config, Already Dispatched !";
             } else {
-                $result = $this->model_cuttingorder->DeleteConfigCuttingOrderUsingFunction($ItemID,$CuttingOrderHeaderID);
+                $result = $this->model_cuttingorder->DeleteConfigCuttingOrderUsingFunction($ItemID, $CuttingOrderHeaderID);
                 if ($result == true) {
                     $response['success'] = true;
                     $response['messages'] = 'Cutting Order Deleted.';
-                }else {
+                } else {
                     $response['success'] = false;
                     $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
                 }
