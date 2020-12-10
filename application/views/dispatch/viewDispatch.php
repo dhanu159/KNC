@@ -122,7 +122,7 @@
                             </tbody> -->
                         </table>
                         <hr>
-                        Color tags : <span class="badge badge-pill badge-warning">To Be Received</span> <span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">Received</span> <span class="badge badge-pill badge-danger">Canceled</span>
+                        Color tags : <span class="badge badge-pill badge-warning">To Be Received</span> <span class="badge badge-pill badge-light" style="border: 1px #000000 solid;">Fully Received</span> <span class="badge badge-pill badge-danger">Canceled</span>
                     </div>
                     <!-- /.box-body -->
                 </div>

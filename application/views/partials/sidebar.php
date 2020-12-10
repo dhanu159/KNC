@@ -200,7 +200,7 @@
 
                 <?php
                 if ($_SESSION['Is_main_branch'] == 1) { ?>
-                    <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateDispatch" || $this->uri->segment(2) == "ViewDispatch") {
+                    <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateDispatch" || $this->uri->segment(2) == "ViewDispatch" || $this->uri->segment(2) == "CollectDispatchedItems") {
                                                             echo 'menu-open';
                                                         } ?>">
                         <a href="#" class="nav-link">
@@ -224,6 +224,14 @@
                                                                                                             } ?>">
                                     <i class="fas fa-search"></i>
                                     <p>&nbsp;&nbsp;View Dispatch</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo base_url('Dispatch/CollectDispatchedItems') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CollectDispatchedItems") {
+                                                                                                                echo 'active';
+                                                                                                            } ?>">
+                                    <i class="fas fa-dolly"></i>
+                                    <p>&nbsp;&nbsp;Collect Dispatched Items</p>
                                 </a>
                             </li>
                         </ul>

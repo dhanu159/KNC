@@ -13,13 +13,13 @@ class Model_dispatch extends CI_Model
     {
         $this->db->trans_begin();
 
-        $query = $this->db->query("SELECT fnGenerateDispatchNo() AS DispatchNo");
-        $ret = $query->row();
-        $DispatchNo = $ret->DispatchNo;
+        // $query = $this->db->query("SELECT fnGenerateDispatchNo() AS DispatchNo");
+        // $ret = $query->row();
+        // $DispatchNo = $ret->DispatchNo;
 
         $response = array();
 
-        // $DispatchNo = "Dispatch-001";
+        $DispatchNo = "Dispatch-001";
 
         $insertDetails = false;
 
@@ -200,6 +200,43 @@ class Model_dispatch extends CI_Model
 
             $query = $this->db->query($sql, array($DispatchHeaderID));
             return $query->result_array();
+        }
+    }
+
+    public function getCollectionPendingDispatchNos(){
+        $sql = "
+                SELECT 
+                    intDispatchHeaderID,
+                    vcDispatchNo,
+                    dtDispatchDate 
+                FROM KNC.DispatchHeader WHERE dtReceiveCompletedDate IS NULL";
+
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    public function getDispatchedItemDetails($intDispatchHeaderID)
+    {
+        if ($intDispatchHeaderID) {
+            $sql = "SELECT 
+                        DD.intDispatchDetailID,    
+                        I.intItemID,
+                        I.vcItemName,
+                        CH.vcOrderName,
+                        CD.vcSizeDescription,
+                        MU.vcMeasureUnit,
+                        I.decStockInHand,
+                        (CD.decQty * DD.decDispatchQty) AS ExpectedQty,
+                        I.rv
+                    FROM 
+                    KNC.DispatchDetail AS DD
+                    INNER JOIN KNC.CuttingOrderHeader AS CH ON DD.intCuttingOrderHeaderID = CH.intCuttingOrderHeaderID
+                    INNER JOIN KNC.CuttingOrderDetail AS CD ON CH.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
+                    INNER JOIN KNC.Item AS I ON DD.intItemID = I.intItemID
+                    INNER JOIN KNC.MeasureUnit AS MU ON I.intMeasureUnitID = MU.intMeasureUnitID
+                    WHERE DD.intDispatchHeaderID = ?";
+            $query = $this->db->query($sql, array($intDispatchHeaderID));
+            return  $query->result_array();
         }
     }
 }
