@@ -25,19 +25,18 @@ class Model_cuttingorder extends CI_Model
         $insert = $this->db->insert('CuttingOrderHeader', $data);
         $CuttingOrderHeaderID = $this->db->insert_id();
 
-        $item_count = count($this->input->post('description'));
+        $item_count = count($this->input->post('itemID'));
 
         for ($i = 0; $i < $item_count; $i++) {
             $items = array(
                 'intCuttingOrderHeaderID' => $CuttingOrderHeaderID,
-                'vcSizeDescription' => $this->input->post('description')[$i],
+                'intItemID' => $this->input->post('itemID')[$i],
                 'decQty' => $this->input->post('qty')[$i]
             );
             $insertDetails = $this->db->insert('CuttingOrderDetail', $items);
         }
 
         $this->db->trans_complete();
-
 
         return ($insertDetails == true && $insert == true) ? true : false;
     }
@@ -102,10 +101,11 @@ class Model_cuttingorder extends CI_Model
             CH.vcOrderName,
             CH.dtCreatedDate,
             CD.intCuttingOrderDetailID,
-            CD.vcSizeDescription,
+            IT.vcItemName,
             CD.decQty
               FROM CuttingOrderHeader CH
               INNER JOIN cuttingorderdetail CD ON CH.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
+              INNER JOIN item AS IT ON CD.intItemID = IT.intItemID
               WHERE CH.IsActive = 1 AND CH.intCuttingOrderHeaderID = ?";
             $query = $this->db->query($sql, array($intCuttingOrderHeaderID));
             return  $query->result_array();
