@@ -135,15 +135,15 @@ function AddToGrid(IsMouseClick = false) {
                     var cuttingOrderName = $("#cmbCuttingOrder option:selected").text();
                     var qty = $("input[name=txtQty]").val();
                     var Rv = $("input[name=txtRv]").val(); 
-
+ 
                     var model = new Dispatch(); 
                     model.intCuttingOrderHeaderID = cuttingOrderId;
  
 
                     ajaxCall('Utilities/getCuttingOrderDetailsByCuttingOrderHeaderID', model, function (response) {
-                        var cuttingOrderHTML = '<thead><tr><th style="text-align:center; background-color:#a5d6a7 !Important; color:#000000;">Cutting Size</th><th style="text-align:center; background-color:#a5d6a7 !Important; color:#000000;">Qty</th><tr></thead><tbody>';
+                        var cuttingOrderHTML = '<thead><tr><th style="text-align:center; background-color:#a5d6a7 !Important; color:#000000;">Output Cutting Items</th><th style="text-align:center; background-color:#a5d6a7 !Important; color:#000000;">Qty</th><tr></thead><tbody>';
                         for (let index = 0; index < response.length; index++) {
-                            cuttingOrderHTML += '<tr> <td style="text-align:center;">'+response[index].vcSizeDescription+'</td><td style="text-align:center;">'+ (response[index].decQty * qty)+'</td> </tr>';
+                            cuttingOrderHTML += '<tr> <td style="text-align:center;">'+response[index].vcItemName+'</td><td style="text-align:center;">'+ (response[index].decQty * qty)+'</td> </tr>';
                         }
                         $(".first-tr").after('<tr data-toggle="collapse" data-target="#collapse' + row_id + '" aria-expanded="true" aria-controls="collapse' + row_id + '" style="cursor: pointer;" name="gridItem" class="row'+row_id+'">' +
                         '<td hidden>' +
