@@ -11,12 +11,12 @@ class Model_grn extends CI_Model
     {
         $this->db->trans_start();
 
-        // $query = $this->db->query("SELECT fnGenerateGRNNo() AS GRNNo");
-        // $ret = $query->row();
-        // $GRNNo = $ret->GRNNo;
+        $query = $this->db->query("SELECT fnGenerateGRNNo() AS GRNNo");
+        $ret = $query->row();
+        $GRNNo = $ret->GRNNo;
 
 
-        $GRNNo = "Test-001";
+        // $GRNNo = "Test-001";
 
         $insertDetails = false;
 

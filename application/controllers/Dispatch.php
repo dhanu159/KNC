@@ -229,4 +229,16 @@ class Dispatch extends Admin_Controller
     $dispatched_item_data = $this->model_dispatch->getDispatchedItemDetails($intDispatchHeaderID);
     echo json_encode($dispatched_item_data);
   }
+
+  public function SaveCollectDispatchItems(){
+    if (!$this->isAdmin) {
+      if (!in_array('collectDispatch', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+
+    $response = $this->model_dispatch->saveCollectDispatchItems();
+
+    echo json_encode($response);
+  }
 }

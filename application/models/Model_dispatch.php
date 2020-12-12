@@ -13,13 +13,13 @@ class Model_dispatch extends CI_Model
     {
         $this->db->trans_begin();
 
-        // $query = $this->db->query("SELECT fnGenerateDispatchNo() AS DispatchNo");
-        // $ret = $query->row();
-        // $DispatchNo = $ret->DispatchNo;
+        $query = $this->db->query("SELECT fnGenerateDispatchNo() AS DispatchNo");
+        $ret = $query->row();
+        $DispatchNo = $ret->DispatchNo;
 
         $response = array();
 
-        $DispatchNo = "Dispatch-001";
+        // $DispatchNo = "Dispatch-001";
 
         $insertDetails = false;
 
@@ -219,24 +219,67 @@ class Model_dispatch extends CI_Model
     {
         if ($intDispatchHeaderID) {
             $sql = "SELECT 
+                        CD.intCuttingOrderDetailID,
                         DD.intDispatchDetailID,    
                         I.intItemID,
-                        I.vcItemName,
+                        I.vcItemName AS RawItemName,
                         CH.vcOrderName,
-                        CD.vcSizeDescription,
+                        CD.intItemID,
+                        FinishItem.vcItemName AS OutputFinishItemName,
                         MU.vcMeasureUnit,
-                        I.decStockInHand,
+                        FinishItem.decStockInHand,
                         (CD.decQty * DD.decDispatchQty) AS ExpectedQty,
-                        I.rv
+                        IFNULL(SUM(CDI.decReceivedQty),0) AS decReceivedQty,
+                        FinishItem.rv
                     FROM 
                     KNC.DispatchDetail AS DD
                     INNER JOIN KNC.CuttingOrderHeader AS CH ON DD.intCuttingOrderHeaderID = CH.intCuttingOrderHeaderID
                     INNER JOIN KNC.CuttingOrderDetail AS CD ON CH.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
                     INNER JOIN KNC.Item AS I ON DD.intItemID = I.intItemID
-                    INNER JOIN KNC.MeasureUnit AS MU ON I.intMeasureUnitID = MU.intMeasureUnitID
-                    WHERE DD.intDispatchHeaderID = ?";
+                    INNER JOIN KNC.Item AS FinishItem ON CD.intItemID = FinishItem.intItemID
+                    INNER JOIN KNC.MeasureUnit AS MU ON FinishItem.intMeasureUnitID = MU.intMeasureUnitID
+                    LEFT OUTER JOIN KNC.CollectDispatchItem AS CDI ON DD.intDispatchDetailID = CDI.intDispatchDetailID AND CD.intCuttingOrderDetailID = CDI.intCuttingOrderDetailID
+                    WHERE DD.intDispatchHeaderID = ?
+                    GROUP BY
+                        CD.intCuttingOrderDetailID,
+                        DD.intDispatchDetailID,    
+                        I.intItemID,
+                        I.vcItemName,
+                        CH.vcOrderName,
+                        CD.intItemID,
+                        FinishItem.vcItemName,
+                        MU.vcMeasureUnit,
+                        FinishItem.decStockInHand,
+                        FinishItem.rv";
             $query = $this->db->query($sql, array($intDispatchHeaderID));
             return  $query->result_array();
         }
+    }
+
+    public function saveCollectDispatchItems(){
+        $this->db->trans_start();
+
+
+        $insertDetails = false;
+
+        $item_count = count($this->input->post('txtDispatchDetailID'));
+
+        for ($i = 0; $i < $item_count; $i++) {
+            $items = array(
+                'intDispatchDetailID' => $this->input->post('txtDispatchDetailID')[$i],
+                'intCuttingOrderDetailID' => $this->input->post('txtCuttingOrderDetailID')[$i],
+                'decReceivedQty' => $this->input->post('txtReceiveQty')[$i],
+                'intUserID' => $this->session->userdata('user_id'),
+            );
+            $insertDetails = $this->db->insert('CollectDispatchItem', $items);
+        }
+
+        $this->db->trans_complete();
+
+        $response = array();
+        $response['success'] = true;
+
+
+        return $response;
     }
 }

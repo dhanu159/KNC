@@ -1,11 +1,16 @@
 <style>
-    .table, td  {
+    .table,
+    td {
         border: 1px solid #263238;
     }
 
     .table th {
         background-color: #263238 !important;
         color: #FFFFFF;
+    }
+
+    tbody td{
+        padding: 0 !important;
     }
 
     .button {
@@ -80,12 +85,12 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('Dispatch/SaveDispatch') ?>" id="createDispatch">
+                <form role="form" class="add-form" method="post" action="<?= base_url('Dispatch/SaveCollectDispatchItems') ?>" id="collectDispatchItem">
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label>Dispatch No</label>
                             <select class="form-control select2" style="width: 100%;" id="cmbDispatchNo" name="cmbDispatchNo">
-                                        <option value=" 0" disabled selected hidden>Select Item</option>
+                                <option value=" 0" disabled selected hidden>Select Item</option>
                                 <?php foreach ($dispatch_nos as $k => $v) { ?>
                                     <option value="<?= $v['intDispatchHeaderID'] ?>"><?= $v['vcDispatchNo'] ?></option>
                                 <?php } ?>
@@ -96,28 +101,29 @@
                     <table class="table" id="dispatchItemTable">
                         <thead>
                             <tr>
+                                <th hidden>Dispatch Detail ID</th>
                                 <th hidden>Item ID</th>
-                                <th style="text-align:center;">Item</th>
+                                <th style="text-align:center;">Output Finish Item</th>
                                 <th style="width: 100px; text-align:center;">Unit</th>
-                                <th hidden>Cutting Order ID</th>
-                                <th style="text-align:center;">Cutting Size</th>
+                                <th hidden>Cutting Order Detail ID</th>
                                 <th style="width: 100px; text-align:center;">Expected Qty</th>
+                                <th style="width: 100px; text-align:center;">Received Qty</th>
+                                <th style="width: 100px; text-align:center;">Balance Qty</th>
                                 <th style="width: 100px; text-align:center;">Receive Qty</th>
                                 <th hidden>rv</th>
                             </tr>
                         </thead>
                         <tbody>
-                                <tr>
-                                    <td hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
-                                    <td><input type="text" class="form-control" name="txtItemName" id="txtItemName" style="text-align:center;" disabled></td>
-                                    <td><input type="text" class="form-control" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
-                                    <td hidden><input type="number" class="form-control" name="txtCuttingOrderID" min="0"></td>
-                                    <td><input type="text" class="form-control" name="txtCuttingOrderName" id="txtCuttingOrderName" style="text-align:center;" disabled></td>
-                                    <td><input type="text" class="form-control only-decimal" name="txtQty" id="txtExpectedQty" style="text-align:right;" disabled></td>
-                                    <td><input type="text" class="form-control only-decimal" name="txtQty" id="txtReceiveQty" style="text-align:right;"></td>
-                                   
-                                    <td hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
-                                </tr>
+                            <!-- <tr>
+                                    <td hidden><input type="number" class="form-control" name="txtItemID[]" min="0"></td>
+                                    <td><input type="text" class="form-control" name="txtItemName[]" id="txtItemName" style="text-align:center;" disabled></td>
+                                    <td><input type="text" class="form-control" name="txtMeasureUnit[]" id="txtMeasureUnit" style="text-align:center;" disabled></td>
+                                    <td hidden><input type="number" class="form-control" name="txtCuttingOrderID[]" min="0"></td>
+                                    <td><input type="text" class="form-control" name="txtCuttingOrderName[]" id="txtCuttingOrderName" style="text-align:center;" disabled></td>
+                                    <td><input type="text" class="form-control only-decimal" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:right;" disabled></td>
+                                    <td><input type="text" class="form-control only-decimal" name="txtReceiveQty[]" id="txtReceiveQty" style="text-align:right;"></td>
+                                    <td hidden><input type="text" class="form-control" name="txtRv[]" id="txtRv"></td>
+                                </tr> -->
 
                         </tbody>
                     </table>
