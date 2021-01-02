@@ -110,6 +110,24 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="<?php echo base_url('Customer/manageCustomerUnitPriceConfig') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Customer") {
+                                                                                            echo 'active';
+                                                                                        } ?>">
+                        <i class="fa fa-users" aria-hidden="true"></i>
+                        <p>&nbsp;&nbsp;Customer Price Config</p>
+                    </a>
+                </li>
+
+                    <li class="nav-item">
+                    <a href="<?php echo base_url('Customer/manageCustomerAdvancePayment') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Customer") {
+                                                                                            echo 'active';
+                                                                                        } ?>">
+                        <i class="fa fa-users" aria-hidden="true"></i>
+                        <p>&nbsp;&nbsp;Customer Advance Payment</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="<?php echo base_url('Supplier/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Supplier") {
                                                                                             echo 'active';
                                                                                         } ?>">

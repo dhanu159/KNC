@@ -60,7 +60,7 @@ class Supplier extends Admin_Controller
 				'vcSupplierName' => $this->input->post('supplier_name'),
 				'vcAddress' => $this->input->post('address'),
 				'vcContactNo' => $this->input->post('contact_no'),
-				// 'IsActive' => $this->input->post('active'),
+				'decCreditLimit' => $this->input->post('credit_limit'),
 				'intUserID' => $this->session->userdata('user_id'),
 			);
 			$create = $this->model_supplier->create($data);
@@ -121,6 +121,8 @@ class Supplier extends Admin_Controller
 				$value['vcSupplierName'],
 				$value['vcAddress'],
 				$value['vcContactNo'],
+				$value['decCreditLimit'],
+				$value['decAvailableCredit'],
 				$buttons
 			);
 		} 
@@ -152,6 +154,7 @@ class Supplier extends Admin_Controller
 					'vcSupplierName' => $this->input->post('edit_supplier_name'),
 					'vcAddress' => $this->input->post('edit_address'),
 					'vcContactNo' => $this->input->post('edit_contact_no'),
+					'decCreditLimit' => $this->input->post('edit_credit_limit'),
 				);
 				$currentRV = '';
 				$currentRV =  $this->input->post('edit_rv');

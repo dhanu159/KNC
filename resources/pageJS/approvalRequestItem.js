@@ -2,6 +2,15 @@ $(document).ready(function() {
 
     CalculateItemCount();
 
+    // $("#btnApproval").click(function () {
+    //     var stockInHand = $(this).closest("tr").find('.stockInHand').val();
+    //     var RequestQty = $(this).closest("tr").find('.itemQty').val();
+    //    alert(RequestQty);
+    //     // if (stockInHand == "N/A") {
+    //     //     alert("NATHOOO");
+    //     // }
+    // });
+
     $('#btnRejectAll').click(function() {
 
         arcadiaConfirmAlert("You want to be able to reject all this !", function(button) {

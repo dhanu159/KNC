@@ -35,7 +35,7 @@
                             <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
                                 <option value="0" selected hidden>All Payments</option>
                                 <?php foreach ($payment_data as $k => $v) { ?>
-                                    <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPayment'] ?></option>
+                                    <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>

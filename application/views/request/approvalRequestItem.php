@@ -108,8 +108,8 @@ r<style>
                                             <td hidden><input type="text" class="form-control rv disable-typing" name="rv[]" id="rv_<?= $row ?>" value="<?= $v['rv'] ?>" readonly></td>
                                             <td><input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_<?= $row ?>" value="<?= $v['vcItemName'] ?>" readonly></td>
                                             <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_<?= $row ?>" value="<?= $v['vcMeasureUnit'] ?>" readonly></td>
-                                            <td><input type="text" class="form-control disable-typing" style="text-align:center;" name="stockInHand[]" id="stockInHand_<?= $row ?>" value="<?= $v['decMainStock'] ?>" readonly></td>
-                                            <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
+                                            <td><input type="text" class="form-control stockInHand disable-typing" style="text-align:center;" name="stockInHand[]" id="stockInHand_<?= $row ?>" value="<?= $v['decMainStock'] ?>" readonly></td>
+                                            <td><input type="text" class="form-control itemQty disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
                                             <td class="static">
                                                 <?php
                                                 if ($v['IsRejected'] == 0 && $v['IsApproved'] == 0) {

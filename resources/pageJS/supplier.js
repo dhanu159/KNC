@@ -96,6 +96,7 @@ function editSupplier(id) {
             $("#edit_supplier_name").val(response.vcSupplierName);
             $("#edit_address").val(response.vcAddress);
             $("#edit_contact_no").val(response.vcContactNo);
+            $("#edit_credit_limit").val(response.decCreditLimit);
             $("#edit_rv").val(response.rv);
             // submit the edit from 
             $("#updateSupplierForm").unbind('submit').bind('submit', function() {

@@ -19,9 +19,22 @@ class Model_supplier extends CI_Model
     public function update($data, $id)
     {
         if ($data && $id) {
-            $this->db->where('intSupplierID', $id);
-            $update = $this->db->update('supplier', $data);
-            return ($update == true) ? true : false;
+
+            $this->db->trans_start();
+            $sql = "SELECT intSupplierID, vcSupplierName, vcAddress, vcContactNo, dtCreatedDate, decCreditLimit, decAvailableCredit, IsActive, intUserID, rv FROM supplier WHERE intSupplierID = ? ";
+            $query = $this->db->query($sql, array($id));
+            if ($query->num_rows()) {
+                $this->db->insert('supplier_his', $query->row_array());
+                $insert_id = $this->db->insert_id();
+                $this->db->where('intSupplier_hisID', $insert_id);
+                $update = $this->db->update('supplier_his', array('intEnteredBy' => $this->session->userdata('user_id')));
+    
+                $this->db->where('intSupplierID', $id);
+                $update = $this->db->update('supplier', $data);
+    
+                $this->db->trans_complete();
+                return ($update == true) ? true : false;
+            }
         }
     }
 
@@ -29,12 +42,12 @@ class Model_supplier extends CI_Model
     public function getSupplierData($id = null)
     {
         if ($id) {
-            $sql = "SELECT intSupplierID,vcSupplierName,vcAddress,vcContactNo,rv FROM supplier WHERE intSupplierID = ? AND IsActive = 1";
+            $sql = "SELECT intSupplierID,vcSupplierName,vcAddress,vcContactNo,decCreditLimit,decAvailableCredit,rv FROM supplier WHERE intSupplierID = ? AND IsActive = 1";
             $query = $this->db->query($sql, array($id));
             return $query->row_array();
         }
 
-        $sql = "SELECT intSupplierID,vcSupplierName,vcAddress,vcContactNo FROM supplier WHERE IsActive = 1";
+        $sql = "SELECT intSupplierID,vcSupplierName,vcAddress,vcContactNo,decCreditLimit,decAvailableCredit,rv FROM supplier WHERE IsActive = 1";
         $query = $this->db->query($sql);
         return $query->result_array();
 

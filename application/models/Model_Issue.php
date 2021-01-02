@@ -24,7 +24,7 @@ class Model_issue extends CI_Model
 
         $insertDetails = false;
 
-        $paymentType = $this->input->post('paymentmode');
+        $paymentType = $this->input->post('cmbpayment');
         $GrandTotal = str_replace(',', '', $this->input->post('grandTotal'));
 
         $customerData = $this->model_customer->getCustomerData($this->input->post('cmbcustomer'));
@@ -72,7 +72,8 @@ class Model_issue extends CI_Model
             $decIssuQty = $this->input->post('itemQty')[$i];
             $itemID  = $this->input->post('itemID')[$i];
             $itemData = $this->model_item->getItemData($this->input->post('itemID')[$i]);
-            $UnitPrice = $itemData['decUnitPrice'];
+            $itemCustomerWiseUnitPrice = $this->model_item->getItemDetailsByCustomerID($this->input->post('itemID')[$i], $this->input->post('cmbcustomer'));
+            $UnitPrice = $itemCustomerWiseUnitPrice['decUnitPrice'];
             if ($itemData['decStockInHand'] < $decIssuQty) {
                 $exceedStockQty = true;
             }
@@ -151,7 +152,7 @@ class Model_issue extends CI_Model
                     IH.dtCreatedDate,
                     U.vcFullName,
                     IH.intPaymentTypeID,
-                    PY.vcPayment,
+                    PY.vcPaymentType,
                     IH.decSubTotal,
                     IH.decDiscount,
                     IH.decGrandTotal,
@@ -179,7 +180,7 @@ class Model_issue extends CI_Model
                IH.dtCreatedDate,
                U.vcFullName,
                IH.intPaymentTypeID,
-               PY.vcPayment,
+               PY.vcPaymentType,
                IH.decSubTotal,
                IH.decDiscount,
                IH.decGrandTotal,
@@ -241,7 +242,7 @@ class Model_issue extends CI_Model
 
     public function getPaymentTypes()
     {
-        $sql = "SELECT intPaymentTypeID,vcPayment FROM paymenttype;";
+        $sql = "SELECT intPaymentTypeID,vcPaymentType FROM paymenttype;";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

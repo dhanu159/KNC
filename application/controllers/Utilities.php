@@ -364,7 +364,7 @@ class Utilities extends Admin_Controller
             if ($result <> '') {
                 if ($result[0]['value'] == 1) {
                     $response['success'] = false;
-                    $response['messages'] = "Record already received for the system, can't remove this supplier !";
+                    $response['messages'] = "Record already assigned for the system, can't remove this mmeasure unit !";
                 } else {
                     $delete = $this->model_measureunit->remove($intMeasureUnitID);
                     if ($delete == true) {
@@ -707,4 +707,7 @@ class Utilities extends Admin_Controller
         $data = $this->model_cuttingorder->getCuttingOrderHeaderData($intCuttingOrderHeaderID = null);
         echo json_encode($data);
     }
+
+
+
 }

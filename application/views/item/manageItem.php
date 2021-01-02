@@ -25,10 +25,22 @@
 		<!-- Default box -->
 		<div class="card">
 			<div class="card-header">
-				<?php if (in_array('createItem', $user_permission) || $isAdmin) { ?>
-					<button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addItemModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Item</button>
-				<?php } ?>
+				<div class="row">
+					<?php if (in_array('createItem', $user_permission) || $isAdmin) { ?>
+						<button type="button" class="btn btn-info btn-flat" id="btnAddItem" data-toggle="modal" data-target="#addItemModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Item</button>
+					<?php } ?>
 
+					<div class="form-group">
+						<label>Item Type :</label>
+						<select class="form-control select2" style="width: 100%;" id="cmbItemType" name="cmbItemType">
+							<option value="0" selected hidden>All Types</option>
+							<?php foreach ($itemTypeAll as $k => $v) { ?>
+                                    <option value="<?= $v['intItemTypeID'] ?>"><?= $v['vcItemTypeName'] ?></option>
+                                <?php } ?>
+						</select>
+					</div>
+
+				</div>
 			</div>
 			<div class="card-body">
 
@@ -75,7 +87,7 @@
 						<div class="form-group">
 							<label>Measure Unit</label>
 							<select class="form-control select2" style="width: 100%;" id="measure_unit" name="measure_unit">
-								<option value="" disabled selected hidden>Select Measure Unit</option>
+								<option value="0" disabled selected hidden>Select Measure Unit</option>
 								<?php foreach ($measureUnit as $row) { ?>
 									<option value="<?= $row->intMeasureUnitID ?>"><?= $row->vcMeasureUnit ?></option>
 								<?php } ?>
@@ -85,7 +97,7 @@
 						<div class="form-group">
 							<label>Item Type</label>
 							<select class="form-control select2" style="width: 100%;" id="item_type" name="item_type">
-								<option value="" disabled selected hidden>Select Item Type</option>
+								<option value="0" disabled selected hidden>Select Item Type</option>
 								<?php foreach ($itemType as $row) { ?>
 									<option value="<?= $row->intItemTypeID ?>"><?= $row->vcItemTypeName ?></option>
 								<?php } ?>
@@ -103,7 +115,7 @@
 					</div>
 					<div class="modal-footer">
 
-						<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Item</button>
+						<button type="submit" id="btnSaveItem" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Item</button>
 					</div>
 
 
@@ -154,7 +166,7 @@
 						</div>
 
 						<div id="EditGenerateUnitPriceTextBox">
-					
+
 						</div>
 
 						<div class="form-group">
@@ -183,28 +195,28 @@
 
 <?php if (in_array('deleteItem', $user_permission) || $isAdmin) { ?>
 	<div class="modal fade" tabindex="-1" role="dialog" id="removeItemModal">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-
-			<form role="form" action="<?php echo base_url('Item/remove') ?>" method="post" id="removeItemForm">
-				<div class="modal-body">
-					<p>Do you really want to remove?</p>
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Item</button>
-				</div>
-			</form>
+
+				<form role="form" action="<?php echo base_url('Item/remove') ?>" method="post" id="removeItemForm">
+					<div class="modal-body">
+						<p>Do you really want to remove?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Item</button>
+					</div>
+				</form>
 
 
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
 <?php } ?>
 
 <!-- remove Item modal -->

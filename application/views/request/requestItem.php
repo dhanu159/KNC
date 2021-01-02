@@ -118,7 +118,7 @@
                                     <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getRequestFinishedByItemID();">
                                         <option value="0" disabled selected hidden>Select Item</option>
                                         <?php foreach ($item_data as $k => $v) { 
-                                             if( $v['decStockInHand']<=50 ){
+                                             if ($v['decReOrderLevel'] >= $v['decStockInHand']) { 
                                                 $lowstock="true";
                                              }else{
                                                 $lowstock="false";

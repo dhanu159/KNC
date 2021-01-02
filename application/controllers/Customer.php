@@ -8,23 +8,24 @@ class Customer extends Admin_Controller
 		$this->not_logged_in();
 		$this->load->model('model_customer');
 		$this->load->model('model_groups');
+		$this->load->model('model_item');
 
 		$user_group_data = $this->model_groups->getUserGroupData();
-        $this->data['user_groups_data'] = $user_group_data;
+		$this->data['user_groups_data'] = $user_group_data;
 	}
 
 	public function index()
 	{
 		if (!$this->isAdmin) {
-            if (!in_array('viewCustomer', $this->permission)) {
-                redirect('dashboard', 'refresh');
-            }
-        }
+			if (!in_array('viewCustomer', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
 		// $this->load->view('partials/header');
 		// $this->load->view('customer/manageCustomer',$this->data);
 		// $this->load->view('partials/footer');
 
-		$this->render_template('customer/manageCustomer','Manage Customer', $this->data);
+		$this->render_template('customer/manageCustomer', 'Manage Customer', $this->data);
 	}
 
 
@@ -198,8 +199,8 @@ class Customer extends Admin_Controller
 		$response = array();
 		if ($intCustomerID) {
 
-		//	$result = $this->model_customer->chkexists($intCustomerID);
-		$result = '';
+			//	$result = $this->model_customer->chkexists($intCustomerID);
+			$result = '';
 			if ($result <> '') {
 				if ($result[0]['value'] == 1) {
 					$response['success'] = false;
@@ -217,5 +218,301 @@ class Customer extends Admin_Controller
 			}
 			echo json_encode($response);
 		}
+	}
+
+	//-----------------------------------
+	// Customer Unit Price - Configuration
+	//-----------------------------------
+
+	public function manageCustomerUnitPriceConfig()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('createIssue', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$customer_data = $this->model_customer->getCustomerData();
+		$item_data = $this->model_item->getOnlyFinishItemData();
+
+
+		$this->data['customer_data'] = $customer_data;
+		$this->data['item_data'] = $item_data;
+
+		$this->render_template('Customer/ManageCustomerUnitPriceConfig', 'Customer Unit Price Config',  $this->data);
+	}
+
+	public function fetchCustomerPriceConfigData($CustomerID = null)
+	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('viewCustomer', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+
+		$result = array('data' => array());
+
+		$data = $this->model_customer->getCustomerPriceConfigData(null, $CustomerID);
+		foreach ($data as $key => $value) {
+
+			$buttons = '';
+
+			if ($this->isAdmin) {
+				$buttons .= '<button type="button" class="btn btn-default" onclick="editCustomerUnitPrice(' . $value['intCustomerPriceConfigID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+				// $buttons .= ' <button type="button" class="btn btn-default" onclick="removeCustomerUnitPrice(' . $value['intCustomerPriceConfigID'] . ')" data-toggle="modal" data-target="#removeCustomerModal"><i class="fa fa-trash"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerUnitPrice" onclick="RemoveCustomerUnitPrice(' . $value['intCustomerPriceConfigID'] . ')"><i class="fa fa-trash"></i></button>';
+			} else {
+				if (in_array('editCustomer', $this->permission)) {
+					$buttons .= '<button type="button" class="btn btn-default" onclick="editCustomerUnitPrice(' . $value['intCustomerPriceConfigID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+				}
+
+				if (in_array('deleteCustomer', $this->permission)) {
+					// $buttons .= ' <button type="button" class="btn btn-default" onclick="removeCustomerUnitPrice(' . $value['intCustomerPriceConfigID'] . ')" data-toggle="modal" data-target="#removeCustomerModal"><i class="fa fa-trash"></i></button>';
+					$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerUnitPrice" onclick="RemoveCustomerUnitPrice(' . $value['intCustomerPriceConfigID'] . ')"><i class="fa fa-trash"></i></button>';
+				}
+			}
+
+			$result['data'][$key] = array(
+				$value['vcCustomerName'],
+				$value['vcItemName'],
+				$value['decUnitPrice'],
+				$buttons
+			);
+		}
+
+		echo json_encode($result);
+	}
+
+	public function fetchCustomerPriceConfigById($CustomerPriceConfigID)
+	{
+		if ($CustomerPriceConfigID) {
+			$data = $this->model_customer->getCustomerPriceConfigData($CustomerPriceConfigID);
+			echo json_encode($data);
+		}
+
+		return false;
+	}
+
+	public function getNotConfiguredItems($CustomerID)
+	{
+		$response = array();
+
+		$response = $this->model_customer->getNotConfiguredItems($CustomerID);
+
+		echo json_encode($response);
+	}
+
+	public function SaveCustomerPriceConfig()
+	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('createCustomerPriceConfig', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+		$response = array();
+
+		$result = $this->model_customer->SaveCustomerPriceConfig();
+		if ($result == true) {
+			$response['success'] = true;
+		} else {
+			$response['success'] = false;
+			$response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+		}
+		echo json_encode($response);
+	}
+
+	public function UpdateCustomerPriceConfig($CustomerPriceConfigID)
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('editCustomerPriceConfig', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$response = array();
+
+		if ($CustomerPriceConfigID) {
+
+			$this->form_validation->set_rules('edit_unit_price', 'Unit Price', 'trim|required');
+
+			$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
+
+			if ($this->form_validation->run() == TRUE) {
+
+				$update = $this->model_customer->UpdateCustomerPriceConfig($CustomerPriceConfigID);
+
+				if ($update == true) {
+					$response['success'] = true;
+					$response['messages'] = 'Succesfully updated !';
+				} else {
+					$response['success'] = false;
+					$response['messages'] = 'Error in the database while updated the brand information';
+				}
+			} else {
+				$response['success'] = false;
+				foreach ($_POST as $key => $value) {
+					$response['messages'][$key] = form_error($key);
+				}
+			}
+		}
+
+		echo json_encode($response);
+	}
+
+	public function RemoveCustomerUnitPrice()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('deleteCustomerPriceConfig', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+		$intCustomerPriceConfigID = $this->input->post('intCustomerPriceConfigID');
+		$response = array();
+
+		if ($intCustomerPriceConfigID) {
+
+			$delete = $this->model_customer->RemoveCustomerUnitPrice($intCustomerPriceConfigID);
+
+			if ($delete == true) {
+				$response['success'] = true;
+				$response['messages'] = "Deleted !";
+			} else {
+				$response['success'] = false;
+				$response['messages'] = "Error in the database while removing the Request information !";
+			}
+		} else {
+			$response['success'] = false;
+			$response['messages'] = "Please refersh the page again !!";
+		}
+		echo json_encode($response);
+	}
+
+	//-----------------------------------
+	// Customer Advance Payemnt
+	//-----------------------------------
+
+	public function manageCustomerAdvancePayment()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('createCustomerAdvancePayment', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$customer_data = $this->model_customer->getCustomerData();
+		$advance_customer_data = $this->model_customer->getAdvanceAllowCustomers();
+
+
+		$this->data['customer_data'] = $customer_data;
+		$this->data['advance_customer_data'] = $advance_customer_data;
+
+		$this->render_template('Customer/ManageCustomerAdvancePayment', 'Customer Advance Payment',  $this->data);
+	}
+
+	public function fetchCustomerAdvancePaymentData()
+	{
+
+		if (!$this->isAdmin) {
+			if (!in_array('viewCustomerAdvancePayment', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+
+		$result = array('data' => array());
+
+		$data = $this->model_customer->getCustomerAdvancePaymentData(null, null);
+		foreach ($data as $key => $value) {
+
+			$buttons = '';
+
+			if ($this->isAdmin) {
+				if ($value['vcIssueNo'] == 'N/A') {
+					// $buttons .= '<button type="button" class="btn btn-default" onclick="editCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+					$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerAdvancePayment" onclick="RemoveCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')"><i class="fa fa-trash"></i></button>';
+				}
+			} else {
+				if ($value['vcIssueNo'] == 'N/A') {
+					if (in_array('editCustomerAdvancePayment', $this->permission)) {
+						// $buttons .= '<button type="button" class="btn btn-default" onclick="editCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
+					}
+
+					if (in_array('deleteCustomerAdvancePayment', $this->permission)) {
+						$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerAdvancePayment" onclick="RemoveCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')"><i class="fa fa-trash"></i></button>';
+					}
+				}
+			}
+
+			$result['data'][$key] = array(
+				$value['vcCustomerName'],
+				$value['dtAdvanceDate'],
+				$value['decAmount'],
+				$value['vcIssueNo'],
+				$value['dtCreatedDate'],
+				$value['vcFullName'],
+				$buttons
+			);
+		}
+
+		echo json_encode($result);
+	}
+
+	public function RemoveCustomerAdvancePayment()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('deleteCustomerPriceConfig', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+		$intCustomerAdvancePaymentID = $this->input->post('intCustomerAdvancePaymentID');
+		$response = array();
+
+		if ($intCustomerAdvancePaymentID) {
+
+			$delete = $this->model_customer->RemoveCustomerAdvancePayment($intCustomerAdvancePaymentID);
+
+			if ($delete == true) {
+				$response['success'] = true;
+				$response['messages'] = "Deleted !";
+			} else {
+				$response['success'] = false;
+				$response['messages'] = "Error in the database while removing the Request information !";
+			}
+		} else {
+			$response['success'] = false;
+			$response['messages'] = "Please refersh the page again !!";
+		}
+		echo json_encode($response);
+	}
+
+	public function SaveCustomerAdvancePayment()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('createCustomerPriceConfig', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+		$response = array();
+
+		$canAdd = $this->model_customer->chkIssueIdIsnull($this->input->post('cmbCustomer'));
+
+		if ($canAdd) {
+			$response['success'] = false;
+			$response['messages'] = 'Already Added Advance Payment.';
+		} else {
+			$result = $this->model_customer->SaveCustomerAdvancePayment();
+
+			if ($result == true) {
+				$response['success'] = true;
+			} else {
+				$response['success'] = false;
+				$response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+			}
+		}
+
+		echo json_encode($response);
 	}
 }

@@ -29,7 +29,8 @@ class Issue extends Admin_Controller
 
     $customer_data = $this->model_customer->getCustomerData();
     $item_data = $this->model_item->getOnlyFinishItemData();
-
+    $payment_data = $this->model_issue->getPaymentTypes();
+    $this->data['payment_data'] = $payment_data;
     $this->data['customer_data'] = $customer_data;
     $this->data['item_data'] = $item_data;
 
@@ -110,7 +111,7 @@ class Issue extends Admin_Controller
 
       $html .= ' <tr align="right">
 			              <th>Payment Mode:</th>
-			              <td>' . $issue_Header_Date['vcPayment'] . '</td>
+			              <td>' . $issue_Header_Date['vcPaymentType'] . '</td>
 			            </tr>
 			            <tr align="right">
 			              <th>Sub Total:</th>
@@ -187,7 +188,7 @@ class Issue extends Admin_Controller
         $value['dtIssueDate'],
         $value['dtCreatedDate'],
         $value['vcFullName'],
-        $value['vcPayment'],
+        $value['vcPaymentType'],
         number_format((float)$value['decSubTotal'], 2, '.', ''),
         number_format((float)$value['decDiscount'], 2, '.', ''),
         number_format((float)$value['decGrandTotal'], 2, '.', ''),

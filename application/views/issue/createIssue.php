@@ -66,6 +66,10 @@
         background: #ffffff;
         border-color: #ffffff;
     }
+
+    .select2-results span[lowstock="true"] {
+        color: red;
+    }
 </style>
 
 <!-- Content Wrapper. Contains page content -->
@@ -93,7 +97,7 @@
             <div class="card-body">
                 <form role="form" class="add-form" method="post" action="<?= base_url('Issue/SaveIssue') ?>" id="createIssue">
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             <label for="customer">Customer</label>
                             <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
                                 <option value="0" disabled selected hidden>Select Customer</option>
@@ -104,44 +108,26 @@
                         </div>
                         <div class="form-group col-md-3">
                             <label for="credit_limit">Credit Limit</label>
-                            <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" required />
+                            <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
                         <div class="form-group col-md-3">
                             <label for="credit_limit">Credit Balace</label>
-                            <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" required />
+                            <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="credit_limit">Advance Payment</label>
+                            <input type="text" class="form-control" id="advance_payment" name="advance_payment" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
                     </div>
                     <div class="row">
-                        <!-- <div class="btn-group col-md-6" data-toggle="buttons">
-                            <label for="customer">Payment Mode </label>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                                <label class="form-check-label" for="inlineRadio1">1</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                                <label class="form-check-label" for="inlineRadio2">2</label>
-                            </div> 
-                        </div> -->
                         <div class="form-group col-md-6 col-sm-12">
-                            
-                            <label for="customer">Payment Mode </label>
-                            <!-- <div class="col-sm-10"> -->
-                                <div class="form-check col-xs-2">
-                                    <input class="form-check-input" type="radio" name="paymentmode" id="cash" value="1" checked>
-                                    <label class="form-check-label" for="gridRadios1">
-                                        Cash
-                                    </label>
-                                </div>
-                                <div class="form-check col-xs-2">
-                                    <input class="form-check-input" type="radio" name="paymentmode" id="credit" value="2">
-                                    <label class="form-check-label" for="gridRadios2">
-                                        Credit
-                                    </label>
-                                </div>
-
-                            <!-- </div> -->
-                           
+                            <label>Payment Mode :</label>
+                            <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
+                                <!-- <option value="0" selected hidden>All Payments</option> -->
+                                <?php foreach ($payment_data as $k => $v) { ?>
+                                    <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Issued Date</label>
@@ -175,10 +161,18 @@
                                 <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
                                 <td class="static">
                                     <!-- <input type="text" class="form-control" name="txtItem"> -->
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getMeasureUnitByItemID();">
-                                        <option value=" 0" disabled selected hidden>Select Item</option>
-                                        <?php foreach ($item_data as $k => $v) { ?>
-                                            <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getItemDetailsByCustomerID();">
+                                        <option value="0" disabled selected hidden>Select Item</option>
+
+                                        <?php foreach ($item_data as $k => $v) {
+                                            if ($v['decReOrderLevel'] >= $v['decStockInHand']) { 
+                                                $lowstock = "true";
+                                            } else {
+                                                $lowstock = "false";
+                                            }
+
+                                        ?>
+                                            <option value="<?= $v['intItemID'] ?>" lowstock="<?= $lowstock ?>"><?= $v['vcItemName'] ?></option>
                                         <?php } ?>
                                     </select>
                                 </td>
@@ -238,3 +232,16 @@
 
 
 <script src="<?php echo base_url('resources/pageJS/createIssue.js') ?>"></script>
+<script>
+function formatState (state) {
+  if(!state.element) return;
+  var os = $(state.element).attr('lowstock');
+  return $('<span lowstock="' + os + '">' + state.text + '</span>');
+}
+
+$(document).ready(function() {
+    $('select').select2({
+      templateResult: formatState
+    });
+});
+</script>

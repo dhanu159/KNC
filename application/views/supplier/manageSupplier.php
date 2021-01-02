@@ -24,6 +24,8 @@
                                     <th>Supplier Name</th>
                                     <th>Address</th>
                                     <th>Contact No</th>
+                                    <th>Credit Limit</th>
+                                    <th>Available Credit</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -63,6 +65,10 @@
                             <label for="contact_no">Contact No</label>
                             <input type="number" class="form-control" id="contact_no" name="contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
                         </div>
+                        <div class="form-group">
+                            <label for="credit_limit">Credit Limit</label>
+                            <input type="number" class="form-control only-decimal" id="credit_limit" name="credit_limit" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Save Supplier</button>
@@ -100,7 +106,10 @@
                         <label for="contact_no">Contact No</label>
                         <input type="number" class="form-control" id="edit_contact_no" name="edit_contact_no" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
                     </div>
-
+                    <div class="form-group">
+                        <label for="credit_limit">Credit Limit</label>
+                        <input type="number" class="form-control only-decimal" id="edit_credit_limit" name="edit_credit_limit" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Contact No" autocomplete="off">
+                    </div>
                     <div class="form-group">
                         <input type="hidden" class="form-control" id="edit_rv" name="edit_rv" autocomplete="off">
                     </div>
@@ -118,30 +127,30 @@
 </div>
 <!-- /.content-wrapper -->
 <?php if (in_array('deleteSupplier', $user_permission) || $isAdmin) { ?>
-<!-- remove brand modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="removeSupplierModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <form role="form" action="<?php echo base_url('supplier/remove') ?>" method="post" id="removeSupplierForm">
-                <div class="modal-body">
-                    <p>Do you really want to remove?</p>
+    <!-- remove brand modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="removeSupplierModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeSupplierModal">Delete Supplier</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Supplier</button>
-                </div>
-            </form>
+
+                <form role="form" action="<?php echo base_url('supplier/remove') ?>" method="post" id="removeSupplierForm">
+                    <div class="modal-body">
+                        <p>Do you really want to remove?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Supplier</button>
+                    </div>
+                </form>
 
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 <?php } ?>
 
 <script src="<?php echo base_url('resources/pageJS/supplier.js') ?>"></script>

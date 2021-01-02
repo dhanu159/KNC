@@ -25,8 +25,10 @@ class Item extends Admin_Controller
 			}
 		}
 
+		
 		$this->data["measureUnit"] = $this->Model_measureunit->getMeasureUnitData(null, false);
 		$this->data["itemType"] = $this->Model_measureunit->getItemTypeData(null, false);
+		$this->data["itemTypeAll"] = $this->Model_measureunit->getItemTypeData(null, true);
 
 		$this->render_template('item/manageItem','Manage Item',$this->data);
 	}
@@ -39,6 +41,55 @@ class Item extends Admin_Controller
 		}
 
 		return false;
+	}
+
+	public function fetchItemDataByItemTypeID($itemTypeID)
+	{
+
+		$data = $this->model_item->getItemDataByItemTypeID($itemTypeID);
+		foreach ($data as $key => $value) {
+
+			// button
+			$buttons = '';
+			$ReorderLevl = '';
+			$UnitPrice = '';
+
+			if ($this->isAdmin) {
+				$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
+				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+				
+			} else {
+				if (in_array('editItem', $this->permission)) {
+					$buttons .= '<button type="button" class="btn btn-default" onclick="editItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#editItemModal"><i class="fas fa-edit"></i></button>';
+				}
+
+				if (in_array('deleteItem', $this->permission)) {
+					$buttons .= ' <button type="button" class="btn btn-default" onclick="removeItem(' . $value['intItemID'] . ')" data-toggle="modal" data-target="#removeItemModal"><i class="fa fa-trash"></i></button>';
+				}
+				
+			}
+
+			$ReorderLevl =  '<p class="text-right">' . $value['decReOrderLevel'] . '</p>' ;
+			$UnitPrice =  '<p class="text-right">' . $value['decUnitPrice'] . '</p>' ;
+
+			$result['data'][$key] = array(
+				$value['vcItemName'],
+				$value['vcMeasureUnit'],
+				$value['vcItemTypeName'],
+				$value['decStockInHand'],
+				$ReorderLevl,
+				$UnitPrice,
+				$buttons
+			);
+		} // /foreach
+
+		echo json_encode($result);
+	}
+
+	public function fetchItemDetailsByCustomerID($ItemID,$customerID)
+	{
+		$data = $this->model_item->getItemDetailsByCustomerID($ItemID,$customerID);
+		echo json_encode($data);
 	}
 
 	public function fetchItemData()
@@ -137,7 +188,7 @@ class Item extends Admin_Controller
 
 		$response = array();
 
-		$this->form_validation->set_rules('Item_name', 'Item Name  gggg', 'trim|required|is_unique[item.vcItemName]');
+		$this->form_validation->set_rules('Item_name', 'Item Name', 'trim|required|is_unique[item.vcItemName]');
 		$this->form_validation->set_rules('measure_unit', 'Measure Unit', 'trim|required');
 		$this->form_validation->set_rules('item_type', 'Item Type', 'trim|required');
 		if($this->input->post('edit_item_type') == 2)
