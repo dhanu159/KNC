@@ -5,18 +5,20 @@ $(document).ready(function () {
         getDispatchedDetails();
     });
 
-
-    // $('#txtQty').on('keyup', function (e) {
-    //     if ($('#txtStockQty').val() == 0) {
-    //         $('#txtQty').val(null);
-    //         toastr["error"]("You can't dispatch this. Because this item stock quantity is zero!");
-    //     } else if ($('#txtStockQty').val() > 0) {
-    //         if (parseFloat($('#txtQty').val()) > parseFloat($('#txtStockQty').val())) {
+    // $('#txtReceiveQty').on('keyup', function (e) {
+    //     debugger;
+    //     alert("dd");
+    //     if ($('#txtBalanceQty').val() == 0) {
+    //         $('#txtReceiveQty').val(null);
+    //         toastr["error"]("You can't collect this. Because this item already fully received !");
+    //     } else if ($('#txtBalanceQty').val() > 0) {
+    //         if (parseFloat($('#txtReceiveQty').val()) > parseFloat($('#txtBalanceQty').val())) {
     //             toastr["error"]("You can't exceed stock quantity  !");
     //         }
     //     }
 
     // });
+
 });
 
 var Dispatch = function () {
@@ -34,8 +36,12 @@ function getDispatchedDetails(){
         model.intDispatchHeaderID = DispatchHeaderID;
 
 
+        $("#itemCount").text("Item Count : 0");
+
         ajaxCall('Dispatch/getDispatchedItemDetails', model, function (response) {
-            debugger;
+
+            $("#itemCount").text("Item Count : " + response.length);
+
             for (let index = 0; index < response.length; index++) {
 
                 var htmlElement = '';
@@ -44,7 +50,7 @@ function getDispatchedDetails(){
 
 
                 if(parseFloat(response[index].ExpectedQty) > parseFloat(response[index].decReceivedQty)){
-                    htmlElement = '<input type="text" class="form-control only-decimal" name="txtReceiveQty[]" id="txtReceiveQty" style="text-align:right;" placeholder="0.00">'
+                    htmlElement = '<input type="text" class="form-control only-decimal" name="txtReceiveQty[]" id="txtReceiveQty" style="text-align:center;" placeholder="_ _ _ _ _" onkeyup="validateReceveQty(this)" onkeypress="return isNumber(event,this)" >'
                     badge = '<span class="badge badge-secondary" style="padding: 4px 10px; float:right; margin-right:10px;">Partially Received</span>';
                 }
 
@@ -59,18 +65,22 @@ function getDispatchedDetails(){
                 '<td><div style="padding: 10px 0px; text-align:center;">'+response[index].OutputFinishItemName+badge+'</div></td>'+
                 '<td><input type="text" class="form-control" name="txtMeasureUnit[]" id="txtMeasureUnit" style="text-align:center;" value="'+response[index].vcMeasureUnit+'" disabled></td>'+
                 '<td hidden><input type="number" class="form-control" name="txtCuttingOrderDetailID[]" value="'+response[index].intCuttingOrderDetailID+'"></td>'+
-                '<td><input type="text" class="form-control" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:right;" value="'+response[index].ExpectedQty+'" disabled></td>'+
-                '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:right;" value="'+response[index].decReceivedQty+'" disabled></td>'+
-                '<td><input type="text" class="form-control" name="txtBalanceQty[]" id="txtBalanceQty" style="text-align:right;" value="'+(response[index].ExpectedQty - response[index].decReceivedQty)+'" disabled></td>'+
+                    '<td><input type="text" class="form-control" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:center;" value="' + parseInt(response[index].ExpectedQty) +'" disabled></td>'+
+                    '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:center;" value="' + parseInt(response[index].decReceivedQty)+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtBalanceQty[]" id="txtBalanceQty" style="text-align:center;" value="'+(response[index].ExpectedQty - response[index].decReceivedQty)+'" readonly></td>'+
                 '<td>'+htmlElement+'</td>'+
-                '<td hidden><input type="text" class="form-control" name="txtRv[]" id="txtRv"></td>'+
+                '<td hidden><input type="text" class="form-control" name="Rv[]" id="Rv" value="' + response[index].rv +'"></td>'+
             '</tr>');
             }
       
         });
     }
-}
 
+
+} 
+
+
+ 
 $('#btnSubmit').click(function () {
 
     // if ($('#itemTable tr').length == 2) {
@@ -80,7 +90,7 @@ $('#btnSubmit').click(function () {
         arcadiaConfirmAlert("You want to be able to collect this items !", function (button) {
 
             var form = $("#collectDispatchItem");
-
+            debugger;
             $.ajax({
                 async: false,
                 type: form.attr('method'),
@@ -92,24 +102,7 @@ $('#btnSubmit').click(function () {
                     if (response.success == true) {
                         arcadiaSuccessMessage("Saved !");
                     } else {
-
-                        if (response.messages instanceof Object) {
-                            $.each(response.messages, function (index, value) {
-                                var id = $("#" + index);
-
-                                id.closest('.form-group')
-                                    .removeClass('has-error')
-                                    .removeClass('has-success')
-                                    .addClass(value.length > 0 ? 'has-error' : 'has-success');
-
-                                id.after(value);
-
-                            });
-                        } else {
-                            toastr["error"](response.messages);
-                            // arcadiaErrorMessage(response.messages);
-                            // $(button).prop('disabled', false);
-                        }
+                        toastr["error"](response.messages);
                     }
                 }
             });
@@ -118,4 +111,18 @@ $('#btnSubmit').click(function () {
 
 });
 
+
+function validateReceveQty(evnt){
+    var BalanceQty = $(evnt).closest("tr").find('#txtBalanceQty').val();
+
+    if (parseFloat(BalanceQty) == 0) {
+        $(evnt).closest("tr").find('#txtReceiveQty').val(null);
+        toastr["error"]("You can't collect this. Because this item already fully received !");
+    } else if (parseFloat(BalanceQty) > 0) {
+        if (parseFloat($(evnt).closest("tr").find('#txtReceiveQty').val()) > parseFloat(BalanceQty)) {
+            toastr["error"]("You can't exceed balance quantity  !");
+            $(evnt).closest("tr").find('#txtReceiveQty').val(null);
+        }
+    }
+}
 
