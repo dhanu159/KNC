@@ -95,7 +95,8 @@ class Model_dispatch extends CI_Model
             $response['success'] = false;
             $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
             $this->db->trans_rollback();
-        } else if ($exceedStockQty == true) {
+        } else 
+        if ($exceedStockQty == true) {
             $response['success'] = false;
             $response['messages'] = 'Stock quantity over exceeds error, please refresh the page and try again !';
             $this->db->trans_rollback();
@@ -203,7 +204,8 @@ class Model_dispatch extends CI_Model
         }
     }
 
-    public function getCollectionPendingDispatchNos(){
+    public function getCollectionPendingDispatchNos()
+    {
         $sql = "
                 SELECT 
                     intDispatchHeaderID,
@@ -256,30 +258,134 @@ class Model_dispatch extends CI_Model
         }
     }
 
-    public function saveCollectDispatchItems(){
+    public function getDispatchCollectionDetailsByDispatchDetailIDAndCuttingOrderDetailID($DispatchDetailID, $CuttingOrderDetailID)
+    {
+        // $sql = "
+        //         SELECT 
+        //             (CD.decQty * DD.decDispatchQty) AS decExpectedQty,
+        //             IFNULL(SUM(CDI.decReceivedQty),0) AS decReceivedQty,
+        //             ((CD.decQty * DD.decDispatchQty) - IFNULL(SUM(CDI.decReceivedQty),0)) decBalanceQty
+        //         FROM KNC.DispatchDetail AS DD
+        //         INNER JOIN KNC.CuttingOrderDetail AS CD ON DD.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
+        //         LEFT OUTER JOIN KNC.CollectDispatchItem AS CDI ON DD.intDispatchDetailID = CDI.intDispatchDetailID
+        //         WHERE 
+        //             DD.intDispatchDetailID = ?
+        //             AND CD.intItemID = ?";
+
+        $sql = "
+                SELECT 
+                    (CD.decQty * DD.decDispatchQty) AS decExpectedQty,
+                    IFNULL(SUM(CDI.decReceivedQty),0) AS decReceivedQty,
+                    ((CD.decQty * DD.decDispatchQty) - IFNULL(SUM(CDI.decReceivedQty),0)) decBalanceQty
+                FROM 
+                KNC.DispatchDetail AS DD
+                INNER JOIN KNC.CuttingOrderDetail AS CD ON DD.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID 
+                LEFT OUTER JOIN KNC.CollectDispatchItem AS CDI ON DD.intDispatchDetailID = CDI.intDispatchDetailID AND CD.intCuttingOrderDetailID = CDI.intCuttingOrderDetailID
+                WHERE DD.intDispatchDetailID = ?
+                AND CD.intCuttingOrderDetailID = ?
+        ";
+
+        $query = $this->db->query($sql, array($DispatchDetailID, $CuttingOrderDetailID));
+        return $query->row_array();
+    }
+
+    public function saveCollectDispatchItems()
+    {
         $this->db->trans_start();
 
 
-        $insertDetails = false;
+        $result = true;
+        $anotherUserAccess = false;
+        $BalanceQty = 0;
 
         $item_count = count($this->input->post('txtDispatchDetailID'));
 
         for ($i = 0; $i < $item_count; $i++) {
-            $items = array(
-                'intDispatchDetailID' => $this->input->post('txtDispatchDetailID')[$i],
-                'intCuttingOrderDetailID' => $this->input->post('txtCuttingOrderDetailID')[$i],
-                'decReceivedQty' => $this->input->post('txtReceiveQty')[$i],
-                'intUserID' => $this->session->userdata('user_id'),
-            );
-            $insertDetails = $this->db->insert('CollectDispatchItem', $items);
+
+            // var_dump($this->input->post('txtBalanceQty')[$i]);
+            // var_dump($this->input->post('txtDispatchDetailID')[$i]);
+
+            if ((float)$this->input->post('txtBalanceQty')[$i] > 0) {
+
+
+                $qtyData = $this->model_dispatch->getDispatchCollectionDetailsByDispatchDetailIDAndCuttingOrderDetailID($this->input->post('txtDispatchDetailID')[$i], $this->input->post('txtCuttingOrderDetailID')[$i]);
+
+                $BalanceQty =  $qtyData['decBalanceQty'];
+
+
+                if ((float)$this->input->post('txtReceiveQty')[$i] > $BalanceQty) {
+                    $result = false;
+
+                } else if ((float)$this->input->post('txtReceiveQty')[$i] > 0) {
+                    $currentRV = $this->model_item->chkRv($this->input->post('txtItemID')[$i]);
+                    $previousRV =  $this->input->post('Rv')[$i];
+
+                    if ($currentRV['rv'] != $previousRV) {
+                        $anotherUserAccess = true;
+                    }
+
+                    $items = array(
+                        'intDispatchDetailID' => $this->input->post('txtDispatchDetailID')[$i],
+                        'intCuttingOrderDetailID' => $this->input->post('txtCuttingOrderDetailID')[$i],
+                        'decReceivedQty' => $this->input->post('txtReceiveQty')[$i],
+                        'intUserID' => $this->session->userdata('user_id'),
+                    );
+                    $this->db->insert('CollectDispatchItem', $items);
+
+                    $sql = "UPDATE KNC.Item SET decStockInHand = decStockInHand + ? WHERE intItemID = ? ";
+
+                    $this->db->query($sql, array((float)$this->input->post('txtReceiveQty')[$i], $this->input->post('txtItemID')[$i]));
+                }
+            }
         }
 
-        $this->db->trans_complete();
 
-        $response = array();
-        $response['success'] = true;
+        $totalDispatchBalanceQtyData = $this->model_dispatch->getDispatchTotalBalanceQty($this->input->post('cmbDispatchNo'));
+ 
+        if ((float)$totalDispatchBalanceQtyData['decBalanceQty'] == 0) {
+            date_default_timezone_set('Asia/Colombo');
+            $now = date('Y-m-d H:i:s');
 
+            $sql = "UPDATE KNC.DispatchHeader SET dtReceiveCompletedDate = ?, intReceiveCompletedBy = ? WHERE intDispatchHeaderID = ? ";
+
+            $this->db->query($sql, array($now, $this->session->userdata('user_id'),$this->input->post('cmbDispatchNo')));
+        }
+
+
+        if ($anotherUserAccess == true) {
+            $response['success'] = false;
+            $response['messages'] = 'Another user tries to edit/using this item details, please refresh the page and try again !';
+            $this->db->trans_rollback();
+        } else 
+        if ($result == false) {
+            $response['success'] = false;
+            // $response['messages'] = 'Error in the database while create the dispatch details, please refresh the page and try again !';
+            $response['messages'] = 'You cannot exceed balance qty !, please refresh the page and try again !';
+            $this->db->trans_rollback();
+        } else {
+            $response['success'] = true;
+            $response['messages'] = 'Succesfully created !';
+            $this->db->trans_commit();
+        }
 
         return $response;
+    }
+
+    public function getDispatchTotalBalanceQty($DispatchHeaderID)
+    {
+        $sql = "
+                SELECT SUM(A.decBalanceQty) AS decBalanceQty FROM(
+                    SELECT 
+                        ((CD.decQty * DD.decDispatchQty) - IFNULL(SUM(CDI.decReceivedQty),0)) decBalanceQty
+                    FROM 
+                    KNC.DispatchDetail AS DD
+                    INNER JOIN KNC.CuttingOrderDetail AS CD ON DD.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID 
+                    LEFT OUTER JOIN KNC.CollectDispatchItem AS CDI ON DD.intDispatchDetailID = CDI.intDispatchDetailID AND CD.intCuttingOrderDetailID = CDI.intCuttingOrderDetailID
+                    WHERE DD.intDispatchHeaderID = ?
+                    GROUP BY CD.intCuttingOrderDetailID) 
+                AS A";
+
+        $query = $this->db->query($sql, array($DispatchHeaderID));
+        return $query->row_array();
     }
 }
