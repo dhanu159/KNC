@@ -137,4 +137,4 @@ r<style>
 </div>
 <!-- /.content-wrapper -->
 
-<script src="<?php echo base_url('resources/pageJS/cuttingOrder.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/editCuttingOrder.js') ?>"></script>
