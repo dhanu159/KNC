@@ -19,7 +19,7 @@ class Model_customer extends CI_Model
     public function getCustomerData($id = null)
     {
         if ($id) {
-            $sql = "SELECT cs.intCustomerID,cs.vcCustomerName,cs.vcAddress,cs.vcContactNo1,cs.vcContactNo2,cs.decCreditLimit,cs.decAvailableCredit,IFNULL(ca.decAmount,0.00) as decAdvanceAmount
+            $sql = "SELECT cs.intCustomerID,cs.vcCustomerName,cs.vcAddress,cs.vcContactNo1,cs.vcContactNo2,cs.decCreditLimit,cs.decAvailableCredit,IFNULL(ca.decAmount,0.00) as decAdvanceAmount, (cs.decAvailableCredit + IFNULL(ca.decAmount,0.00)) AS decCreditBuyAmount
             FROM customer cs
             LEFT OUTER JOIN customeradvancepayment as ca on cs.intCustomerID = ca.intCustomerID AND ca.intIssueHeaderID IS NULL WHERE cs.intCustomerID = ? AND cs.IsActive = 1";
             $query = $this->db->query($sql, array($id));
@@ -156,8 +156,18 @@ class Model_customer extends CI_Model
     public function RemoveCustomerUnitPrice($intCustomerPriceConfigID)
     {
         if ($intCustomerPriceConfigID) {
+            $this->db->trans_start();
+            $sql = "SELECT intCustomerPriceConfigID, intCustomerID, intItemID, decUnitPrice, dtCreatedDate, intUserID FROM customerpriceconfig WHERE intCustomerPriceConfigID = ? ";
+            $query = $this->db->query($sql, array($intCustomerPriceConfigID));
+            if ($query->num_rows()) {
+                $this->db->insert('customerpriceconfig_his', $query->row_array());
+                $insert_id = $this->db->insert_id();
+                $this->db->where('intCustomerPriceConfig_hisID', $insert_id);
+                $update = $this->db->update('customerpriceconfig_his', array('intEnteredBy' => $this->session->userdata('user_id')));
+            }
             $this->db->where('intCustomerPriceConfigID', $intCustomerPriceConfigID);
             $delete = $this->db->delete('customerpriceconfig');
+            $this->db->trans_complete();
             return ($delete == true) ? true : false;
         }
     }
@@ -168,7 +178,7 @@ class Model_customer extends CI_Model
     
     public function getAdvanceAllowCustomers()
     {
-        $sql = "SELECT CS.intCustomerID , CS.vcCustomerName
+        $sql = "SELECT DISTINCT CS.intCustomerID , CS.vcCustomerName
         FROM customer AS CS
         LEFT OUTER JOIN customeradvancepayment AS CA ON CA.intCustomerID = CS.intCustomerID
         Where CA.intIssueHeaderID is not null or  NOT EXISTS
@@ -189,7 +199,7 @@ class Model_customer extends CI_Model
             return $query->row_array();
         }
     
-            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CA.dtAdvanceDate,CA.decAmount,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,U.vcFullName
+            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CA.dtAdvanceDate,CA.decAmount,IFNULL(CA.vcRemark,'-') AS vcRemark,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,U.vcFullName
             FROM customeradvancepayment AS CA
             INNER JOIN customer AS C ON CA.intCustomerID = C.intCustomerID
             INNER JOIN user AS U ON CA.intUserID = U.intUserID
@@ -203,8 +213,18 @@ class Model_customer extends CI_Model
     public function RemoveCustomerAdvancePayment($intCustomerAdvancePaymentID)
     {
         if ($intCustomerAdvancePaymentID) {
+            $this->db->trans_start();
+            $sql = "SELECT * FROM customeradvancepayment WHERE intCustomerAdvancePaymentID = ? ";
+            $query = $this->db->query($sql, array($intCustomerAdvancePaymentID));
+            if ($query->num_rows()) {
+                $this->db->insert('customeradvancepayment_his', $query->row_array());
+                $insert_id = $this->db->insert_id();
+                $this->db->where('intCustomeradvancepayment_hisID', $insert_id);
+                $update = $this->db->update('customeradvancepayment_his', array('intEnteredBy' => $this->session->userdata('user_id')));
+            }
             $this->db->where('intCustomerAdvancePaymentID', $intCustomerAdvancePaymentID);
             $delete = $this->db->delete('customeradvancepayment');
+            $this->db->trans_complete();
             return ($delete == true) ? true : false;
         }
     }
@@ -229,6 +249,7 @@ class Model_customer extends CI_Model
             $items = array(
                 'intCustomerID' => $this->input->post('cmbCustomer'),
                 'decAmount' => $this->input->post('advance_amount'),
+                'vcRemark' => $this->input->post('remark'),
                 'dtAdvanceDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('advanceDate')))),
                 'intUserID' => $this->session->userdata('user_id'),
             );
