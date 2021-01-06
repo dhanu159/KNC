@@ -114,8 +114,14 @@
                             <label for="credit_limit">Credit Balace</label>
                             <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
+                        <!-- <div class="form-group col-md-3">
+                            <input type="checkbox" class="form-check-input" id="IsAdvancePayment" name="IsAdvancePayment">
+                            <label class="form-check-label" for="IsAdvancePayment">Advance Payment</label>
+                            <input type="text" class="form-control" id="advance_payment" name="advance_payment" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div> -->
                         <div class="form-group col-md-3">
-                            <label for="credit_limit">Advance Payment</label>
+                        <input type="checkbox" class="form-check-input" id="IsAdvancePayment" name="IsAdvancePayment"  style="margin-left: 0; padding-right: 1em; position:relative; float:left;">
+                            <label style="margin-left: 1em;" for="advance_payment">Advance Payment</label>
                             <input type="text" class="form-control" id="advance_payment" name="advance_payment" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
                     </div>
@@ -244,4 +250,12 @@ $(document).ready(function() {
       templateResult: formatState
     });
 });
+
+
 </script>
+
+<!-- <script>
+          $("#IsAdvancePayment").is(':checked', function(){
+              $("#IsAdvancePayment").attr('value', 'true');
+          });
+</script> -->
