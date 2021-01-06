@@ -9,7 +9,7 @@
         color: #FFFFFF;
     }
 
-    tbody td{
+    tbody td {
         padding: 0 !important;
     }
 
