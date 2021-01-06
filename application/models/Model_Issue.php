@@ -7,7 +7,6 @@ class Model_issue extends CI_Model
         parent::__construct();
         $this->load->model('model_customer');
         $this->load->model('model_item');
-    
     }
 
     public function saveIssue()
@@ -28,13 +27,22 @@ class Model_issue extends CI_Model
         $GrandTotal = str_replace(',', '', $this->input->post('grandTotal'));
 
         $customerData = $this->model_customer->getCustomerData($this->input->post('cmbcustomer'));
-        $customerAvailableCredit = $customerData['decAvailableCredit'];
+        $customerAvailableCredit = (float)$customerData['decAvailableCredit'];
         $exceedCreditLimit = false;
 
         if ($paymentType == 2) //Credit
         {
-            if ($customerAvailableCredit <  $GrandTotal) {
-                $exceedCreditLimit = true;
+            $IsAdvancePayment = (bool)$this->input->post('IsAdvancePayment');
+            $advance_payment = (float)$customerData['decAdvanceAmount'];
+
+            if ($IsAdvancePayment == true) {
+                if ((float)$customerData['decCreditBuyAmount'] < $GrandTotal) {
+                    $exceedCreditLimit = true;
+                }
+            } else {
+                if ($customerAvailableCredit < $GrandTotal) {
+                    $exceedCreditLimit = true;
+                }
             }
         }
 
@@ -48,12 +56,43 @@ class Model_issue extends CI_Model
             'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
             'decDiscount' => $this->input->post('txtDiscount'),
             'decGrandTotal' => $GrandTotal,
-            'decPaidAmount' => 0.0,
-            'decBalance' => 0.0
+            'decPaidAmount' => ($paymentType == 1) ?  $GrandTotal : 0.0
         );
 
         $this->db->insert('IssueHeader', $data);
         $IssueHeaderID = $this->db->insert_id();
+
+        $IsAdvancePayment = (bool)$this->input->post('IsAdvancePayment');
+        if ($IsAdvancePayment == true) {
+            if ((float)$customerData['decAdvanceAmount'] > 0) {
+                $sql = "UPDATE customeradvancepayment AS C
+                SET C.intIssueHeaderID  = " . $IssueHeaderID . "
+                WHERE C.intCustomerID = ? AND C.intIssueHeaderID IS NULL";
+
+                $this->db->query($sql, array($this->input->post('cmbcustomer')));
+            }
+        }
+
+        if ($paymentType == 2) //Credit
+        {
+            if ($IsAdvancePayment == true) {
+                if ((float)$customerData['decAdvanceAmount'] > 0) {
+
+                    $sql = "UPDATE customer AS C
+                    SET C.decAvailableCredit = (C.decAvailableCredit - " . ($GrandTotal - (float)$customerData['decAdvanceAmount']) . ")
+                    WHERE C.intCustomerID = ?";
+                    $this->db->query($sql, array($this->input->post('cmbcustomer')));
+                }
+            }
+            else
+            {    
+            $sql = "UPDATE customer AS C
+                   SET C.decAvailableCredit = (C.decAvailableCredit - " . $GrandTotal . ")
+                   WHERE C.intCustomerID = ?";
+                   $this->db->query($sql, array($this->input->post('cmbcustomer')));
+            }
+        }
+
 
         $item_count = count($this->input->post('itemID'));
 
@@ -86,7 +125,7 @@ class Model_issue extends CI_Model
             );
             $insertDetails = $this->db->insert('IssueDetail', $items);
             $IssueDetailID = $this->db->insert_id();
-            
+
             $Logdata = array(
                 'intItemID' => $itemData['intItemID'],
                 'intTransactionLogTypeID' => 3, //Item Issue
@@ -104,7 +143,6 @@ class Model_issue extends CI_Model
                 WHERE I.intItemID = ?";
 
             $this->db->query($sql, array($itemID));
-
         }
 
 
@@ -156,8 +194,7 @@ class Model_issue extends CI_Model
                     IH.decSubTotal,
                     IH.decDiscount,
                     IH.decGrandTotal,
-                    IH.decPaidAmount,
-                    IH.decBalance,      
+                    IH.decPaidAmount,    
                     CU.decCreditLimit,
                     CU.decAvailableCredit
             FROM Issueheader AS IH
@@ -184,8 +221,7 @@ class Model_issue extends CI_Model
                IH.decSubTotal,
                IH.decDiscount,
                IH.decGrandTotal,
-               IH.decPaidAmount,
-               IH.decBalance
+               IH.decPaidAmount
        FROM Issueheader AS IH
        INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
        INNER JOIN user as U ON IH.intUserID = U.intUserID
@@ -205,7 +241,6 @@ class Model_issue extends CI_Model
 
             $paymentTypeFilte = " AND IH.intPaymentTypeID = ? ";
             array_push($sqlParam, $PaymentType);
-           
         }
 
         if ($CustomerID != 0) {
@@ -246,4 +281,22 @@ class Model_issue extends CI_Model
         $query = $this->db->query($sql);
         return $query->result_array();
     }
+
+
+    //-----------------------------------
+    // Issue Return
+    //-----------------------------------
+
+    public function getReturnIssueNo()
+    {
+        $sql = "SELECT intIssueHeaderID,vcIssueNo from issueheader where (intPaymentTypeID = 2 and decPaidAmount <= 0) or (intPaymentTypeID = 1 and decPaidAmount > 0);";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    public function saveIssueReturn()
+    {
+        
+    }
+
 }
