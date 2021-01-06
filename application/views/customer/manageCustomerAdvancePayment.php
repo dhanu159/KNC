@@ -100,6 +100,7 @@
                                     <th>Customer Name</th>
                                     <th>Advance Date</th>
                                     <th>Advance Amount</th>
+                                    <th>Remark</th>
                                     <th>Invoice No</th>
                                     <th>Entered Date</th>
                                     <th>Entered User</th>
@@ -156,6 +157,10 @@
                         <div class="form-group">
                             <label for="credit_limit">Advance Amount</label>
                             <input type="number" class="form-control only-decimal" id="advance_amount" name="advance_amount" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter Advance Amount" autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="credit_limit">Remark</label>
+                            <input type="text" class="form-control" id="remark" name="remark" placeholder="Enter Remark" autocomplete="off">
                         </div>
                     </div>
                     <div class="modal-footer">
