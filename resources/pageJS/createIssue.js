@@ -55,10 +55,10 @@ $(document).ready(function () {
 
     });
 
-    $('#cmbItem').on('select2:select', function (e) {
-        $("input[name=txtQty],input[name=txtTotalPrice]").val("");
-        $('#txtQty').focus();
-    });
+    // $('#cmbItem').on('select2:select', function (e) {
+    //     $("input[name=txtQty],input[name=txtTotalPrice]").val("");
+    //     $('#txtQty').focus();
+    // });
 
     $('#txtQty,#txtUnitPrice').keyup(function (event) {
         CalculateTotal();
