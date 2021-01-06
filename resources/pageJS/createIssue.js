@@ -1,17 +1,62 @@
+var AdvanceAmount = 0;
+var CreditBuyAmount = 0;
+var AvailableCredit = 0;
 $(document).ready(function () {
 
 
+
     $('#cmbcustomer').on('select2:select', function (e) {
-        getDetailByCustomerID();
+        // getDetailByCustomerID();
         $("#itemTable").find("tr:gt(1)").remove();
         $('#cmbItem').val('0'); // Select the option with a value of '0'
         $('#cmbItem').trigger('change'); // Notify any JS components that the value changed
         $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice],input[name=grandTotal],input[name=subTotal],input[name=txtDiscount]").val("");
         CalculateItemCount();
+        getcmbItemDate();
+    });
+
+    $(document).on('keyup', 'input[type=search]', function (e) {
+        $("li").attr('aria-selected', false);
+    });
+
+    $("#cmbcustomer").on('select2:close', function (event) {
+        getDetailByCustomerID();
+    });
+
+    $("#cmbItem").on('select2:close', function (event) {
+        $("input[name=txtQty],input[name=txtTotalPrice]").val("");
+        $('#txtQty').focus();
+    });
+
+    $('#IsAdvancePayment').change(function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true');
+        } else {
+            $(this).attr('value', 'false');
+        }
+
+        //   $("#itemTable").find("tr:gt(1)").remove();
+        //   $('#cmbItem').val('0'); 
+        //   $('#cmbItem').trigger('change');
+        //   $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice],input[name=grandTotal],input[name=subTotal],input[name=txtDiscount]").val("");
+        //   CalculateItemCount();
+        //   getcmbItemDate();
+
+    });
+
+    $('#cmbpayment').on('select2:select', function (e) {
+        // getDetailByCustomerID();
+        $("#itemTable").find("tr:gt(1)").remove();
+        $('#cmbItem').val('0'); // Select the option with a value of '0'
+        $('#cmbItem').trigger('change'); // Notify any JS components that the value changed
+        $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice],input[name=grandTotal],input[name=subTotal],input[name=txtDiscount]").val("");
+        CalculateItemCount();
+        getcmbItemDate();
 
     });
 
     $('#cmbItem').on('select2:select', function (e) {
+        $("input[name=txtQty],input[name=txtTotalPrice]").val("");
         $('#txtQty').focus();
     });
 
@@ -26,7 +71,6 @@ $(document).ready(function () {
     $('.add-item').keypress(function (event) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
-            // getRequestFinishedByItemID();
             if ($("#cmbcustomer option:selected").val() == 0) {
                 toastr["error"]("Please select customer !");
                 return;
@@ -35,7 +79,25 @@ $(document).ready(function () {
                 toastr["error"]("Please can't Add Stock Qty N/A");
                 return;
             }
-            AddToGrid();
+
+            if ($("input[name=txtUnitPrice]").val() == "") {
+                toastr["error"]("Please Enter Unit Price");
+                return;
+            }
+
+            if ($("#cmbpayment option:selected").val() == 2) { //Credit
+                if (chkCreditLimit() == false) {
+                    toastr["error"]("Customer CreditLimit Exceed !");
+                    return;
+                }
+                else {
+                    AddToGrid(true);
+                    return;
+                }
+            }
+            else {
+                AddToGrid(true);
+            }
         }
 
         event.stopPropagation();
@@ -131,11 +193,11 @@ $(document).ready(function () {
             }
             else {
 
-                AddToGrid(true);
+                AddToGrid(false);
             }
         }
         else {
-            AddToGrid(true);
+            AddToGrid(false);
         }
     });
 
@@ -249,7 +311,7 @@ $(document).ready(function () {
 });
 
 function getDetailByCustomerID() {
-    var customerID = $("#cmbcustomer").val();
+    var customerID = $("#cmbcustomer option:selected").val();
     if (customerID > 0) {
         $.ajax({
             async: false,
@@ -260,10 +322,17 @@ function getDetailByCustomerID() {
                 $("#credit_limit").val(response.decCreditLimit);
                 $("#available_limit").val(response.decAvailableCredit);
                 $("#advance_payment").val(response.decAdvanceAmount);
-                // if (response.decCreditLimit < $("#grandTotal").val()) {
-                //     toastr["error"]("Customer CreditLimit Exceed !");
-                // }
 
+                AdvanceAmount = parseFloat(response.decAdvanceAmount)
+                CreditBuyAmount = parseFloat(response.decCreditBuyAmount)
+                AvailableCredit = parseFloat(response.decAvailableCredit)
+
+                if (AdvanceAmount > 0) {
+                    document.getElementById("IsAdvancePayment").checked = true;
+                }
+                else {
+                    document.getElementById("IsAdvancePayment").checked = false;
+                }
             },
             error: function (xhr, status, error) {
                 //var err = eval("(" + xhr.responseText + ")");
@@ -273,32 +342,6 @@ function getDetailByCustomerID() {
     }
 }
 
-// function getMeasureUnitByItemID() {
-
-//     var ItemID = $("#cmbItem").val();
-
-//     if (ItemID > 0) {
-//         $.ajax({
-//             url: base_url + 'item/fetchItemDataById/' + ItemID,
-//             type: 'post',
-//             dataType: 'json',
-//             success: function (response) {
-//                 $("#txtUnitPrice").val(response.decUnitPrice);
-//                 $("#txtStockQty").val(response.decStockInHand);
-//                 $("#txtMeasureUnit").val(response.vcMeasureUnit);
-//                 $("#txtRv").val(response.rv);
-
-//                 if (response.decStockInHand == 'N/A') {
-//                     toastr["error"]("Please Check Stock");
-//                 }
-//             },
-//             error: function (xhr, status, error) {
-//                 //var err = eval("(" + xhr.responseText + ")");
-//                 arcadiaErrorMessage(error);
-//             }
-//         });
-//     }
-// }
 
 function getItemDetailsByCustomerID() {
 
@@ -335,6 +378,7 @@ function chkCreditLimit() {
 
     var discount = $("#txtDiscount").val();
     var total = 0;
+    var toBeSettlement = 0;
     $('#itemTable tbody tr').each(function () {
         var value = parseFloat($(this).closest("tr").find('.total').val());
         if (!isNaN(value)) {
@@ -350,9 +394,15 @@ function chkCreditLimit() {
         total = Number(currency.replace(/[^0-9.-]+/g, ""));
 
     }
+    else {
+        total += parseFloat($("#txtTotalPrice").val());
+    }
     // total == 0 ? total = $("#txtTotalPrice").val() : total;
 
     var customerID = $("#cmbcustomer").val();
+    debugger;
+
+    var IsAdvancePayment = document.getElementById("IsAdvancePayment");
 
     if (customerID > 0) {
 
@@ -362,12 +412,25 @@ function chkCreditLimit() {
             type: 'post',
             dataType: 'json',
             success: function (response) {
-                if (response.decAvailableCredit < total) {
-                    canAdd = false;
+
+                if (IsAdvancePayment.checked) {
+
+                    if ((parseFloat(response.decAvailableCredit) + AdvanceAmount) < total) {
+                        canAdd = false;
+                    }
+                    else {
+                        canAdd = true;
+                    }
                 }
                 else {
-                    canAdd = true;
+                    if (parseFloat(response.decAvailableCredit) < total) {
+                        canAdd = false;
+                    }
+                    else {
+                        canAdd = true;
+                    }
                 }
+
             },
             error: function (xhr, status, error) {
                 //var err = eval("(" + xhr.responseText + ")");
@@ -378,6 +441,28 @@ function chkCreditLimit() {
     return (canAdd == true) ? true : false;
 }
 
+function getcmbItemDate() {
+    $.ajax({
+        async: false,
+        url: 'getOnlyFinishItemData',
+        type: 'post',
+        dataType: 'json',
+        success: function (response) {
+            $("#cmbItem").empty();
+            $("#cmbItem").append('<option value=" 0" disabled selected hidden>Select Cutting Order</option>');
+            for (let index = 0; index < response.length; index++) {
+                $("#cmbItem").append('<option value="' + response[index].intItemID + '">' + response[index].vcItemName + '</option>');
+            }
+
+            // $("#cmbItem").focus();
+            $("#cmbItem li").attr('aria-selected', false);
+        },
+        error: function (xhr, status, error) {
+            arcadiaErrorMessage(error);
+        }
+    });
+
+}
 
 function CalculateItemCount() {
     var rowCount = $('#itemTable tr').length;
@@ -385,6 +470,8 @@ function CalculateItemCount() {
 }
 
 $('#btnSubmit').click(function () {
+    var IsAdvancePayment = document.getElementById("IsAdvancePayment");
+
     if ($("#cmbcustomer option:selected").val() == 0) {
         toastr["error"]("Please select customer !");
         $("#cmbcustomer").focus();
@@ -394,11 +481,31 @@ $('#btnSubmit').click(function () {
         toastr["error"]("Please add the issue items !");
         $("#cmbItem").focus();
     } else {
-        debugger;
-        if ($("#credit").prop("checked") && chkCreditLimit() == false) {
+        if ($("#cmbpayment option:selected").val() == 2 && chkCreditLimit() == false) {
             toastr["error"]("Customer CreditLimit Exceed !");
             return;
+        } if (IsAdvancePayment.checked) {
+            if ($("input[name=grandTotal]").val() < AdvanceAmount) {
+                toastr["error"]("Please Enter more than Advance Payment !");
+                return;
+            }
         }
+        if ($("#cmbpayment option:selected").val() == 2) {
+            if (IsAdvancePayment.checked) {
+                if (CreditBuyAmount < $("input[name=grandTotal]").val()) {
+                    toastr["error"]("Customer CreditLimit Exceed !");
+                    return;
+                }
+            }
+            else {
+                if (AvailableCredit < $("input[name=grandTotal]").val()) {
+                    toastr["error"]("Customer CreditLimit Exceed ! Please Try Apply Advance Amount!");
+                    return;
+                }
+            }
+        }
+
+
         arcadiaConfirmAlert("You want to be able to create this !", function (button) {
             var form = $("#createIssue");
 
@@ -410,6 +517,7 @@ $('#btnSubmit').click(function () {
                 dataType: 'json',
                 success: function (response) {
                     if (response.success == true) {
+                        debugger;
                         arcadiaSuccessAfterIssuePrint("Issue No : " + response.vcIssueNo, response.intIssueHeaderID);
                         // $('#printpage', window.parent.document).hide();
                     } else {
