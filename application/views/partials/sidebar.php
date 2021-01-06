@@ -284,6 +284,14 @@
                                 <p>&nbsp;&nbsp;View Issue</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Issue/IssueReturn') ?>" class="nav-link <?php if ($this->uri->segment(2) == "IssueReturn") {
+                                                                                                        echo 'active';
+                                                                                                    } ?>">
+                                <i class="fas fa-search"></i>
+                                <p>&nbsp;&nbsp;Issue Return</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
