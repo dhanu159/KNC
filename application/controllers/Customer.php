@@ -450,6 +450,7 @@ class Customer extends Admin_Controller
 				$value['vcCustomerName'],
 				$value['dtAdvanceDate'],
 				$value['decAmount'],
+				$value['vcRemark'],
 				$value['vcIssueNo'],
 				$value['dtCreatedDate'],
 				$value['vcFullName'],
