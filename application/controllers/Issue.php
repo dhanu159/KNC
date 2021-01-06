@@ -37,6 +37,12 @@ class Issue extends Admin_Controller
     $this->render_template('Issue/createIssue', 'Create Issue',  $this->data);
   }
 
+  public function getOnlyFinishItemData()
+  {
+      $data = $this->model_item->getOnlyFinishItemData();
+      echo json_encode($data);
+  }
+
 
   public function SaveIssue()
   {
@@ -178,7 +184,7 @@ class Issue extends Admin_Controller
       $buttons = '';
 
       if (in_array('viewIssue', $this->permission) || $this->isAdmin) {
-        $buttons .= '<a class="button btn btn-default" href="' . base_url("Issue/ViewIssueetails/" . $value['intIssueHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
+        $buttons .= '<a class="button btn btn-default" href="' . base_url("Issue/ViewIssueDetails/" . $value['intIssueHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
       }
 
 
@@ -193,7 +199,6 @@ class Issue extends Admin_Controller
         number_format((float)$value['decDiscount'], 2, '.', ''),
         number_format((float)$value['decGrandTotal'], 2, '.', ''),
         number_format((float)$value['decPaidAmount'], 2, '.', ''),
-        number_format((float)$value['decBalance'], 2, '.', ''),
         $buttons
       );
     }
@@ -201,7 +206,7 @@ class Issue extends Admin_Controller
     echo json_encode($result);
   }
 
-  public function ViewIssueetails($IssueHeaderID)
+  public function ViewIssueDetails($IssueHeaderID)
   {
       if (!$this->isAdmin) {
           if (!in_array('viewIssue', $this->permission)) {
@@ -226,7 +231,50 @@ class Issue extends Admin_Controller
       }else{
           redirect(base_url() . 'Issue/viewIssueDetail', 'refresh');
       }
-
-     
   }
+
+  
+  //-----------------------------------
+  // Issue Return
+  //-----------------------------------
+
+  public function IssueReturn()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('issueReturn', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+    $issue_No = $this->model_issue->getReturnIssueNo();
+    $this->data['issue_No'] = $issue_No;
+
+
+    $this->render_template('Issue/IssueReturn', 'Issue Return', $this->data);
+  }
+
+  public function ViewIssueDetailsToTable()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('viewIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+    $intIssueHeaderID = $this->input->post('intIssueHeaderID');
+    $issued_item_data = $this->model_issue->GetIssueDetailsData($intIssueHeaderID);
+    echo json_encode($issued_item_data);
+  }
+
+  public function SaveIssueReturn()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('issueReturn', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+
+    $response = $this->model_issue->saveIssueReturn();
+
+    echo json_encode($response);
+  }
+
 }
