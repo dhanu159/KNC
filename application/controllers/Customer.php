@@ -432,7 +432,7 @@ class Customer extends Admin_Controller
 			if ($this->isAdmin) {
 				if ($value['vcIssueNo'] == 'N/A') {
 					// $buttons .= '<button type="button" class="btn btn-default" onclick="editCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')" data-toggle="modal" data-target="#editCustomerModal"><i class="fas fa-edit"></i></button>';
-					$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerAdvancePayment" onclick="RemoveCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')"><i class="fa fa-trash"></i></button>';
+					$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerAdvancePayment" onclick="RemoveCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ',\'' . $value['rv'] . '\')"><i class="fa fa-trash"></i></button>';
 				}
 			} else {
 				if ($value['vcIssueNo'] == 'N/A') {
@@ -441,7 +441,7 @@ class Customer extends Admin_Controller
 					}
 
 					if (in_array('deleteCustomerAdvancePayment', $this->permission)) {
-						$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerAdvancePayment" onclick="RemoveCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ')"><i class="fa fa-trash"></i></button>';
+						$buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCustomerAdvancePayment" onclick="RemoveCustomerAdvancePayment(' . $value['intCustomerAdvancePaymentID'] . ',\'' . $value['rv'] . '\')"><i class="fa fa-trash"></i></button>';
 					}
 				}
 			}
@@ -454,7 +454,7 @@ class Customer extends Admin_Controller
 				$value['vcIssueNo'],
 				$value['dtCreatedDate'],
 				$value['vcFullName'],
-				$buttons
+				$buttons,
 			);
 		}
 
@@ -469,23 +469,32 @@ class Customer extends Admin_Controller
 			}
 		}
 		$intCustomerAdvancePaymentID = $this->input->post('intCustomerAdvancePaymentID');
+		$rv = $this->input->post('rv');
 		$response = array();
 
-		if ($intCustomerAdvancePaymentID) {
+		$CurrentRV = $this->model_customer->getCustomerAdvancePaymentData($intCustomerAdvancePaymentID);
 
-			$delete = $this->model_customer->RemoveCustomerAdvancePayment($intCustomerAdvancePaymentID);
+		if ($CurrentRV['rv']  != $rv) {
+            $response['success'] = false;
+            $response['messages'] = 'Another user tries to edit this Data, please refresh the page and try again !';
+        }else {
+			if ($intCustomerAdvancePaymentID) {
 
-			if ($delete == true) {
-				$response['success'] = true;
-				$response['messages'] = "Deleted !";
+				$delete = $this->model_customer->RemoveCustomerAdvancePayment($intCustomerAdvancePaymentID);
+	
+				if ($delete == true) {
+					$response['success'] = true;
+					$response['messages'] = "Deleted !";
+				} else {
+					$response['success'] = false;
+					$response['messages'] = "Error in the database while removing the Request information !";
+				}
 			} else {
 				$response['success'] = false;
-				$response['messages'] = "Error in the database while removing the Request information !";
+				$response['messages'] = "Please refersh the page again !!";
 			}
-		} else {
-			$response['success'] = false;
-			$response['messages'] = "Please refersh the page again !!";
-		}
+		} 
+
 		echo json_encode($response);
 	}
 
