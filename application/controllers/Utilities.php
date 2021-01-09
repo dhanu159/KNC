@@ -511,7 +511,8 @@ class Utilities extends Admin_Controller
         }
         $cuttingorder_detail_data = $this->model_cuttingorder->getCuttingOrderDetailData($intCuttingOrderHeaderID);
 
-
+        $item_data = $this->model_item->getOnlyFinishItemData();
+        $this->data['item_data'] = $item_data;
         $this->data['cuttingorder_header_data'] = $cuttingorder_header_data;
         $this->data['cuttingorder_detail_data'] = $cuttingorder_detail_data;
 
