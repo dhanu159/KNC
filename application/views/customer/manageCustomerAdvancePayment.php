@@ -96,7 +96,8 @@
                     <div class="box-body">
                         <table id="manageTable" class="table table-bordered table-striped text-center">
                             <thead>
-                                <tr>
+                                <tr> 
+                                 
                                     <th>Customer Name</th>
                                     <th>Advance Date</th>
                                     <th>Advance Amount</th>
