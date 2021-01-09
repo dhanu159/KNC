@@ -198,7 +198,6 @@ class Issue extends Admin_Controller
         number_format((float)$value['decSubTotal'], 2, '.', ''),
         number_format((float)$value['decDiscount'], 2, '.', ''),
         number_format((float)$value['decGrandTotal'], 2, '.', ''),
-        number_format((float)$value['decPaidAmount'], 2, '.', ''),
         $buttons
       );
     }
@@ -252,6 +251,7 @@ class Issue extends Admin_Controller
     $this->render_template('Issue/IssueReturn', 'Issue Return', $this->data);
   }
 
+
   public function ViewIssueDetailsToTable()
   {
     if (!$this->isAdmin) {
@@ -272,8 +272,21 @@ class Issue extends Admin_Controller
       }
     }
 
-    $response = $this->model_issue->saveIssueReturn();
+    $IssueHeaderData = $this->model_issue->GetIssueHeaderData($this->input->post('cmbIssueNo'));
+    $CustomerID =  $IssueHeaderData['intCustomerID'];
 
+    $result =  $this->model_issue->chkNullCustomerAdvancePayment($CustomerID);
+
+    if ($result) {
+      $response = $this->model_issue->saveIssueReturn();
+      // $response['success'] = true;
+      // $response['messages'] = 'Succesfully Returned !';
+    }
+    else {
+      $response['success'] = false;
+      $response['messages'] = 'Already Have a Advance Payment Please Delete this Customer Advance Amount !';
+    }
+  
     echo json_encode($response);
   }
 
