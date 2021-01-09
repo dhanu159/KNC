@@ -194,12 +194,14 @@ class Model_customer extends CI_Model
     public function getCustomerAdvancePaymentData($CustomerAdvancePaymentID = null, $CustomerID = null)
     {
         if ($CustomerAdvancePaymentID) {
-            $sql = "";
+            $sql = "SELECT intCustomerAdvancePaymentID, intCustomerID, decAmount, vcRemark, dtAdvanceDate, dtCreatedDate, intUserID, intIssueHeaderID, REPLACE(rv,' ','-') as rv 
+            FROM customeradvancepayment
+            WHERE intCustomerAdvancePaymentID = ?";
             $query = $this->db->query($sql, array($CustomerAdvancePaymentID));
             return $query->row_array();
         }
     
-            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CA.dtAdvanceDate,CA.decAmount,IFNULL(CA.vcRemark,'-') AS vcRemark,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,U.vcFullName
+            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CA.dtAdvanceDate,CA.decAmount,IFNULL(CA.vcRemark,'-') AS vcRemark,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,REPLACE(CA.rv,' ','-') as rv,U.vcFullName
             FROM customeradvancepayment AS CA
             INNER JOIN customer AS C ON CA.intCustomerID = C.intCustomerID
             INNER JOIN user AS U ON CA.intUserID = U.intUserID
