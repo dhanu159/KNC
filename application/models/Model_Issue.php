@@ -55,8 +55,8 @@ class Model_issue extends CI_Model
             'intPaymentTypeID' =>  $paymentType,
             'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
             'decDiscount' => $this->input->post('txtDiscount'),
-            'decGrandTotal' => $GrandTotal,
-            'decPaidAmount' => ($paymentType == 1) ?  $GrandTotal : 0.0
+            'decGrandTotal' => $GrandTotal
+            // ,'decPaidAmount' => ($paymentType == 1) ?  $GrandTotal : 0.0
         );
 
         $this->db->insert('IssueHeader', $data);
@@ -83,13 +83,11 @@ class Model_issue extends CI_Model
                     WHERE C.intCustomerID = ?";
                     $this->db->query($sql, array($this->input->post('cmbcustomer')));
                 }
-            }
-            else
-            {    
-            $sql = "UPDATE customer AS C
+            } else {
+                $sql = "UPDATE customer AS C
                    SET C.decAvailableCredit = (C.decAvailableCredit - " . $GrandTotal . ")
                    WHERE C.intCustomerID = ?";
-                   $this->db->query($sql, array($this->input->post('cmbcustomer')));
+                $this->db->query($sql, array($this->input->post('cmbcustomer')));
             }
         }
 
@@ -186,6 +184,7 @@ class Model_issue extends CI_Model
                     SELECT  IH.intIssueHeaderID,
                     IH.vcIssueNo,
                     CU.vcCustomerName,
+                    CU.intCustomerID,
                     IH.dtIssueDate,
                     IH.dtCreatedDate,
                     U.vcFullName,
@@ -194,7 +193,6 @@ class Model_issue extends CI_Model
                     IH.decSubTotal,
                     IH.decDiscount,
                     IH.decGrandTotal,
-                    IH.decPaidAmount,    
                     CU.decCreditLimit,
                     CU.decAvailableCredit
             FROM Issueheader AS IH
@@ -220,8 +218,7 @@ class Model_issue extends CI_Model
                PY.vcPaymentType,
                IH.decSubTotal,
                IH.decDiscount,
-               IH.decGrandTotal,
-               IH.decPaidAmount
+               IH.decGrandTotal
        FROM Issueheader AS IH
        INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
        INNER JOIN user as U ON IH.intUserID = U.intUserID
@@ -289,14 +286,81 @@ class Model_issue extends CI_Model
 
     public function getReturnIssueNo()
     {
-        $sql = "SELECT intIssueHeaderID,vcIssueNo from issueheader where (intPaymentTypeID = 2 and decPaidAmount <= 0) or (intPaymentTypeID = 1 and decPaidAmount > 0);";
+        $sql = "SELECT intIssueHeaderID,vcIssueNo from issueheader;";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    public function saveIssueReturn()
+    public function chkNullCustomerAdvancePayment($CustomerID)
     {
-        
+        $sql = "
+        SELECT  intCustomerAdvancePaymentID
+        FROM customeradvancepayment 
+        where intCustomerID = ? and intIssueHeaderID is null;";
+
+        $query = $this->db->query($sql, array($CustomerID));
+        if ($query->result_array() == null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
+    public function saveIssueReturn()
+    {
+        $this->db->trans_begin();
+
+        $IssueHeaderID = $this->input->post('cmbIssueNo');
+
+        // $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
+        // $ret = $query->row();
+        // $IssueNo = $ret->IssueNo;
+
+        $response = array();
+
+        $ReturnNo = "Return-001";
+
+        $sql = "UPDATE Item AS I
+        INNER JOIN issuedetail AS ID ON I.intItemID = ID.intItemID
+        SET I.decStockInHand = (I.decStockInHand + ID.decIssueQty)
+        WHERE ID.intIssueHeaderID = ? ;";
+        $this->db->query($sql, array($IssueHeaderID));
+
+        $sql = "UPDATE customer AS C
+        INNER JOIN issueheader AS I ON C.intCustomerID = I.intCustomerID 
+        LEFT OUTER JOIN customeradvancepayment AS A ON I.intIssueHeaderID = A.intIssueHeaderID
+        SET C.decAvailableCredit =  CASE WHEN A.intIssueHeaderID IS NULL THEN (C.decAvailableCredit + I.decGrandTotal) ELSE (C.decAvailableCredit + (I.decGrandTotal - A.decAmount)) END 
+        WHERE I.intIssueHeaderID = ? AND I.intPaymentTypeID = 2;";
+        $this->db->query($sql, array($IssueHeaderID));
+
+        $sql = "UPDATE customeradvancepayment
+        SET intIssueHeaderID = NULL
+        WHERE intIssueHeaderID = ? ;";
+        $this->db->query($sql, array($IssueHeaderID));
+
+        $sql = "INSERT INTO issuereturnheader(vcIssueReturnNo,intIssueHeaderID, vcIssueNo, intCustomerID, dtIssueDate, dtCreatedDate, intUserID, intPaymentTypeID, decSubTotal, decDiscount, decGrandTotal, IsActive, intReturnedUserID)
+        SELECT  '$ReturnNo', IH.intIssueHeaderID, IH.vcIssueNo, IH.intCustomerID, IH.dtIssueDate, IH.dtCreatedDate, IH.intUserID, IH.intPaymentTypeID, IH.decSubTotal, IH.decDiscount, IH.decGrandTotal, IH.IsActive , 1
+        FROM    issueheader AS IH
+        WHERE   IH.intIssueHeaderID = ?;";
+        $this->db->query($sql, array($IssueHeaderID));
+
+        $sql = "INSERT INTO issuereturndetail(intIssueReturnHeaderID, intIssueDetailID, intIssueHeaderID, intItemID, decIssueQty, decUnitPrice, decTotalPrice,decReturnQty)
+        SELECT  170 , ID.intIssueDetailID, ID.intIssueHeaderID, ID.intItemID, ID.decIssueQty, ID.decUnitPrice, ID.decTotalPrice , ID.decIssueQty
+        FROM    issuedetail AS ID
+        WHERE   ID.intIssueHeaderID = ?;";
+        $this->db->query($sql, array($IssueHeaderID));
+
+        $this->db->where('intIssueHeaderID', $IssueHeaderID);
+        $this->db->delete('issuedetail');
+
+        $this->db->where('intIssueHeaderID', $IssueHeaderID);
+        $this->db->delete('issueheader');
+
+        $this->db->trans_complete();
+
+        $response['success'] = true;
+        $response['messages'] = 'Succesfully Returned !';
+
+        return $response;
+    }
 }
