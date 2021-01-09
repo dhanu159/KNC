@@ -101,7 +101,7 @@ $(document).ready(function () {
 
 
 
-function RemoveCustomerAdvancePayment(CustomerAdvancePaymentID) {
+function RemoveCustomerAdvancePayment(CustomerAdvancePaymentID,rv) {
     arcadiaConfirmAlert("You want to be able to remove this !", function(button) {
 
         $.ajax({
@@ -109,7 +109,8 @@ function RemoveCustomerAdvancePayment(CustomerAdvancePaymentID) {
             url: base_url + 'Customer/RemoveCustomerAdvancePayment',
             type: 'post',
             data: {
-                intCustomerAdvancePaymentID: CustomerAdvancePaymentID
+                intCustomerAdvancePaymentID: CustomerAdvancePaymentID,
+                rv : rv
             },
             dataType: 'json',
             success: function(response) {
