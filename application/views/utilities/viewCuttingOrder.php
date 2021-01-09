@@ -1,4 +1,4 @@
-r<style>
+<style>
     .first-tr {
         border: 2px solid #3d9970;
     }

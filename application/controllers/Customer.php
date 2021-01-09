@@ -14,7 +14,7 @@ class Customer extends Admin_Controller
 		$this->data['user_groups_data'] = $user_group_data;
 	}
 
-	public function index()
+	public function CustomersList()
 	{
 		if (!$this->isAdmin) {
 			if (!in_array('viewCustomer', $this->permission)) {

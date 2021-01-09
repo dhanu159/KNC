@@ -1,10 +1,19 @@
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <section class="content-header">
-        <h1>
-            Manage Measure Unit
-        </h1>
-
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Measure Units</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Utilities</a></li>
+                        <li class="breadcrumb-item active">Measure Units</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
     </section>
 
     <!-- Main content -->
@@ -13,10 +22,10 @@
         <!-- Small boxes (Stat box) -->
         <div class="card">
             <div class="card-header">
-            <?php if (in_array('createMeasureUnit', $user_permission) || $isAdmin) { ?>
-                <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addMeasureUnitModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Measure Unit</button>
+                <?php if (in_array('createMeasureUnit', $user_permission) || $isAdmin) { ?>
+                    <button type="button" class="btn btn-info btn-flat" data-toggle="modal" data-target="#addMeasureUnitModal"><i class="fa fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Add Measure Unit</button>
 
-				<?php } ?>
+                <?php } ?>
             </div>
             <div class="card-body">
 
@@ -90,7 +99,7 @@
                 </div>
 
                 <div class="modal-footer">
-                <button type="submit"  class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Unit</button>
+                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Update Unit</button>
                 </div>
 
             </form>
@@ -105,29 +114,29 @@
 
 <!-- remove brand modal -->
 <?php if (in_array('deleteMeasureUnit', $user_permission) || $isAdmin) { ?>
-<div class="modal fade" tabindex="-1" role="dialog" id="removeMeasureUnithModal">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="removeMeasureUnithModal">Delete Unit</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-
-            <form role="form" action="<?php echo base_url('Utilities/removeMeasureUnit') ?>" method="post" id="removeMeasureUnitForm">
-                <div class="modal-body">
-                    <p>Do you really want to remove?</p>
+    <div class="modal fade" tabindex="-1" role="dialog" id="removeMeasureUnithModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="removeMeasureUnithModal">Delete Unit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Unit</button>
-                </div>
-            </form>
+
+                <form role="form" action="<?php echo base_url('Utilities/removeMeasureUnit') ?>" method="post" id="removeMeasureUnitForm">
+                    <div class="modal-body">
+                        <p>Do you really want to remove?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success btn-flat"><i class="fas fa-download" aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;Delete Unit</button>
+                    </div>
+                </form>
 
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 <?php } ?>
 
 <script src="<?php echo base_url('resources/pageJS/measureunit.js') ?>"></script>

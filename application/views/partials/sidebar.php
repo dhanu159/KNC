@@ -56,7 +56,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item has-treeview <?php if ($this->uri->segment(1) == "User" || $this->uri->segment(2) == "UserGroup" || $this->uri->segment(2) == "MeasureUnit") {
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(1) == "User" || $this->uri->segment(2) == "UserGroup" || $this->uri->segment(2) == "MeasureUnit" || $this->uri->segment(2) == "CuttingOrder") {
                                                         echo 'menu-open';
                                                     } ?>">
                     <a href="#" class="nav-link">
@@ -71,7 +71,7 @@
                                                                                                 echo 'active';
                                                                                             } ?>">
                                 <i class="fas fa-user"></i>
-                                <p>&nbsp;&nbsp;&nbsp;User</p>
+                                <p>&nbsp;&nbsp;&nbsp;User Accounts</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -79,7 +79,7 @@
                                                                                                     echo 'active';
                                                                                                 } ?>">
                                 <i class="fas fa-users"></i>
-                                <p>&nbsp;&nbsp;User Group</p>
+                                <p>&nbsp;&nbsp;User Groups</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -91,7 +91,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="<?= base_url('Utilities/CuttingOrder') ?>" class="nav-link <?php if ($this->uri->segment(2) == "MeasureUnit") {
+                            <a href="<?= base_url('Utilities/CuttingOrder') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CuttingOrder") {
                                                                                                     echo 'active';
                                                                                                 } ?>">
                                 <i class="fas fa-balance-scale-right"></i>
@@ -100,32 +100,48 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="<?php echo base_url('Customer/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Customer") {
-                                                                                            echo 'active';
-                                                                                        } ?>">
-                        <i class="fa fa-users" aria-hidden="true"></i>
-                        <p>&nbsp;&nbsp;Customer</p>
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CustomersList" || $this->uri->segment(2) == "manageCustomerUnitPriceConfig" || $this->uri->segment(2) == "manageCustomerAdvancePayment") {
+                                                        echo 'menu-open';
+                                                    } ?>">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tools"></i>
+                        <p>&nbsp;&nbsp;&nbsp;Customer
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
                     </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Customer/CustomersList') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CustomersList") {
+                                                                                                    echo 'active';
+                                                                                                } ?>">
+                                <i class="fas fa-user"></i>
+                                <p>&nbsp;&nbsp;&nbsp;Customers List</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Customer/manageCustomerUnitPriceConfig') ?>" class="nav-link <?php if ($this->uri->segment(2) == "manageCustomerUnitPriceConfig") {
+                                                                                                                            echo 'active';
+                                                                                                                        } ?>">
+                                <i class="fa fa-users" aria-hidden="true"></i>
+                                <p>&nbsp;&nbsp;Customer Price Config</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Customer/manageCustomerAdvancePayment') ?>" class="nav-link <?php if ($this->uri->segment(2) == "manageCustomerAdvancePayment") {
+                                                                                                                            echo 'active';
+                                                                                                                        } ?>">
+                                <i class="fa fa-users" aria-hidden="true"></i>
+                                <p>&nbsp;&nbsp;Customer Advance Payment</p>
+                            </a>
+                        </li>
+                    </ul>
+
                 </li>
 
-                <li class="nav-item">
-                    <a href="<?php echo base_url('Customer/manageCustomerUnitPriceConfig') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Customer") {
-                                                                                            echo 'active';
-                                                                                        } ?>">
-                        <i class="fa fa-users" aria-hidden="true"></i>
-                        <p>&nbsp;&nbsp;Customer Price Config</p>
-                    </a>
-                </li>
 
-                    <li class="nav-item">
-                    <a href="<?php echo base_url('Customer/manageCustomerAdvancePayment') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Customer") {
-                                                                                            echo 'active';
-                                                                                        } ?>">
-                        <i class="fa fa-users" aria-hidden="true"></i>
-                        <p>&nbsp;&nbsp;Customer Advance Payment</p>
-                    </a>
-                </li>
+
+
 
                 <li class="nav-item">
                     <a href="<?php echo base_url('Supplier/index') ?>" class="nav-link <?php if ($this->uri->segment(1) == "Supplier") {
@@ -156,8 +172,8 @@
 
                 <li class="nav-item">
                     <a href="<?php echo base_url('Receipt/CreateReceipt') ?>" class="nav-link <?php if ($this->uri->segment(1) == "CreateReceipt") {
-                                                                                        echo 'active';
-                                                                                    } ?>">
+                                                                                                    echo 'active';
+                                                                                                } ?>">
                         <i class="fa fa-industry" aria-hidden="true"></i>
                         <p>&nbsp;&nbsp;&nbsp;Receipt</p>
                     </a>
@@ -256,8 +272,8 @@
                             </li>
                             <li class="nav-item">
                                 <a href="<?php echo base_url('Dispatch/CollectDispatchedItems') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CollectDispatchedItems") {
-                                                                                                                echo 'active';
-                                                                                                            } ?>">
+                                                                                                                        echo 'active';
+                                                                                                                    } ?>">
                                     <i class="fas fa-dolly"></i>
                                     <p>&nbsp;&nbsp;Collect Dispatched Items</p>
                                 </a>
@@ -288,8 +304,8 @@
                         </li>
                         <li class="nav-item">
                             <a href="<?php echo base_url('Issue/ViewIssue') ?>" class="nav-link <?php if ($this->uri->segment(2) == "ViewIssue") {
-                                                                                                        echo 'active';
-                                                                                                    } ?>">
+                                                                                                    echo 'active';
+                                                                                                } ?>">
                                 <i class="fas fa-search"></i>
                                 <p>&nbsp;&nbsp;View Issue</p>
                             </a>

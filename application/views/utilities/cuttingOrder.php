@@ -75,12 +75,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Manage Cutting Order</h1>
+                    <h1>Cutting Orders</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="#">Cutting</a></li>
-                        <li class="breadcrumb-item active">Cutting Order</li>
+                        <li class="breadcrumb-item"><a href="#">Utilities</a></li>
+                        <li class="breadcrumb-item active">Cutting Orders</li>
                     </ol>
                 </div>
             </div>
