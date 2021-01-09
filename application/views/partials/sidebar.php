@@ -153,6 +153,16 @@
                         <p>&nbsp;&nbsp;&nbsp;Item</p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="<?php echo base_url('Receipt/CreateReceipt') ?>" class="nav-link <?php if ($this->uri->segment(1) == "CreateReceipt") {
+                                                                                        echo 'active';
+                                                                                    } ?>">
+                        <i class="fa fa-industry" aria-hidden="true"></i>
+                        <p>&nbsp;&nbsp;&nbsp;Receipt</p>
+                    </a>
+                </li>
+
                 <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "RequestItem" || $this->uri->segment(2) == "ViewRequest") {
                                                         echo 'menu-open';
                                                     } ?>">
