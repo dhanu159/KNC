@@ -90,7 +90,6 @@
                                     <th>Sub Total</th>
                                     <th>Discount</th>
                                     <th>Grand Total</th>
-                                    <th>Paid Amount</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
