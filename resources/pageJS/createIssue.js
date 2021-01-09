@@ -5,7 +5,17 @@ $(document).ready(function () {
 
 
 
-    $('#cmbcustomer').on('select2:select', function (e) {
+    // $('#cmbcustomer').on('select2:select', function (e) {
+    //     // getDetailByCustomerID();
+    //     $("#itemTable").find("tr:gt(1)").remove();
+    //     $('#cmbItem').val('0'); // Select the option with a value of '0'
+    //     $('#cmbItem').trigger('change'); // Notify any JS components that the value changed
+    //     $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice],input[name=grandTotal],input[name=subTotal],input[name=txtDiscount]").val("");
+    //     CalculateItemCount();
+    //     getcmbItemDate();
+    // });
+
+    $('#cmbcustomer').on('select2:close', function (e) {
         // getDetailByCustomerID();
         $("#itemTable").find("tr:gt(1)").remove();
         $('#cmbItem').val('0'); // Select the option with a value of '0'
@@ -14,6 +24,7 @@ $(document).ready(function () {
         CalculateItemCount();
         getcmbItemDate();
     });
+
 
     $(document).on('keyup', 'input[type=search]', function (e) {
         $("li").attr('aria-selected', false);
@@ -24,8 +35,11 @@ $(document).ready(function () {
     });
 
     $("#cmbItem").on('select2:close', function (event) {
+        
         $("input[name=txtQty],input[name=txtTotalPrice]").val("");
         $('#txtQty').focus();
+        getItemDetailsByCustomerID();
+
     });
 
     $('#IsAdvancePayment').change(function () {
@@ -80,8 +94,8 @@ $(document).ready(function () {
                 return;
             }
 
-            if ($("input[name=txtUnitPrice]").val() == "") {
-                toastr["error"]("Please Enter Unit Price");
+            if ($("input[name=txtQty]").val() == "") {
+                toastr["error"]("Please Enter Issue Qty !");
                 return;
             }
 
@@ -178,12 +192,12 @@ $(document).ready(function () {
             return;
         }
         if ($("input[name=txtStockQty]").val() == "N/A" || $("input[name=txtStockQty]").val() == "0.00") {
-            toastr["error"]("Please can't Add Stock Qty N/A");
+            toastr["error"]("Please can't Add Stock Qty N/A !");
             return;
         }
 
-        if ($("input[name=txtUnitPrice]").val() == "") {
-            toastr["error"]("Please Enter Unit Price");
+        if ($("input[name=txtQty]").val() == "") {
+            toastr["error"]("Please Enter Issue Qty !");
             return;
         }
 
@@ -210,6 +224,7 @@ $(document).ready(function () {
             toastr["error"]("Please select customer !");
             return;
         }
+        
         else {
             if ($("#txtQty").val() > 0) {
 
@@ -449,7 +464,7 @@ function getcmbItemDate() {
         dataType: 'json',
         success: function (response) {
             $("#cmbItem").empty();
-            $("#cmbItem").append('<option value=" 0" disabled selected hidden>Select Cutting Order</option>');
+            $("#cmbItem").append('<option value=" 0" disabled selected hidden>Select Issue Item</option>');
             for (let index = 0; index < response.length; index++) {
                 $("#cmbItem").append('<option value="' + response[index].intItemID + '">' + response[index].vcItemName + '</option>');
             }
