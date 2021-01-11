@@ -96,17 +96,35 @@
         <div class="card">
             <div class="card-body">
                 <form role="form" class="add-form" method="post" action="<?= base_url('Issue/SaveIssue') ?>" id="createIssue">
-                    <div class="row">
-                        <div class="form-group col-md-3">
-                            <label for="customer">Customer</label>
-                            <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
-                                <option value="0" disabled selected hidden>Select Customer</option>
-                                <?php foreach ($customer_data as $k => $v) { ?>
-                                    <option value="<?= $v['intCustomerID'] ?>"><?= $v['vcCustomerName'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-3">
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label>Payment Date</label>
+                                <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Issue Date" style="pointer-events: none !important;" />
+                                    <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="customer">Customer</label>
+                                <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
+                                    <option value="0" disabled selected hidden>Select Customer</option>
+                                    <?php foreach ($customer_data as $k => $v) { ?>
+                                        <option value="<?= $v['intCustomerID'] ?>"><?= $v['vcCustomerName'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="credit_limit">Available Advance Payment</label>
+                                <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="credit_limit">Total Outstanding Amount</label>
+                                <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                            </div>
+                            <!-- <div class="form-group col-md-3">
                             <label for="credit_limit">Credit Limit</label>
                             <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
@@ -114,17 +132,17 @@
                             <label for="credit_limit">Credit Balace</label>
                             <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
-                        <!-- <div class="form-group col-md-3">
-                            <input type="checkbox" class="form-check-input" id="IsAdvancePayment" name="IsAdvancePayment">
-                            <label class="form-check-label" for="IsAdvancePayment">Advance Payment</label>
-                            <input type="text" class="form-control" id="advance_payment" name="advance_payment" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                        </div> -->
                         <div class="form-group col-md-3">
                             <input type="checkbox" class="form-check-input" id="IsAdvancePayment" name="IsAdvancePayment" style="margin-left: 0; padding-right: 1em; position:relative; float:left;">
                             <label style="margin-left: 1em;" for="advance_payment">Advance Payment</label>
                             <input type="text" class="form-control" id="advance_payment" name="advance_payment" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div> -->
                         </div>
                     </div>
+                    <div class="col-md-6">
+
+                    </div>
+
                     <div class="row">
                         <div class="form-group col-md-6 col-sm-12">
                             <label>Payment Mode :</label>
@@ -143,7 +161,6 @@
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
