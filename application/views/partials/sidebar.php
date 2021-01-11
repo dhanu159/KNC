@@ -100,7 +100,7 @@
                         </li>
                     </ul>
                 </li>
-                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CustomersList" || $this->uri->segment(2) == "manageCustomerUnitPriceConfig" || $this->uri->segment(2) == "manageCustomerAdvancePayment") {
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CustomersList" || $this->uri->segment(2) == "manageCustomerUnitPriceConfig") {
                                                         echo 'menu-open';
                                                     } ?>">
                     <a href="#" class="nav-link">
@@ -113,8 +113,8 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="<?php echo base_url('Customer/CustomersList') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CustomersList") {
-                                                                                                    echo 'active';
-                                                                                                } ?>">
+                                                                                                            echo 'active';
+                                                                                                        } ?>">
                                 <i class="fas fa-user"></i>
                                 <p>&nbsp;&nbsp;&nbsp;Customers List</p>
                             </a>
@@ -125,14 +125,6 @@
                                                                                                                         } ?>">
                                 <i class="fa fa-users" aria-hidden="true"></i>
                                 <p>&nbsp;&nbsp;Customer Price Config</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="<?php echo base_url('Customer/manageCustomerAdvancePayment') ?>" class="nav-link <?php if ($this->uri->segment(2) == "manageCustomerAdvancePayment") {
-                                                                                                                            echo 'active';
-                                                                                                                        } ?>">
-                                <i class="fa fa-users" aria-hidden="true"></i>
-                                <p>&nbsp;&nbsp;Customer Advance Payment</p>
                             </a>
                         </li>
                     </ul>
@@ -170,14 +162,39 @@
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a href="<?php echo base_url('Receipt/CreateReceipt') ?>" class="nav-link <?php if ($this->uri->segment(1) == "CreateReceipt") {
-                                                                                                    echo 'active';
-                                                                                                } ?>">
-                        <i class="fa fa-industry" aria-hidden="true"></i>
-                        <p>&nbsp;&nbsp;&nbsp;Receipt</p>
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateReceipt" || $this->uri->segment(2) == "manageCustomerAdvancePayment") {
+                                                        echo 'menu-open';
+                                                    } ?>">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-tools"></i>
+                        <p>&nbsp;&nbsp;&nbsp;Payments
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
                     </a>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Receipt/CreateReceipt') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CreateReceipt") {
+                                                                                                            echo 'active';
+                                                                                                        } ?>">
+                                <i class="fas fa-user"></i>
+                                <p>&nbsp;&nbsp;&nbsp;Payment Receipt</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Customer/manageCustomerAdvancePayment') ?>" class="nav-link <?php if ($this->uri->segment(2) == "manageCustomerAdvancePayment") {
+                                                                                                            echo 'active';
+                                                                                                        } ?>">
+                                <i class="fas fa-user"></i>
+                                <p>&nbsp;&nbsp;&nbsp;Customer Advance Payment</p>
+                            </a>
+                        </li>
+                    </ul>
+
                 </li>
+
 
                 <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "RequestItem" || $this->uri->segment(2) == "ViewRequest") {
                                                         echo 'menu-open';
