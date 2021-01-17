@@ -77,6 +77,12 @@ $('#dtReceiptDate').datetimepicker({
     maxDate: new Date()
 });
 
+$('#dtSettlementDate').datetimepicker({
+    format: 'L',
+    defaultDate: new Date(),
+    maxDate: new Date()
+});
+
 
 
 // Alerts
