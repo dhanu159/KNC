@@ -125,40 +125,52 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="form-group col-md-12">
-                                <label>Pay Mode</label>
-                                <select class="form-control select2" style="width: 100%;" id="cmbPayMode" name="cmbPayMode">
-                                    <?php foreach ($payment_data as $k => $v) { ?>
-                                        <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label>Bank</label>
-                                <select class="form-control select2" style="width: 100%;" id="cmbBank" name="cmbBank">
-                                    <option value=" 0" disabled selected hidden>Select Bank</option>
-                                    <?php foreach ($payment_data as $k => $v) { ?>
-                                        <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label for="txtChequeNo">Cheque Number</label>
-                                <input type="text" class="form-control" id="txtChequeNo" name="txtChequeNo" placeholder="Enter Cheque Number" required />
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label>Post-Dated Date</label>
-                                <div class="input-group date" id="dtPDDate" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" id="PDDate" name="PDDate" placeholder="Select Post-Dated Date" style="pointer-events: none !important;" />
-                                    <div class="input-group-append" data-target="#dtPDDate" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                    </div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label>Pay Mode</label>
+                                    <select class="form-control select2" style="width: 100%;" id="cmbPayMode" name="cmbPayMode">
+                                        <?php foreach ($payment_data as $k => $v) { ?>
+                                            <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="txtAmount">Amount</label>
+                                    <input type="text" class="form-control" id="txtAmount" name="txtAmount" placeholder="Enter Pay Amount" required />
                                 </div>
                             </div>
-                            <div class="form-group col-md-12">
-                                <label for="txtAmount">Amount</label>
-                                <input type="text" class="form-control" id="txtAmount" name="txtAmount" placeholder="Enter Pay Amount" required />
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label>Bank</label>
+                                    <select class="form-control select2" style="width: 100%;" id="cmbBank" name="cmbBank">
+                                        <option value=" 0" disabled selected hidden>Select Bank</option>
+                                        <?php foreach ($payment_data as $k => $v) { ?>
+                                            <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="txtChequeNo">Cheque Number</label>
+                                    <input type="text" class="form-control" id="txtChequeNo" name="txtChequeNo" placeholder="Enter Cheque Number" required />
+                                </div>
                             </div>
+
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label>Post-Dated Date</label>
+                                    <div class="input-group date" id="dtPDDate" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" id="PDDate" name="PDDate" placeholder="Select Post-Dated Date" style="pointer-events: none !important;" />
+                                        <div class="input-group-append" data-target="#dtPDDate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="txtRemark">Remark</label>
+                                    <input type="text" class="form-control" id="txtRemark" name="txtRemark" autocomplete="off" placeholder="Not Required" />
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
