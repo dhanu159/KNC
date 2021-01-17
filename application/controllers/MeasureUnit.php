@@ -10,8 +10,8 @@ class MeasureUnit extends Admin_Controller
         $this->load->model('model_measureunit');
         $this->load->model('model_groups');
 
-        $user_group_data = $this->model_groups->getUserGroupData();
-        $this->data['user_groups_data'] = $user_group_data;
+        // $user_group_data = $this->model_groups->getUserGroupData();
+        // $this->data['user_groups_data'] = $user_group_data;
     }
 
     public function MeasureUnit()

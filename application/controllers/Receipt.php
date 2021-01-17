@@ -13,8 +13,8 @@ class Receipt extends Admin_Controller
         $this->load->model('model_customer');
         $this->load->model('model_issue');
 
-        $user_group_data = $this->model_groups->getUserGroupData();
-        $this->data['user_groups_data'] = $user_group_data;
+        // $user_group_data = $this->model_groups->getUserGroupData();
+        // $this->data['user_groups_data'] = $user_group_data;
     }
 
   //-----------------------------------
@@ -30,8 +30,8 @@ class Receipt extends Admin_Controller
     }
 
     $customer_data = $this->model_customer->getCustomerData();
-    $payment_data = $this->model_issue->getPaymentTypes();
-    $this->data['payment_data'] = $payment_data;
+    $paymode_data = $this->model_issue->getPaymentTypes();
+    $this->data['paymode_data'] = $paymode_data;
     $this->data['customer_data'] = $customer_data;
 
     $this->render_template('Receipt/CreateReceipt', 'Create Receipt',  $this->data);

@@ -12,8 +12,8 @@ class Item extends Admin_Controller
 		$this->load->model('model_groups');
 		// $item_data = $this->model_item->getItemData();
 		// $this->data['item_data'] = $item_data;
-		$user_group_data = $this->model_groups->getUserGroupData();
-        $this->data['user_groups_data'] = $user_group_data;
+		// $user_group_data = $this->model_groups->getUserGroupData();
+        // $this->data['user_groups_data'] = $user_group_data;
 
 	}
 

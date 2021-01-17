@@ -66,10 +66,6 @@
         background: #ffffff;
         border-color: #ffffff;
     }
-
-    .select2-results span[lowstock="true"] {
-        color: red;
-    }
 </style>
 
 <!-- Content Wrapper. Contains page content -->
@@ -180,10 +176,10 @@
                                 <tr>
                                     <th style="text-align:center;">Issue No</th>
                                     <th style="width: 200px; text-align:center;">Total Amount</th>
-                                    <th style="width: 200px; text-align:center;">Paid Amount</th>
+                                    <th style="width: 200px; text-align:center;">Total Paid Amount</th>
                                     <th style="width: 100px; text-align:center;">Outstranding Amount</th>
-                                    <th style="width: 100px; text-align:center;">Qty</th>
-                                    <th style="width: 200px; text-align:center;">Total Price</th>
+                                    <th style="width: 100px; text-align:center;">Pay Amount</th>
+                                    <th style="width: 200px; text-align:center;">Balance Amount</th>
                                     <th hidden>rv</th>
                                     <th style="width: 100px; text-align: center;">Action</th>
                                 </tr>
@@ -192,12 +188,23 @@
 
                                 <tr class="first-tr">
                                     <td class="static" hidden><input type="number" class="form-control" name="txtItemIDx" min="0"></td>
-                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>
-                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>
-                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtStockQty" id="txtStockQty" style="text-align:right;" disabled></td>
-                                    <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
-                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
-                                    <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
+                                    <td class="static">
+                                        <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem"">
+                                        <option value=" 0" disabled selected hidden>Select Issue No</option>
+                                            <?php foreach ($item_data as $k => $v) {
+                                                if ($v['decStockInHand'] > 0) { ?>
+                                                    <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
+                                                <?php } else { ?>
+                                                    <option value="<?= $v['intItemID'] ?>" class="icons_select2" name="icons_select2"><?= $v['vcItemName'] ?></option>
+                                            <?php }
+                                            } ?>
+                                        </select>
+                                    </td>
+                                    <td class="static"><input type="text" class="form-control add-item" name="txtTotalAmount" id="txtTotalAmount" placeholder="N/A" style="text-align:right;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control add-item" name="txtPaidAmount" id="txtPaidAmount" placeholder="N/A" style="text-align:right;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control add-item" name="txtOutstrandingAmount" id="txtOutstrandingAmount" placeholder="N/A" style="text-align:center;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtPayAmount" id="txtPayAmount" placeholder="0.00" style="text-align:right;"></td>
+                                    <td class="static"><input type="text" class="form-control add-item" name="txtBalanceAmount" id="txtBalanceAmount" placeholder="N/A" style="text-align:right;" disabled></td>
                                     <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
                                     <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                                 </tr>

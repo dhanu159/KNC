@@ -10,8 +10,8 @@ class Customer extends Admin_Controller
 		$this->load->model('model_groups');
 		$this->load->model('model_item');
 
-		$user_group_data = $this->model_groups->getUserGroupData();
-		$this->data['user_groups_data'] = $user_group_data;
+		// $user_group_data = $this->model_groups->getUserGroupData();
+		// $this->data['user_groups_data'] = $user_group_data;
 	}
 
 	public function CustomersList()

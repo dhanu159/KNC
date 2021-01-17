@@ -13,8 +13,8 @@ class Utilities extends Admin_Controller
         $this->load->model('model_item');
         $this->load->model('model_cuttingorder');
 
-        $user_group_data = $this->model_groups->getUserGroupData();
-        $this->data['user_groups_data'] = $user_group_data;
+        // $user_group_data = $this->model_groups->getUserGroupData();
+        // $this->data['user_groups_data'] = $user_group_data;
     }
 
     public function fetchUserGroupData()
