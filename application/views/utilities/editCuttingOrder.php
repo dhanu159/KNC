@@ -111,7 +111,7 @@ r<style>
                             $row = 0;
                             foreach ($cuttingorder_detail_data as $k => $v) { ?>
                                 <tr>
-                                    <td hidden><input type="text" class="form-control itemID disable-typing" name="intCuttingOrderDetailID[]" id="intCuttingOrderDetailID_<?= $row ?>" value="<?= $v['intCuttingOrderDetailID'] ?>" readonly></td>
+                                    <td hidden><input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_<?= $row ?>" value="<?= $v['intItemID'] ?>" readonly></td>
                                     <td><input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_<?= $row ?>" value="<?= $v['vcItemName'] ?>" readonly></td>
                                     <td><input type="text" class="form-control disable-typing" style="text-align:right;" name="qty[]" id="qty_<?= $row ?>" value="<?= $v['decQty'] ?>" readonly></td>
                                     <td class="static"><span class="button red center-items"><i class="fas fa-times"></i></span></td>

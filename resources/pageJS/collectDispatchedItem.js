@@ -48,16 +48,23 @@ function getDispatchedDetails(){
                 var badge = '<span class="badge badge-success" style="padding: 4px 10px; float:right; margin-right:10px;">Fully Received</span>';
 
 
-
-                if(parseFloat(response[index].ExpectedQty) > parseFloat(response[index].decReceivedQty)){
+              
+                if(parseFloat(response[index].ExpectedQty) > parseFloat(response[index].decReceivedQty) || parseFloat(response[index].ExpectedQty) == parseFloat(response[index].decReceivedQty)){
                     htmlElement = '<input type="text" class="form-control only-decimal" name="txtReceiveQty[]" id="txtReceiveQty" style="text-align:center;" placeholder="_ _ _ _ _" onkeyup="validateReceveQty(this)" onkeypress="return isNumber(event,this)" >'
+                   
+                }
+
+                if(parseFloat(response[index].ExpectedQty) > parseFloat(response[index].decReceivedQty)) 
+                {
                     badge = '<span class="badge badge-secondary" style="padding: 4px 10px; float:right; margin-right:10px;">Partially Received</span>';
                 }
+            
 
                 if(response[index].decReceivedQty == 0){
                     badge = '<span class="badge badge-warning" style="padding: 4px 10px; float:right; margin-right:10px;">TOTAL PENDING</span>';
                 }  
               
+                debugger;
 
                 $("#dispatchItemTable tbody").append('<tr>'+
                 '<td hidden><input type="number" class="form-control" name="txtDispatchDetailID[]" value="'+response[index].intDispatchDetailID+'"></td>'+
@@ -69,7 +76,7 @@ function getDispatchedDetails(){
                     '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:center;" value="' + parseInt(response[index].decReceivedQty)+'" disabled></td>'+
                 '<td><input type="text" class="form-control" name="txtBalanceQty[]" id="txtBalanceQty" style="text-align:center;" value="'+(response[index].ExpectedQty - response[index].decReceivedQty)+'" readonly></td>'+
                 '<td>'+htmlElement+'</td>'+
-                '<td hidden><input type="text" class="form-control" name="Rv[]" id="Rv" value="' + response[index].rv +'"></td>'+
+                '<td hidden><input type="text" class="form-control" name="Rv[]" id="Rv" value=' + response[index].rv +   '></td>'+
             '</tr>');
             }
       

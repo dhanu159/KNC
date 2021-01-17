@@ -7,12 +7,12 @@ $(document).ready(function () {
     $('#cmbItem').on('select2:select', function (e) {
         $('#txtQty').focus();
     });
-    
+
     manageTable = $('#manageTable').DataTable({
         'ajax': 'GetCuttingOrderHeaderData',
         'order': [],
         "bDestroy": true,
-        "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
             $(nRow.childNodes[0]).css('text-align', 'center');
             $(nRow.childNodes[1]).css('text-align', 'center');
@@ -74,12 +74,6 @@ $(document).ready(function () {
     var row_id = 1;
     function AddToGrid() {
 
-        if($("input[name=cutting_order_name]").val() == "")
-        {
-            toastr["error"]("Please Enter Cutting Order Name !");
-            return;
-        }
-  
         if ($("input[name=txtQty]").val() == "") {
             toastr["error"]("Please Enter Qty !");
             return;
@@ -123,59 +117,54 @@ $(document).ready(function () {
     }
 
 
-    $('#btnSubmit').click(function () {
-        if($("input[name=cutting_order_name]").val() == "")
-        {
-            toastr["error"]("Please Enter Cutting Order Name !");
-            return;
-        }
+    $('#btnEditSubmit').click(function () {
+
         if ($('#itemTable tr').length == 2) {
-            toastr["error"]("Please add the cutting order !");
-            $("#cmbItem").focus();
-            return
+            toastr["error"]("Please enter the Description !");
+            $("#txtOrderDescription").focus();
         } else {
-            arcadiaConfirmAlert("You want to be able to save this !", function (button) {
-
-                var form = $("#createCuttingOrder");
-
+            arcadiaConfirmAlert("You want to be able to edit this !", function (button) {
+    
+                var form = $("#editCuttingOrder");
+    
                 $.ajax({
                     type: form.attr('method'),
                     url: form.attr('action'),
                     data: form.serialize(),
                     dataType: 'json',
-                    async: true,
                     success: function (response) {
                         if (response.success == true) {
-                            arcadiaSuccessMessage("Saved !");
+                            arcadiaSuccessMessage("Edited !", "Utilities/cuttingOrder");
                         } else {
-
+    
                             if (response.messages instanceof Object) {
                                 $.each(response.messages, function (index, value) {
                                     var id = $("#" + index);
-
+    
                                     id.closest('.form-group')
                                         .removeClass('has-error')
                                         .removeClass('has-success')
                                         .addClass(value.length > 0 ? 'has-error' : 'has-success');
-
+    
                                     id.after(value);
-
+    
                                 });
                             } else {
                                 toastr["error"](response.messages);
-
-                                arcadiaErrorMessage(response.messages);
+                                // arcadiaErrorMessage(response.messages);
+                                // $(button).prop('disabled', false);
                             }
                         }
-
+    
+                    },
+                    error: function (request, status, error) {
+                        arcadiaErrorMessage(error);
                     }
                 });
             }, this);
         }
-
+    
     });
-
-    $("#createCuttingOrder").unbind('submit').on('submit', function (e) { });
 
 });
 
@@ -187,59 +176,8 @@ function CalculateItemCount() {
 
 
 
-$('#btnEditSubmit').click(function () {
 
-    if ($("input[name=cutting_order_name]").val() == "") {
-        toastr["error"]("Please enter the cutting order name !");
-        $("#cutting_order_name").focus();
-    } else if ($('#itemTable tr').length == 2) {
-        toastr["error"]("Please enter the Description !");
-        $("#txtOrderDescription").focus();
-    } else {
-        arcadiaConfirmAlert("You want to be able to edit this !", function (button) {
 
-            var form = $("#editCuttingOrder");
-
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success == true) {
-                        arcadiaSuccessMessage("Edited !", "Utilities/cuttingOrder");
-                    } else {
-
-                        if (response.messages instanceof Object) {
-                            $.each(response.messages, function (index, value) {
-                                var id = $("#" + index);
-
-                                id.closest('.form-group')
-                                    .removeClass('has-error')
-                                    .removeClass('has-success')
-                                    .addClass(value.length > 0 ? 'has-error' : 'has-success');
-
-                                id.after(value);
-
-                            });
-                        } else {
-                            toastr["error"](response.messages);
-                            // arcadiaErrorMessage(response.messages);
-                            // $(button).prop('disabled', false);
-                        }
-                    }
-
-                },
-                error: function (request, status, error) {
-                    arcadiaErrorMessage(error);
-                }
-            });
-        }, this);
-    }
-
-});
-
-$("#editCuttingOrder").unbind('submit').on('submit', function (e) { });
 
 // on first focus (bubbles up to document), open the menu
 $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {

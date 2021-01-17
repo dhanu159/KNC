@@ -77,6 +77,7 @@
                                     <th>Discount</th>
                                     <th>Grand Total</th>
                                     <th>Received Date</th>
+                                    <th>Remark</th>
                                     <th>Created Date</th>
                                     <th>Created User</th>
                                     <th>Approved Date</th>

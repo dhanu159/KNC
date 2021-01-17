@@ -75,7 +75,9 @@ function editCustomer(id) {
         success: function(response) {
 
             $("#edit_customer_name").val(response.vcCustomerName);
-            $("#edit_address").val(response.vcAddress);
+            $("#edit_building_number").val(response.vcBuildingNumber);
+            $("#edit_street").val(response.vcStreet);
+            $("#edit_city").val(response.vcCity);
             $("#edit_contact_no_1").val(response.vcContactNo1);
             $("#edit_contact_no_2").val(response.vcContactNo2);
             $("#edit_credit_limit").val(response.decCreditLimit);

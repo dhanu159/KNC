@@ -98,6 +98,7 @@ class Dispatch extends Admin_Controller
         $value['vcDispatchNo'],
         $value['dtDispatchDate'],
         $value['dtCreatedDate'],
+        $value['vcRemark'],
         $value['CreatedUser'],
         ($value['dtCancelledDate'] == NULL) ? "N/A" : $value['dtCancelledDate'],
         ($value['CancledUser'] == NULL) ? "N/A" : $value['CancledUser'],

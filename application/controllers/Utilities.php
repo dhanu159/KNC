@@ -511,7 +511,8 @@ class Utilities extends Admin_Controller
         }
         $cuttingorder_detail_data = $this->model_cuttingorder->getCuttingOrderDetailData($intCuttingOrderHeaderID);
 
-        $item_data = $this->model_item->getOnlyFinishItemData();
+        // $item_data = $this->model_item->getOnlyFinishItemData();
+        $item_data = $this->model_item->getOnlyFinishItemDataByNotConfig($intCuttingOrderHeaderID);
         $this->data['item_data'] = $item_data;
         $this->data['cuttingorder_header_data'] = $cuttingorder_header_data;
         $this->data['cuttingorder_detail_data'] = $cuttingorder_detail_data;
@@ -709,6 +710,34 @@ class Utilities extends Admin_Controller
         echo json_encode($data);
     }
 
+    //-----------------------------------
+    // Database Backup
+    //-----------------------------------
+
+    public function Backup()
+    {
+        $this->render_template('Utilities/backup', 'Backup');
+    }
+    public function DownLoadBackup()
+    {
+        $this->load->dbutil();
+
+        $prefs = array(
+            'format'      => 'gzip',
+            'filename'    => 'my_db_backup.sql',
+            'foreign_key_checks' => false
+        );
+
+        $backup = $this->dbutil->backup($prefs);
+
+        $db_name = 'backup-on-' . date("Y-m-d-H-i-s") . '.zip';
+        $save = 'pathtobkfolder/' . $db_name;
+
+        $this->load->helper('file');
+        write_file($save, $backup);
 
 
+        $this->load->helper('download');
+        force_download($db_name, $backup);
+    }
 }

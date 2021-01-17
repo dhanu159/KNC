@@ -50,9 +50,9 @@ function FilterItems(FromDate,ToDate){
         'order': [],
         "bDestroy": true,
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            if (aData[9] == "N/A" && aData[11] == "N/A") { // Pending
+            if (aData[10] == "N/A" && aData[12] == "N/A") { // Pending
                 $('td', nRow).css('background-color', '#FFC108');
-            } else if (aData[11] != "N/A") {  // Rejected
+            } else if (aData[13] != "N/A") {  // Rejected
                 $('td', nRow).css('background-color', '#dc3545');
             }
 

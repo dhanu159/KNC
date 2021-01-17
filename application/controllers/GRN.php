@@ -165,6 +165,7 @@ class GRN extends Admin_Controller
                 number_format((float)$value['decDiscount'], 2, '.', ''),
                 number_format((float)$value['decGrandTotal'], 2, '.', ''),
                 $value['dtReceivedDate'],
+                $value['vcRemark'],
                 $value['dtCreatedDate'],
                 $value['CreatedUser'],
                 ($value['dtApprovedOn'] == NULL) ? "N/A" : $value['dtApprovedOn'],

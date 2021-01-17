@@ -61,7 +61,7 @@
             <div class="card-body">
                 <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN">
                     <div class="row">
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-md-4">
                             <label for="supplier">Supplier</label>
                             <select class="form-control select2" style="width: 100%;" id="supplier" name="supplier">
                                 <option value="0" disabled selected hidden>Select Supplier</option>
@@ -70,13 +70,23 @@
                                 <?php } ?>
                             </select>
                         </div>
+
+                        <div class="form-group col-md-4">
+                            <label for="credit_limit">Credit Limit</label>
+                            <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="credit_limit">Credit Balace</label>
+                            <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="invoice_no">Invoice No</label>
                             <input type="text" class="form-control" id="invoice_no" name="invoice_no" placeholder="Enter Invoice Number" autocomplete="off" required />
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label>Received Date</label>
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" id="receivedDate" name="receivedDate" placeholder="Select Received Date" style="pointer-events: none !important;" />
@@ -84,7 +94,10 @@
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
-
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="invoice_no">Remark</label>
+                            <input type="text" class="form-control" id="txtRemark" name="txtRemark" autocomplete="off" placeholder="Not Required"/>
                         </div>
                     </div>
 

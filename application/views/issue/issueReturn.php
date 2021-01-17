@@ -9,7 +9,7 @@
         color: #FFFFFF;
     }
 
-    tbody td{
+    tbody td {
         padding: 0 !important;
     }
 
@@ -32,7 +32,7 @@
 
     input[type=text]:disabled {
         background: #ffffff;
-        /* border: 1px solid #ced4da !important; */
+        border: 1px solid #ced4da !important;
         border: none;
 
     }
@@ -87,7 +87,7 @@
             <div class="card-body">
                 <form role="form" class="add-form" method="post" action="<?= base_url('Issue/SaveIssueReturn') ?>" id="issueNote">
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-2">
                             <label>Issue No</label>
                             <select class="form-control select2" style="width: 100%;" id="cmbIssueNo" name="cmbIssueNo">
                                 <option value=" 0" disabled selected hidden>Select Item</option>
@@ -96,34 +96,65 @@
                                 <?php } ?>
                             </select>
                         </div>
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Customer</label>
+                            <input type="text" class="form-control" id="Customer" name="Customer" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Issued Date</label>
+                            <input type="text" class="form-control" id="IssuedDate" name="IssuedDate" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Created Date Time</label>
+                            <input type="text" class="form-control" id="CreatedDate" name="CreatedDate" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Created User</label>
+                            <input type="text" class="form-control" id="CreatedUser" name="CreatedUser" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Payment Mode</label>
+                            <input type="text" class="form-control" id="PaymentMode" name="PaymentMode" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
                     </div>
+                    <div class="row">
+                    <div class="form-group col-md-2">
+                            <label for="credit_limit">Advance Amount</label>
+                            <input type="text" class="form-control" id="AdvanceAmount" name="AdvanceAmount" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
 
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Sub Total</label>
+                            <input type="text" class="form-control" id="SubTotal" name="SubTotal" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Discount</label>
+                            <input type="text" class="form-control" id="Discount" name="Discount" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+
+                        <div class="form-group col-md-2">
+                            <label for="credit_limit">Grand Total</label>
+                            <input type="text" class="form-control" id="GrandTotal" name="GrandTotal" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="credit_limit">Reason</label>
+                            <input type="text" class="form-control" id="Reason" name="Reason" autocomplete="off" placeholder="Enter Return Reason" required/>
+                        </div>
+                    </div>
                     <table class="table" id="IssueItemTable">
                         <thead>
                             <tr>
-                                <th hidden>Issue Detail ID</th>
-                                <th hidden>Item ID</th>
-                                <th style="text-align:center;">Output Finish Item</th>
+                                <th style="text-align:center;">Item Description</th>
                                 <th style="width: 100px; text-align:center;">Unit</th>
-                                <th hidden>Cutting Order Detail ID</th>
-                                <th style="width: 100px; text-align:center;">Expected Qty</th>
-                                <th style="width: 100px; text-align:center;">Received Qty</th>
-                                <th style="width: 100px; text-align:center;">Balance Qty</th>
-                                <th style="width: 100px; text-align:center;">Receive Qty</th>
+                                <th style="width: 100px; text-align:center;">Unit Price</th>
+                                <th style="width: 100px; text-align:center;">Issued Qty</th>
+                                <th style="width: 100px; text-align:center;">Total</th>
                                 <th hidden>rv</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- <tr>
-                                    <td hidden><input type="number" class="form-control" name="txtItemID[]" min="0"></td>
-                                    <td><input type="text" class="form-control" name="txtItemName[]" id="txtItemName" style="text-align:center;" disabled></td>
-                                    <td><input type="text" class="form-control" name="txtMeasureUnit[]" id="txtMeasureUnit" style="text-align:center;" disabled></td>
-                                    <td hidden><input type="number" class="form-control" name="txtCuttingOrderID[]" min="0"></td>
-                                    <td><input type="text" class="form-control" name="txtCuttingOrderName[]" id="txtCuttingOrderName" style="text-align:center;" disabled></td>
-                                    <td><input type="text" class="form-control only-decimal" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:right;" disabled></td>
-                                    <td><input type="text" class="form-control only-decimal" name="txtReceiveQty[]" id="txtReceiveQty" style="text-align:right;"></td>
-                                    <td hidden><input type="text" class="form-control" name="txtRv[]" id="txtRv"></td>
-                                </tr> -->
+
 
                         </tbody>
                     </table>

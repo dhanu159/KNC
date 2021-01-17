@@ -90,6 +90,7 @@
                                     <th>Sub Total</th>
                                     <th>Discount</th>
                                     <th>Grand Total</th>
+                                    <th>Remark</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

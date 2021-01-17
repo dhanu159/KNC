@@ -219,4 +219,10 @@ class Supplier extends Admin_Controller
 			echo json_encode($response);
 		}
 	}
+
+	public function getDetailBySupplierID($supplierID)
+	{
+		$data = $this->model_supplier->getSupplierData($supplierID);
+		echo json_encode($data);
+	}
 }

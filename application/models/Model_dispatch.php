@@ -27,6 +27,7 @@ class Model_dispatch extends CI_Model
         $data = array(
             'vcDispatchNo' => $DispatchNo,
             'dtDispatchDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('dispatchDate')))),
+            'vcRemark' => $this->input->post('txtRemark'),
             'intUserID' => $this->session->userdata('user_id')
         );
 
@@ -130,6 +131,7 @@ class Model_dispatch extends CI_Model
                     DH.vcDispatchNo,
                     DH.dtDispatchDate, 
                     DH.dtCreatedDate,
+                    IFNULL(DH.vcRemark,'N/A') AS vcRemark,
                     CreatedUser.vcFullName AS CreatedUser,
                     IFNULL(DH.dtCancelledDate,'') AS dtCancelledDate,
                     IFNULL(CancledUser.vcFullName,'') AS CancledUser,
@@ -153,6 +155,7 @@ class Model_dispatch extends CI_Model
                     DH.vcDispatchNo,
                     DH.dtDispatchDate, 
                     DH.dtCreatedDate,
+                    IFNULL(DH.vcRemark,'N/A') AS vcRemark,
                     CreatedUser.vcFullName AS CreatedUser,
                     IFNULL(DH.dtCancelledDate,'') AS dtCancelledDate,
                     IFNULL(CancledUser.vcFullName,'') AS CancledUser,
@@ -232,7 +235,7 @@ class Model_dispatch extends CI_Model
                         FinishItem.decStockInHand,
                         (CD.decQty * DD.decDispatchQty) AS ExpectedQty,
                         IFNULL(SUM(CDI.decReceivedQty),0) AS decReceivedQty,
-                        FinishItem.rv
+                        REPLACE(FinishItem.rv,' ','-') as rv
                     FROM 
                     KNC.DispatchDetail AS DD
                     INNER JOIN KNC.CuttingOrderHeader AS CH ON DD.intCuttingOrderHeaderID = CH.intCuttingOrderHeaderID
@@ -299,6 +302,7 @@ class Model_dispatch extends CI_Model
         $BalanceQty = 0;
 
         $item_count = count($this->input->post('txtDispatchDetailID'));
+        
 
         for ($i = 0; $i < $item_count; $i++) {
 
@@ -310,9 +314,10 @@ class Model_dispatch extends CI_Model
 
                 $qtyData = $this->model_dispatch->getDispatchCollectionDetailsByDispatchDetailIDAndCuttingOrderDetailID($this->input->post('txtDispatchDetailID')[$i], $this->input->post('txtCuttingOrderDetailID')[$i]);
 
-                $BalanceQty =  $qtyData['decBalanceQty'];
+                $BalanceQty =  (float)$qtyData['decBalanceQty'];
 
-
+                
+                    
                 if ((float)$this->input->post('txtReceiveQty')[$i] > $BalanceQty) {
                     $result = false;
 

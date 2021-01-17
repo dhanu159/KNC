@@ -45,9 +45,9 @@ function FilterItems(FromDate, ToDate) {
         'order': [],
         "bDestroy": true,
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            if (aData[6] == "N/A" && aData[4] == "N/A") { // To Be Received
+            if (aData[7] == "N/A" && aData[8] == "N/A") { // To Be Received
                 $('td', nRow).css('background-color', '#FFC108');
-            } else if (aData[4] != "N/A") {  // Cancled
+            } else if (aData[5] != "N/A") {  // Cancled
                 $('td', nRow).css('background-color', '#dc3545');
             }
 

@@ -60,6 +60,19 @@ class Model_item extends CI_Model
         return $query->result_array();
     }
 
+    public function getOnlyFinishItemDataByNotConfig($intCuttingOrderHeaderID)
+    {
+        $sql = "SELECT intItemID,vcItemName FROM   
+             item WHERE IsActive = 1 AND intItemTypeID = 2 AND intItemID not in (SELECT  IT.intItemID
+            FROM CuttingOrderHeader CH
+            INNER JOIN cuttingorderdetail CD ON CH.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
+            INNER JOIN item AS IT ON CD.intItemID = IT.intItemID
+            WHERE CH.IsActive = 1 AND IT.IsActive = 1 
+            AND CH.intCuttingOrderHeaderID = ?)";
+        $query = $this->db->query($sql, array($intCuttingOrderHeaderID));
+        return $query->result_array();
+    }
+
     public function getItemDetailsByCustomerID($ItemID, $customerID)
     {
         $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,IFNULL(it.decStockInHand,'N/A') AS decStockInHand,it.decReOrderLevel,

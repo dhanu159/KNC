@@ -3,10 +3,12 @@ var manageTable;
 $(document).ready(function () {
 
 
-    // $('#cmbCustomerFilter').on('change', function () {
-    //     FilterItems()
+    $('#cmbCustomerFilter').on('change', function () {
+        FilterItems();
     
-    // });
+    });
+
+    FilterItems();
 
 
     $("#addConfigModal").on("hidden.bs.modal", function () {
@@ -16,15 +18,15 @@ $(document).ready(function () {
 
     });
 
-    manageTable = $('#manageTable').DataTable({
-        'ajax': 'fetchCustomerAdvancePaymentData',
-        'order': [],
-        "bDestroy": true,
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            $(nRow.childNodes[7]).css('text-align', 'center');
-            $(nRow.childNodes[8]).css('text-align', 'center');
-        }
-    });
+    // manageTable = $('#manageTable').DataTable({
+    //     'ajax': 'fetchCustomerAdvancePaymentData',
+    //     'order': [],
+    //     "bDestroy": true,
+    //     "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    //         $(nRow.childNodes[7]).css('text-align', 'center');
+    //         $(nRow.childNodes[8]).css('text-align', 'center');
+    //     }
+    // });
 
     $('#btnSubmit').click(function () {
         if ($("#cmbCustomer option:selected").val() == 0) {
@@ -83,21 +85,21 @@ $(document).ready(function () {
 
 
 
-// function FilterItems() {
-//     var CustomerID = $('#cmbCustomerFilter').val();
-//     $('#manageTable').DataTable({
-//         'ajax': 'fetchCustomerAdvancePaymentData/' + CustomerID,
-//         'order': [],
-//         "bDestroy": true,
-//         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+function FilterItems() {
+    var CustomerID = $('#cmbCustomerFilter').val();
+    $('#manageTable').DataTable({
+        'ajax': 'fetchCustomerAdvancePaymentData/' + CustomerID,
+        'order': [],
+        "bDestroy": true,
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-//             $(nRow.childNodes[7]).css('text-align', 'center');
-//             $(nRow.childNodes[8]).css('text-align', 'center');
+            $(nRow.childNodes[7]).css('text-align', 'center');
+            $(nRow.childNodes[8]).css('text-align', 'center');
 
-//         }
-//     });
+        }
+    });
 
-// }
+}
 
 
 

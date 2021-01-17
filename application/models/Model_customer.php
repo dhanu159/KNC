@@ -19,14 +19,14 @@ class Model_customer extends CI_Model
     public function getCustomerData($id = null)
     {
         if ($id) {
-            $sql = "SELECT cs.intCustomerID,cs.vcCustomerName,cs.vcAddress,cs.vcContactNo1,cs.vcContactNo2,cs.decCreditLimit,cs.decAvailableCredit,IFNULL(ca.decAmount,0.00) as decAdvanceAmount, (cs.decAvailableCredit + IFNULL(ca.decAmount,0.00)) AS decCreditBuyAmount
+            $sql = "SELECT cs.intCustomerID,cs.vcCustomerName,cs.vcBuildingNumber,cs.vcStreet,cs.vcCity,cs.vcContactNo1,cs.vcContactNo2,cs.decCreditLimit,cs.decAvailableCredit,IFNULL(ca.decAmount,0.00) as decAdvanceAmount, (cs.decAvailableCredit + IFNULL(ca.decAmount,0.00)) AS decCreditBuyAmount
             FROM customer cs
             LEFT OUTER JOIN customeradvancepayment as ca on cs.intCustomerID = ca.intCustomerID AND ca.intIssueHeaderID IS NULL WHERE cs.intCustomerID = ? AND cs.IsActive = 1";
             $query = $this->db->query($sql, array($id));
             return $query->row_array();
         }
 
-        $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,IFNULL(vcContactNo2,'N/A') AS vcContactNo2,decCreditLimit,decAvailableCredit FROM customer WHERE IsActive = 1";
+        $sql = "SELECT intCustomerID,vcCustomerName,vcBuildingNumber,vcStreet,vcCity,vcContactNo1,IFNULL(vcContactNo2,'N/A') AS vcContactNo2,decCreditLimit,decAvailableCredit FROM customer WHERE IsActive = 1";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -35,7 +35,7 @@ class Model_customer extends CI_Model
     public function insertCustomerHitory($intEnteredBy, $id)
     {
         $this->db->trans_start();
-        $sql = "SELECT intCustomerID,vcCustomerName,vcAddress,vcContactNo1,vcContactNo2,decCreditLimit,decAvailableCredit,IsActive,intUserID,dtCreatedDate FROM customer WHERE intCustomerID = ? ";
+        $sql = "SELECT intCustomerID, vcCustomerName, vcBuildingNumber, vcStreet, vcCity, vcContactNo1, vcContactNo2, dtCreatedDate, decCreditLimit, decAvailableCredit, IsActive, intUserID FROM customer WHERE intCustomerID = ? ";
         $query = $this->db->query($sql, array($id));
         if ($query->num_rows()) {
             $this->db->insert('customer_his', $query->row_array());
@@ -194,14 +194,25 @@ class Model_customer extends CI_Model
     public function getCustomerAdvancePaymentData($CustomerAdvancePaymentID = null, $CustomerID = null)
     {
         if ($CustomerAdvancePaymentID) {
-            $sql = "SELECT intCustomerAdvancePaymentID, intCustomerID, decAmount, vcRemark, dtAdvanceDate, dtCreatedDate, intUserID, intIssueHeaderID, REPLACE(rv,' ','-') as rv 
+            $sql = "SELECT intCustomerAdvancePaymentID, intCustomerID, decAmount, vcRemark, CAST(dtAdvanceDate AS DATE) AS dtAdvanceDate, dtCreatedDate, intUserID, intIssueHeaderID, REPLACE(rv,' ','-') as rv 
             FROM customeradvancepayment
             WHERE intCustomerAdvancePaymentID = ?";
             $query = $this->db->query($sql, array($CustomerAdvancePaymentID));
             return $query->row_array();
         }
-    
-            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CA.dtAdvanceDate,CA.decAmount,IFNULL(CA.vcRemark,'-') AS vcRemark,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,REPLACE(CA.rv,' ','-') as rv,U.vcFullName
+        if ($CustomerID) {
+            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CAST(CA.dtAdvanceDate AS DATE) AS dtAdvanceDate,CA.decAmount,IFNULL(CA.vcRemark,'N/A') AS vcRemark,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,REPLACE(CA.rv,' ','-') as rv,U.vcFullName
+            FROM customeradvancepayment AS CA
+            INNER JOIN customer AS C ON CA.intCustomerID = C.intCustomerID
+            INNER JOIN user AS U ON CA.intUserID = U.intUserID
+            LEFT OUTER JOIN issueheader AS IH ON CA.intIssueHeaderID = IH.intIssueHeaderID
+            WHERE CA.intCustomerID = ?
+            ORDER BY CA.dtCreatedDate DESC";
+            $query = $this->db->query($sql, array($CustomerID));
+            return $query->result_array();
+        }
+        else{
+            $sql = "SELECT CA.intCustomerAdvancePaymentID,C.vcCustomerName,CAST(CA.dtAdvanceDate AS DATE) AS dtAdvanceDate,CA.decAmount,IFNULL(CA.vcRemark,'N/A') AS vcRemark,IFNULL(IH.vcIssueNo,'N/A') AS vcIssueNo,CA.dtCreatedDate,REPLACE(CA.rv,' ','-') as rv,U.vcFullName
             FROM customeradvancepayment AS CA
             INNER JOIN customer AS C ON CA.intCustomerID = C.intCustomerID
             INNER JOIN user AS U ON CA.intUserID = U.intUserID
@@ -209,6 +220,8 @@ class Model_customer extends CI_Model
             ORDER BY CA.dtCreatedDate DESC";
             $query = $this->db->query($sql);
             return $query->result_array();
+        }
+
         
     }
 
@@ -251,7 +264,7 @@ class Model_customer extends CI_Model
             $items = array(
                 'intCustomerID' => $this->input->post('cmbCustomer'),
                 'decAmount' => $this->input->post('advance_amount'),
-                'vcRemark' => $this->input->post('remark'),
+                'vcRemark' => $this->input->post('remark') == "" ? NULL : $this->input->post('remark'),
                 'dtAdvanceDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('advanceDate')))),
                 'intUserID' => $this->session->userdata('user_id'),
             );

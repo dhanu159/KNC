@@ -13,13 +13,13 @@ class Model_issue extends CI_Model
     {
         $this->db->trans_begin();
 
-        // $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
-        // $ret = $query->row();
-        // $IssueNo = $ret->IssueNo;
+        $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
+        $ret = $query->row();
+        $IssueNo = $ret->IssueNo;
 
         $response = array();
 
-        $IssueNo = "Issue-001";
+        // $IssueNo = "Issue-001";
 
         $insertDetails = false;
 
@@ -55,8 +55,8 @@ class Model_issue extends CI_Model
             'intPaymentTypeID' =>  $paymentType,
             'decSubTotal' => str_replace(',', '', $this->input->post('subTotal')),
             'decDiscount' => $this->input->post('txtDiscount'),
-            'decGrandTotal' => $GrandTotal
-            // ,'decPaidAmount' => ($paymentType == 1) ?  $GrandTotal : 0.0
+            'decGrandTotal' => $GrandTotal,
+            'vcRemark' => $this->input->post('txtRemark'),
         );
 
         $this->db->insert('IssueHeader', $data);
@@ -148,6 +148,7 @@ class Model_issue extends CI_Model
             $response['success'] = false;
             $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
             $this->db->trans_rollback();
+            // return $response;
         } else if ($exceedStockQty == true) {
             $response['success'] = false;
             $response['messages'] = 'Stock quantity over exceeds error, please refresh the page and try again !';
@@ -184,8 +185,10 @@ class Model_issue extends CI_Model
                     SELECT  IH.intIssueHeaderID,
                     IH.vcIssueNo,
                     CU.vcCustomerName,
-                    CU.intCustomerID,
-                    IH.dtIssueDate,
+                    CU.vcBuildingNumber,
+                    CU.vcStreet,
+                    CU.vcCity,
+                    CAST(IH.dtIssueDate AS DATE) AS dtIssueDate,
                     IH.dtCreatedDate,
                     U.vcFullName,
                     IH.intPaymentTypeID,
@@ -194,12 +197,15 @@ class Model_issue extends CI_Model
                     IH.decDiscount,
                     IH.decGrandTotal,
                     CU.decCreditLimit,
-                    CU.decAvailableCredit
+                    CU.decAvailableCredit,
+                    IFNULL(CA.decAmount,'N/A') AS decAdvanceAmount,
+                    IFNULL(IH.vcRemark,'N/A') AS vcRemark
             FROM Issueheader AS IH
             INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
             INNER JOIN user as U ON IH.intUserID = U.intUserID
             INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
-            WHERE intIssueHeaderID = ? AND IH.IsActive = 1;";
+            LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID
+            WHERE IH.intIssueHeaderID = ? AND IH.IsActive = 1;";
 
             $query = $this->db->query($sql, array($IssueHeaderID));
             return $query->row_array();
@@ -211,18 +217,24 @@ class Model_issue extends CI_Model
         SELECT  IH.intIssueHeaderID,
                IH.vcIssueNo,
                CU.vcCustomerName,
-               IH.dtIssueDate,
+               CU.vcBuildingNumber,
+               CU.vcStreet,
+               CU.vcCity,
+               CAST(IH.dtIssueDate AS DATE) AS dtIssueDate,
                IH.dtCreatedDate,
                U.vcFullName,
                IH.intPaymentTypeID,
                PY.vcPaymentType,
                IH.decSubTotal,
                IH.decDiscount,
-               IH.decGrandTotal
+               IH.decGrandTotal,
+               IFNULL(CA.decAmount,'N/A') AS decAdvanceAmount,
+               IFNULL(IH.vcRemark,'N/A') AS vcRemark
        FROM Issueheader AS IH
        INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
        INNER JOIN user as U ON IH.intUserID = U.intUserID
-       INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID";
+       INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
+       LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID";
 
         $dateFilter = " WHERE IH.IsActive = 1 AND CAST(IH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
 
@@ -320,11 +332,22 @@ class Model_issue extends CI_Model
 
         $ReturnNo = "Return-001";
 
+        $Reason ="";
+        $UserID = 0;
+        $Reason = $this->input->post('Reason');
+        $UserID = $this->session->userdata('user_id');
+
+
+
+
         $sql = "UPDATE Item AS I
         INNER JOIN issuedetail AS ID ON I.intItemID = ID.intItemID
         SET I.decStockInHand = (I.decStockInHand + ID.decIssueQty)
         WHERE ID.intIssueHeaderID = ? ;";
         $this->db->query($sql, array($IssueHeaderID));
+
+
+
 
         $sql = "UPDATE customer AS C
         INNER JOIN issueheader AS I ON C.intCustomerID = I.intCustomerID 
@@ -338,8 +361,8 @@ class Model_issue extends CI_Model
         WHERE intIssueHeaderID = ? ;";
         $this->db->query($sql, array($IssueHeaderID));
 
-        $sql = "INSERT INTO issuereturnheader(vcIssueReturnNo,intIssueHeaderID, vcIssueNo, intCustomerID, dtIssueDate, dtCreatedDate, intUserID, intPaymentTypeID, decSubTotal, decDiscount, decGrandTotal, IsActive, intReturnedUserID)
-        SELECT  '$ReturnNo', IH.intIssueHeaderID, IH.vcIssueNo, IH.intCustomerID, IH.dtIssueDate, IH.dtCreatedDate, IH.intUserID, IH.intPaymentTypeID, IH.decSubTotal, IH.decDiscount, IH.decGrandTotal, IH.IsActive , 1
+        $sql = "INSERT INTO issuereturnheader(vcIssueReturnNo,intIssueHeaderID, vcIssueNo, intCustomerID, dtIssueDate, dtCreatedDate, intUserID, intPaymentTypeID, decSubTotal, decDiscount, decGrandTotal, IsActive, vcReason, intReturnedUserID)
+        SELECT  '$ReturnNo', IH.intIssueHeaderID, IH.vcIssueNo, IH.intCustomerID, IH.dtIssueDate, IH.dtCreatedDate, IH.intUserID, IH.intPaymentTypeID, IH.decSubTotal, IH.decDiscount, IH.decGrandTotal, IH.IsActive , ' $Reason ' , $UserID 
         FROM    issueheader AS IH
         WHERE   IH.intIssueHeaderID = ?;";
         $this->db->query($sql, array($IssueHeaderID));

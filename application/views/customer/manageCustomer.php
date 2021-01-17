@@ -31,7 +31,9 @@
 							<thead>
 								<tr>
 									<th>Customer Name</th>
-									<th>Address</th>
+									<th>Building Number</th>
+									<th>Street</th>
+									<th>City</th>
 									<th>Contact No 1</th>
 									<th>Contact No 2</th>
 									<th>Credit Limit</th>
@@ -67,8 +69,16 @@
 							<input type="text" class="form-control" id="customer_name" name="customer_name" placeholder="Enter Customer Name" autocomplete="off">
 						</div>
 						<div class="form-group">
-							<label for="address">Address</label>
-							<input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" autocomplete="off">
+							<label for="address">Building Number</label>
+							<input type="text" class="form-control" id="building_number" name="building_number" placeholder="Enter Building Number" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="address">Street</label>
+							<input type="text" class="form-control" id="street" name="street" placeholder="Enter Street" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label for="address">City</label>
+							<input type="text" class="form-control" id="city" name="city" placeholder="Enter City" autocomplete="off">
 						</div>
 						<div class="form-group">
 							<label for="contact_no_1">Contact No 1</label>
@@ -112,8 +122,16 @@
 						<input type="text" class="form-control" id="edit_customer_name" name="edit_customer_name" placeholder="Enter Customer Name" autocomplete="off">
 					</div>
 					<div class="form-group">
-						<label for="address">Address</label>
-						<input type="text" class="form-control" id="edit_address" name="edit_address" placeholder="Enter Address" autocomplete="off">
+						<label for="address">Building Number</label>
+						<input type="text" class="form-control" id="edit_building_number" name="edit_building_number" placeholder="Enter Building Number" autocomplete="off">
+					</div>
+					<div class="form-group">
+						<label for="address">Street</label>
+						<input type="text" class="form-control" id="edit_street" name="edit_street" placeholder="Enter Street" autocomplete="off">
+					</div>
+					<div class="form-group">
+						<label for="address">City</label>
+						<input type="text" class="form-control" id="edit_city" name="edit_city" placeholder="Enter City" autocomplete="off">
 					</div>
 					<div class="form-group">
 						<label for="contact_no_1">Contact No 1</label>

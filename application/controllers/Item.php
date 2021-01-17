@@ -160,7 +160,7 @@ class Item extends Admin_Controller
 			if ($result <> '') {
 				if ($result[0]['value'] == 1) {
 					$response['success'] = false;
-					$response['messages'] = "Record already received for the system, can't remove this supplier !";
+					$response['messages'] = "Record already received for the system, can't remove this Item !";
 				} else {
 					$delete = $this->model_item->remove($inItemID);
 					if ($delete == true) {

@@ -126,7 +126,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6 col-sm-12">
+                        <div class="form-group col-md-3">
                             <label>Payment Mode :</label>
                             <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
                                 <!-- <option value="0" selected hidden>All Payments</option> -->
@@ -135,7 +135,7 @@
                                 <?php } ?>
                             </select>
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-3">
                             <label>Issued Date</label>
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
                                 <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Issue Date" style="pointer-events: none !important;" />
@@ -143,7 +143,10 @@
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
-
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="credit_limit">Remark</label>
+                            <input type="text" class="form-control" id="txtRemark" name="txtRemark" autocomplete="off" placeholder="Not Required"/>
                         </div>
                     </div>
 
@@ -167,10 +170,10 @@
                                 <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
                                 <td class="static">
                                     <!-- <input type="text" class="form-control" name="txtItem"> -->
-                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem" onchange="getItemDetailsByCustomerID();">
+                                    <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem">
                                         <option value="0" disabled selected hidden>Select Item</option>
 
-                                        <?php foreach ($item_data as $k => $v) {
+                                        <!-- <?php foreach ($item_data as $k => $v) {
                                             if ($v['decReOrderLevel'] >= $v['decStockInHand']) { 
                                                 $lowstock = "true";
                                             } else {
@@ -179,7 +182,7 @@
 
                                         ?>
                                             <option value="<?= $v['intItemID'] ?>" lowstock="<?= $lowstock ?>"><?= $v['vcItemName'] ?></option>
-                                        <?php } ?>
+                                        <?php } ?> -->
                                     </select>
                                 </td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>

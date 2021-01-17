@@ -73,6 +73,7 @@
                                     <th>Dispatch No</th>
                                     <th>Dispatched Date</th>
                                     <th>Created Date</th>
+                                    <th>Remark</th>
                                     <th>Created User</th>
                                     <th>Cancelled Date</th>
                                     <th>Cancelled User</th>

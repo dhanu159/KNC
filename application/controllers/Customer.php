@@ -40,7 +40,9 @@ class Customer extends Admin_Controller
 		$response = array();
 
 		$this->form_validation->set_rules('customer_name', 'customer name', 'trim|required');
-		$this->form_validation->set_rules('address', 'address', 'trim|required');
+		$this->form_validation->set_rules('building_number', 'building number', 'trim|required');
+		$this->form_validation->set_rules('street', 'street', 'trim|required');
+		$this->form_validation->set_rules('city', 'city', 'trim|required');
 		$this->form_validation->set_rules('contact_no_1', 'contact no', 'required|min_length[10]|max_length[10]');
 
 		$this->form_validation->set_error_delimiters('<p class="text-danger">', '</p>');
@@ -48,7 +50,9 @@ class Customer extends Admin_Controller
 		if ($this->form_validation->run() == TRUE) {
 			$data = array(
 				'vcCustomerName' => $this->input->post('customer_name'),
-				'vcAddress' => $this->input->post('address'),
+				'vcBuildingNumber' => $this->input->post('building_number'),
+				'vcStreet' => $this->input->post('street'),
+				'vcCity' => $this->input->post('city'),
 				'vcContactNo1' => $this->input->post('contact_no_1'),
 				'vcContactNo2' => $this->input->post('contact_no_2'),
 				'decCreditLimit' => $this->input->post('credit_limit'),
@@ -118,7 +122,9 @@ class Customer extends Admin_Controller
 
 			$result['data'][$key] = array(
 				$value['vcCustomerName'],
-				$value['vcAddress'],
+				$value['vcBuildingNumber'],
+				$value['vcStreet'],
+				$value['vcCity'],
 				$value['vcContactNo1'],
 				$value['vcContactNo2'],
 				$value['decCreditLimit'],
@@ -142,7 +148,9 @@ class Customer extends Admin_Controller
 
 		if ($id) {
 			$this->form_validation->set_rules('edit_customer_name', 'branch name', 'trim|required');
-			$this->form_validation->set_rules('edit_address', 'address', 'trim|required');
+			$this->form_validation->set_rules('edit_building_number', 'building number', 'trim|required');
+			$this->form_validation->set_rules('edit_street', 'street', 'trim|required');
+			$this->form_validation->set_rules('edit_city', 'city', 'trim|required');
 			$this->form_validation->set_rules('edit_contact_no_1', 'contact no', 'required|min_length[10]|max_length[10]');
 
 
@@ -151,7 +159,9 @@ class Customer extends Admin_Controller
 			if ($this->form_validation->run() == TRUE) {
 				$data = array(
 					'vcCustomerName' => $this->input->post('edit_customer_name'),
-					'vcAddress' => $this->input->post('edit_address'),
+					'vcBuildingNumber' => $this->input->post('edit_building_number'),
+					'vcStreet' => $this->input->post('edit_street'),
+					'vcCity' => $this->input->post('edit_city'),
 					'vcContactNo1' => $this->input->post('edit_contact_no_1'),
 					'vcContactNo2' => $this->input->post('edit_contact_no_2'),
 					'decCreditLimit' => $this->input->post('edit_credit_limit'),
@@ -412,7 +422,7 @@ class Customer extends Admin_Controller
 		$this->render_template('Customer/ManageCustomerAdvancePayment', 'Customer Advance Payment',  $this->data);
 	}
 
-	public function fetchCustomerAdvancePaymentData()
+	public function fetchCustomerAdvancePaymentData($CustomerID)
 	{
 
 		if (!$this->isAdmin) {
@@ -424,7 +434,7 @@ class Customer extends Admin_Controller
 
 		$result = array('data' => array());
 
-		$data = $this->model_customer->getCustomerAdvancePaymentData(null, null);
+		$data = $this->model_customer->getCustomerAdvancePaymentData(null, $CustomerID);
 		foreach ($data as $key => $value) {
 
 			$buttons = '';

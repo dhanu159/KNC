@@ -4,6 +4,11 @@ $(document).ready(function () {
     // $('#dtReceivedDate').datepicker('setDate', 'today');
     // $("#dtReceivedDate").val(formatDate('dd-M-y', new Date()));
 
+    $('#supplier').on('select2:close', function (e) {
+        getDetailBySupplierID();
+    });
+
+
     $(document).on('keyup', 'input[type=search]', function (e) {
         $("li").attr('aria-selected', false);
     });
@@ -284,6 +289,31 @@ $(document).ready(function () {
 $(document).on('focus', '.select2-selection.select2-selection--single', function (e) {
     $(this).closest(".select2-container").siblings('select:enabled').select2('open');
 });
+
+function getDetailBySupplierID() {
+    var supplierID = $("#supplier option:selected").val();
+    if (supplierID > 0) {
+        $.ajax({
+            async: false,
+            url: base_url + 'supplier/getDetailBySupplierID/' + supplierID,
+            type: 'post',
+            dataType: 'json',
+            success: function (response) {
+                $("#credit_limit").val(response.decCreditLimit);
+                $("#available_limit").val(response.decAvailableCredit);
+
+
+                // CreditBuyAmount = parseFloat(response.decCreditBuyAmount)
+                // AvailableCredit = parseFloat(response.decAvailableCredit)
+
+            },
+            error: function (xhr, status, error) {
+                //var err = eval("(" + xhr.responseText + ")");
+                alert(xhr.responseText);
+            }
+        });
+    }
+}
 
 
 function getMeasureUnitByItemID() {

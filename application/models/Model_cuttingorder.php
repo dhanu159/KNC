@@ -59,12 +59,12 @@ class Model_cuttingorder extends CI_Model
         $this->db->where('intCuttingOrderHeaderID', $intCuttingOrderHeaderID);
         $this->db->delete('CuttingOrderDetail');
 
-        $item_count = count($this->input->post('description'));
+        $item_count = count($this->input->post('itemID'));
 
         for ($i = 0; $i < $item_count; $i++) {
             $items = array(
                 'intCuttingOrderHeaderID' => $intCuttingOrderHeaderID,
-                'vcSizeDescription' => $this->input->post('description')[$i],
+                'intItemID' => $this->input->post('itemID')[$i], 
                 'decQty' => $this->input->post('qty')[$i]
             );
             $editDetails = $this->db->insert('CuttingOrderDetail', $items);
@@ -102,7 +102,8 @@ class Model_cuttingorder extends CI_Model
             CH.dtCreatedDate,
             CD.intCuttingOrderDetailID,
             IT.vcItemName,
-            CD.decQty
+            CD.decQty,
+            IT.intItemID
               FROM CuttingOrderHeader CH
               INNER JOIN cuttingorderdetail CD ON CH.intCuttingOrderHeaderID = CD.intCuttingOrderHeaderID
               INNER JOIN item AS IT ON CD.intItemID = IT.intItemID

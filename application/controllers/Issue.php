@@ -53,8 +53,25 @@ class Issue extends Admin_Controller
     }
 
     $response = $this->model_issue->saveIssue();
+    if ($response['success'] == true) {
+      $response['issueNote'] = $this->PrintIssueDiv($response['intIssueHeaderID']);
+    }
+      // $response['issueNote'] = "ABC";
+
 
     echo json_encode($response);
+  }
+
+  public function getIssuedHeaderData()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('viewIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+    $intIssueHeaderID = $this->input->post('intIssueHeaderID');
+    $issue_Header_Date =  $this->model_issue->GetIssueHeaderData($intIssueHeaderID);
+    echo json_encode($issue_Header_Date);
   }
 
   public function PrintIssueDiv($intIssueHeaderID)
@@ -142,7 +159,7 @@ class Issue extends Admin_Controller
     <!-- /.content -->
     </div>';
 
-      echo $html;
+      return $html;
     }
   }
 
@@ -198,6 +215,7 @@ class Issue extends Admin_Controller
         number_format((float)$value['decSubTotal'], 2, '.', ''),
         number_format((float)$value['decDiscount'], 2, '.', ''),
         number_format((float)$value['decGrandTotal'], 2, '.', ''),
+        $value['vcRemark'],
         $buttons
       );
     }

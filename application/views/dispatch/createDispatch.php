@@ -97,6 +97,10 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group col-md-6">
+                            <label for="credit_limit">Remark</label>
+                            <input type="text" class="form-control" id="txtRemark" name="txtRemark" autocomplete="off" placeholder="Not Required"/>
+                        </div>
                         <!-- <div class="form-group col-md-6">
                             <?php if (in_array('viewCuttingOrder', $user_permission) || $isAdmin) { ?>
                                 <a class="btn btn-md btn-light btn-flat float-right col-sm-12 col-md-6" id="btnViewCuttingOrders"><i class="fas fa-search"></i>&nbsp;&nbsp;View Cutting Order Details</a>

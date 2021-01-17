@@ -22,8 +22,10 @@ $(document).ready(function () {
         $('#cmbItem').trigger('change'); // Notify any JS components that the value changed
         $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice],input[name=grandTotal],input[name=subTotal],input[name=txtDiscount]").val("");
         CalculateItemCount();
-        getcmbItemDate();
+        // getcmbItemDate();
     });
+
+    getcmbItemDate(); 
 
 
     $(document).on('keyup', 'input[type=search]', function (e) {
@@ -375,9 +377,9 @@ function getItemDetailsByCustomerID() {
                 $("#txtMeasureUnit").val(response.vcMeasureUnit);
                 $("#txtRv").val(response.rv);
 
-                if (response.decStockInHand == 'N/A') {
-                    toastr["error"]("Please Check Stock");
-                }
+                // if (response.decStockInHand == 'N/A') {
+                //     toastr["error"]("Please Check Stock");
+                // }
             },
             error: function (xhr, status, error) {
                 //var err = eval("(" + xhr.responseText + ")");
@@ -523,7 +525,7 @@ $('#btnSubmit').click(function () {
 
         arcadiaConfirmAlert("You want to be able to create this !", function (button) {
             var form = $("#createIssue");
-
+     
             $.ajax({
                 async: false,
                 type: form.attr('method'),
@@ -531,9 +533,15 @@ $('#btnSubmit').click(function () {
                 data: form.serialize(),
                 dataType: 'json',
                 success: function (response) {
+                    debugger;
                     if (response.success == true) {
                         debugger;
-                        arcadiaSuccessAfterIssuePrint("Issue No : " + response.vcIssueNo, response.intIssueHeaderID);
+                        // arcadiaSuccessAfterIssuePrint("Issue No : " + response.vcIssueNo, response.intIssueHeaderID);
+                        // arcadiaSuccessMessage("Issue No : " + response.vcIssueNo);
+                        document.body.innerHTML = response.issueNote;
+                        window.print();
+                        location.reload();
+            
                         // $('#printpage', window.parent.document).hide();
                     } else {
                         toastr["error"](response.messages);
