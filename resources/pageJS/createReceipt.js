@@ -5,9 +5,9 @@ $(document).ready(function () {
 
     $("#cmbBank").prop('disabled', true);
     $("#txtChequeNo").prop('disabled', true);
-    $("#txtChequeNo").css('background-color', '#EEEEEE');
+    $("#txtChequeNo").css('background-color', '#eee');
     $("#PDDate").prop('disabled', true);
-    $("#PDDate").css('background-color', '#EEEEEE');
+    $("#PDDate").css('background-color', '#eee');
 
 
 
