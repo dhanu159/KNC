@@ -11,6 +11,7 @@ class GRN extends Admin_Controller
         $this->load->model('model_supplier');
         $this->load->model('model_item');
         $this->load->model('model_grn');
+        $this->load->model('model_issue');
         $this->load->model('model_measureunit');
     }
 
@@ -28,7 +29,8 @@ class GRN extends Admin_Controller
 
         $supplier_data = $this->model_supplier->getSupplierData();
         $item_data = $this->model_item->getOnlyRawItemData();
-
+        $payment_data = $this->model_issue->getPaymentTypes();
+        $this->data['payment_data'] = $payment_data;
         $this->data['supplier_data'] = $supplier_data;
         $this->data['item_data'] = $item_data;
 

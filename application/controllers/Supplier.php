@@ -10,7 +10,7 @@ class Supplier extends Admin_Controller
 		$this->not_logged_in();
 		$this->load->model('model_supplier');
 		$this->load->model('model_groups');
-
+		$this->load->model('model_utility');
 		$user_group_data = $this->model_groups->getUserGroupData();
         $this->data['user_groups_data'] = $user_group_data;
 	}
@@ -223,6 +223,34 @@ class Supplier extends Admin_Controller
 	public function getDetailBySupplierID($supplierID)
 	{
 		$data = $this->model_supplier->getSupplierData($supplierID);
+		echo json_encode($data);
+	}
+
+	//-----------------------------------
+    // Supplier Credit Settlement
+    //-----------------------------------
+
+	public function SupplierCreditSettlement()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('supplierCreditSettlement', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$supplier_data = $this->model_supplier->getSupplierData();
+		$payment_data = $this->model_utility->getPayModes();
+		$bank_data = $this->model_utility->getBanks();
+		$this->data['payment_data'] = $payment_data;
+		$this->data['supplier_data'] = $supplier_data;
+		$this->data['bank_data'] = $bank_data;
+
+		$this->render_template('supplier/supplierCreditSettlement','Manage Supplier Credit Settlement', $this->data);
+	}
+
+	public function getSupplierWiseInvoiceAndGRNno($supplierID)
+	{
+		$data = $this->model_supplier->getSupplierWiseInvoiceAndGRNno($supplierID);
 		echo json_encode($data);
 	}
 }

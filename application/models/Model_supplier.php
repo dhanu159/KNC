@@ -83,4 +83,19 @@ class Model_supplier extends CI_Model
             return $query->row_array();
         }
     }
+
+	//-----------------------------------
+    // Supplier Credit Settlement
+    //-----------------------------------
+
+    public function getSupplierWiseInvoiceAndGRNno($supplierID)
+    {
+        if ($supplierID) {
+            $sql = "SELECT intGRNHeaderID, CONCAT(vcInvoiceNo,' ( ', vcGRNNo,' ) ') AS vcGRNNo , intSupplierID
+            FROM grnheader AS g
+            WHERE intSupplierID = ? AND  intPaymentTypeID = 2 AND intApprovedBy is not null AND intRejectedBy is null";
+            $query = $this->db->query($sql, array($supplierID));
+            return $query->result_array();
+        }
+    }
 }

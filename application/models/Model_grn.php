@@ -25,6 +25,7 @@ class Model_grn extends CI_Model
             'vcGRNNo' => $GRNNo,
             'vcInvoiceNo' => $this->input->post('invoice_no'),
             'intSupplierID' => $this->input->post('supplier'),
+            'intPaymentTypeID' => $this->input->post('cmbpayment'),
             'dtReceivedDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('receivedDate')))),
             'vcRemark' => $this->input->post('txtRemark'),
             'intUserID' => $this->session->userdata('user_id'),
