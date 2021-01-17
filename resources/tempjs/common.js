@@ -71,6 +71,13 @@ $('#dtDispatchDate').datetimepicker({
     maxDate: new Date()
 });
 
+$('#dtReceiptDate').datetimepicker({
+    format: 'L',
+    defaultDate: new Date(),
+    maxDate: new Date()
+});
+
+
 
 // Alerts
 function arcadiaConfirmAlert(message, event, button) {
