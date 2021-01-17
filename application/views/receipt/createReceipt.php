@@ -96,143 +96,103 @@
         <div class="card">
             <div class="card-body">
                 <form role="form" class="add-form" method="post" action="<?= base_url('Issue/SaveIssue') ?>" id="createIssue">
-                    <div class="col-md-6">
-                        <div class="row">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="form-group col-md-12">
+                                    <label>Receipt Date</label>
+                                    <div class="input-group date" id="dtReceiptDate" data-target-input="nearest">
+                                        <input type="text" class="form-control datetimepicker-input" id="ReceiptDate" name="ReceiptDate" placeholder="Select Receipt Date" style="pointer-events: none !important;" />
+                                        <div class="input-group-append" data-target="#dtReceiptDate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="cmbcustomer">Customer</label>
+                                    <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
+                                        <option value="0" disabled selected hidden>Select Customer</option>
+                                        <?php foreach ($customer_data as $k => $v) { ?>
+                                            <option value="<?= $v['intCustomerID'] ?>"><?= $v['vcCustomerName'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label for="txtTotalOutstanding">Total Outstanding Amount</label>
+                                    <input type="text" class="form-control" id="txtTotalOutstanding" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="form-group col-md-12">
-                                <label>Payment Date</label>
-                                <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Issue Date" style="pointer-events: none !important;" />
-                                    <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
+                                <label>Pay Mode</label>
+                                <select class="form-control select2" style="width: 100%;" id="cmbPayMode" name="cmbPayMode">
+                                    <?php foreach ($payment_data as $k => $v) { ?>
+                                        <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Bank</label>
+                                <select class="form-control select2" style="width: 100%;" id="cmbBank" name="cmbBank">
+                                    <option value=" 0" disabled selected hidden>Select Bank</option>
+                                    <?php foreach ($payment_data as $k => $v) { ?>
+                                        <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label for="txtChequeNo">Cheque Number</label>
+                                <input type="text" class="form-control" id="txtChequeNo" name="txtChequeNo" placeholder="Enter Cheque Number" required />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <label>Post-Dated Date</label>
+                                <div class="input-group date" id="dtPDDate" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" id="PDDate" name="PDDate" placeholder="Select Post-Dated Date" style="pointer-events: none !important;" />
+                                    <div class="input-group-append" data-target="#dtPDDate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group col-md-12">
-                                <label for="customer">Customer</label>
-                                <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
-                                    <option value="0" disabled selected hidden>Select Customer</option>
-                                    <?php foreach ($customer_data as $k => $v) { ?>
-                                        <option value="<?= $v['intCustomerID'] ?>"><?= $v['vcCustomerName'] ?></option>
-                                    <?php } ?>
-                                </select>
+                                <label for="txtAmount">Amount</label>
+                                <input type="text" class="form-control" id="txtAmount" name="txtAmount" placeholder="Enter Pay Amount" required />
                             </div>
-                            <div class="form-group col-md-12">
-                                <label for="credit_limit">Available Advance Payment</label>
-                                <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                            </div>
-                            <div class="form-group col-md-12">
-                                <label for="credit_limit">Total Outstanding Amount</label>
-                                <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                            </div>
-                            <!-- <div class="form-group col-md-3">
-                            <label for="credit_limit">Credit Limit</label>
-                            <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
                         </div>
-                        <div class="form-group col-md-3">
-                            <label for="credit_limit">Credit Balace</label>
-                            <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                        </div>
-                        <div class="form-group col-md-3">
-                            <input type="checkbox" class="form-check-input" id="IsAdvancePayment" name="IsAdvancePayment" style="margin-left: 0; padding-right: 1em; position:relative; float:left;">
-                            <label style="margin-left: 1em;" for="advance_payment">Advance Payment</label>
-                            <input type="text" class="form-control" id="advance_payment" name="advance_payment" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                        </div> -->
-                        </div>
-                    </div>
-                    <div class="col-md-6">
 
                     </div>
-
                     <div class="row">
-                        <div class="form-group col-md-6 col-sm-12">
-                            <label>Payment Mode :</label>
-                            <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
-                                <!-- <option value="0" selected hidden>All Payments</option> -->
-                                <?php foreach ($payment_data as $k => $v) { ?>
-                                    <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label>Issued Date</label>
-                            <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="issuedDate" name="issuedDate" placeholder="Select Issue Date" style="pointer-events: none !important;" />
-                                <div class="input-group-append" data-target="#dtReceivedDate" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
+                        <table class="table arcadia-table" id="itemTable">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">Issue No</th>
+                                    <th style="width: 200px; text-align:center;">Total Amount</th>
+                                    <th style="width: 200px; text-align:center;">Paid Amount</th>
+                                    <th style="width: 100px; text-align:center;">Outstranding Amount</th>
+                                    <th style="width: 100px; text-align:center;">Qty</th>
+                                    <th style="width: 200px; text-align:center;">Total Price</th>
+                                    <th hidden>rv</th>
+                                    <th style="width: 100px; text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr class="first-tr">
+                                    <td class="static" hidden><input type="number" class="form-control" name="txtItemIDx" min="0"></td>
+                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtStockQty" id="txtStockQty" style="text-align:right;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
+                                    <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
+                                    <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
+                                    <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-
-                    <table class="table arcadia-table" id="itemTable">
-                        <thead>
-                            <tr>
-                                <th style="text-align:center;">Payment Type</th>
-                                <th style="width: 200px; text-align:center;">Unit Price</th>
-                                <th style="width: 200px; text-align:center;">Stock Qty</th>
-                                <th style="width: 100px; text-align:center;">Unit</th>
-                                <th style="width: 100px; text-align:center;">Qty</th>
-                                <th style="width: 200px; text-align:center;">Total Price</th>
-                                <th hidden>rv</th>
-                                <th style="width: 100px; text-align: center;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            <tr class="first-tr">
-                                <td class="static" hidden><input type="number" class="form-control" name="txtItemID" min="0"></td>
-                                <td class="static">
-                                    <!-- <input type="text" class="form-control" name="txtItem"> -->
-                                    <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
-                                        <!-- <option value="0" selected hidden>All Payments</option> -->
-                                        <?php foreach ($payment_data as $k => $v) { ?>
-                                            <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
-                                        <?php } ?>
-                                    </select>
-                                </td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;" disabled></td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtStockQty" id="txtStockQty" style="text-align:right;" disabled></td>
-                                <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
-                                <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
-                                <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
-                                <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="row" style="border-top:1px solid #dee2e6;">
-                        <div class="col-6">
-                            <p style="color: #c2c7d0; position:absolute; bottom:0;" id="itemCount">Item Count : 0</p>
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-6" style="padding-right:100px;">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <tr>
-                                        <th style="border-top:0 !important; width:180px;">Sub Total:</th>
-                                        <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right;" id="subTotal" name="subTotal" placeholder="0.00" readonly>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th style="border-top:0 !important;">Discount:</th>
-                                        <td style="border-top:0 !important;">
-                                            <input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;">
-                                        </td>
-                                    </tr>
-                                    <tr style="border-top:2px solid #dee2e6; border-bottom:2px solid #dee2e6;">
-                                        <th style="font-size:1.5em;">Grand Total:</th>
-                                        <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right; font-size:1.5em;" id="grandTotal" name="grandTotal" placeholder="0.00" readonly>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
-                        </div>
-                        <!-- /.col -->
-                    </div>
+                    <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
                 </form>
             </div>
             <!-- /.card-body -->
