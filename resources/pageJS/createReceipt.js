@@ -3,6 +3,13 @@ var CreditBuyAmount = 0;
 var AvailableCredit = 0;
 $(document).ready(function () {
 
+    $("#cmbBank").prop('disabled', true);
+    $("#txtChequeNo").prop('disabled', true);
+    $("#txtChequeNo").css('background-color', '#EEEEEE');
+    $("#PDDate").prop('disabled', true);
+    $("#PDDate").css('background-color', '#EEEEEE');
+
+
 
 
     // $('#cmbcustomer').on('select2:select', function (e) {
