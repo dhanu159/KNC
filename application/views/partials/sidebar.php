@@ -178,15 +178,13 @@
                                                                                                             echo 'active';
                                                                                                         } ?>">
                                 <i class="fas fa-user"></i>
-                                <p>&nbsp;&nbsp;&nbsp;Payment Receipt</p>
+                                <p>&nbsp;&nbsp;&nbsp;Customer Payment Receipt</p>
                             </a>
                         </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a href="<?php echo base_url('Customer/manageCustomerAdvancePayment') ?>" class="nav-link <?php if ($this->uri->segment(2) == "manageCustomerAdvancePayment") {
-                                                                                                            echo 'active';
-                                                                                                        } ?>">
+                                                                                                                            echo 'active';
+                                                                                                                        } ?>">
                                 <i class="fas fa-user"></i>
                                 <p>&nbsp;&nbsp;&nbsp;Customer Advance Payment</p>
                             </a>
