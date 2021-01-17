@@ -132,7 +132,7 @@
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="txtAmount">Amount</label>
-                                    <input type="text" class="form-control" id="txtAmount" name="txtAmount" placeholder="Enter Pay Amount" required />
+                                    <input type="text" class="form-control only-decimal" id="txtAmount" name="txtAmount" placeholder="Enter Pay Amount" required />
                                 </div>
                             </div>
                             <div class="row">
@@ -222,7 +222,7 @@
 </div>
 
 
-<script src="<?php echo base_url('resources/pageJS/createRecepit.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/createReceipt.js') ?>"></script>
 <script>
     function formatState(state) {
         if (!state.element) return;
