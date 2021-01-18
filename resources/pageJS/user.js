@@ -80,8 +80,10 @@ function editUser(id) {
             $('#edit_full_name').val(response.vcFullName);
             $("#edit_email").val(response.vcEmail);
             $('#edit_contact_no').val(response.vcContactNo);
-            $('#edit_user_group').select2().select2('val', response.intUserGroupID);
-            $('#edit_branch').select2().select2('val', response.intBranchID);
+            $('#edit_user_group').val(response.intUserGroupID);
+            $('#edit_user_group').trigger('change');
+            $('#edit_branch').val(response.intBranchID);
+            $('#edit_branch').trigger('change');
             if (response.IsAdmin == 1) {
                 document.getElementById("edit_IsAdmin").checked = true;
             } else {

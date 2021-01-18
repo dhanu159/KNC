@@ -91,11 +91,43 @@ class Model_supplier extends CI_Model
     public function getSupplierWiseInvoiceAndGRNno($supplierID)
     {
         if ($supplierID) {
-            $sql = "SELECT intGRNHeaderID, CONCAT(vcInvoiceNo,' ( ', vcGRNNo,' ) ') AS vcGRNNo , intSupplierID
-            FROM grnheader AS g
-            WHERE intSupplierID = ? AND  intPaymentTypeID = 2 AND intApprovedBy is not null AND intRejectedBy is null";
+            $sql = "SELECT G.intGRNHeaderID, CONCAT(G.vcInvoiceNo,' ( ', G.vcGRNNo,' ) ') AS vcGRNNo , G.intSupplierID  , SUM(IFNULL(SD.decPaidAmount,0)) AS PayAmount ,G.decGrandTotal
+            FROM grnheader AS G
+            LEFT OUTER JOIN suppliersettlementdetail AS SD ON G.intGRNHeaderID = SD.intGRNHeaderID
+            WHERE  G.intSupplierID = ? AND  G.intPaymentTypeID = 2 AND G.intApprovedBy is not null AND G.intRejectedBy is null
+            GROUP BY 
+            G.intGRNHeaderID
+            HAVING 
+            G.decGrandTotal > SUM(IFNULL(SD.decPaidAmount,0))";
             $query = $this->db->query($sql, array($supplierID));
             return $query->result_array();
         }
+    }
+
+    public function SaveSupplierCreditSettlement()
+    {
+        $this->db->trans_start();
+
+        $data = array(
+            'intSupplierID' => $this->input->post('cmbsupplier'),
+            'decAmount' => $this->input->post('txtAmount'),
+            'intPayModelD' =>  $this->input->post('cmbPayMode'),
+            'dtPaidDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('dtSettlementDate')))),
+            'intUserID' =>  $this->session->userdata('user_id'),
+            'vcChequeNo' => $this->input->post('txtChequeNo'),
+            'intBankID' =>  $this->input->post('cmbBank'),
+            'dtPDDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('dtPDDate')))),
+            'vcRemark' => $this->input->post('txtRemark'),
+        );
+
+        $this->db->insert('suppliersettlementheader', $data);
+        $SupplierSettlementHeaderID = $this->db->insert_id();
+
+        $item_count = count($this->input->post('----------'));
+
+
+
+
+
     }
 }

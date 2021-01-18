@@ -11,8 +11,8 @@ class Supplier extends Admin_Controller
 		$this->load->model('model_supplier');
 		$this->load->model('model_groups');
 		$this->load->model('model_utility');
-		$user_group_data = $this->model_groups->getUserGroupData();
-        $this->data['user_groups_data'] = $user_group_data;
+		// $user_group_data = $this->model_groups->getUserGroupData();
+        // $this->data['user_groups_data'] = $user_group_data;
 	}
 	public function index()
 	{
@@ -23,7 +23,7 @@ class Supplier extends Admin_Controller
 			}
 		}
 
-		$this->render_template('supplier/manageSupplier','Manage Supplier', $this->data);
+		$this->render_template('supplier/manageSupplier','Manage Supplier');
 	}
 
 	public function fetchSupplierDataById($id)
@@ -252,5 +252,19 @@ class Supplier extends Admin_Controller
 	{
 		$data = $this->model_supplier->getSupplierWiseInvoiceAndGRNno($supplierID);
 		echo json_encode($data);
+	}
+
+	public function SaveSupplierCreditSettlement()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('createSaveSupplierCreditSettlement', $this->permission)) {
+			  redirect('dashboard', 'refresh');
+			}
+		  }
+	  
+		  $response = $this->model_supplier->SaveSupplierCreditSettlement();
+
+	
+		  echo json_encode($response);
 	}
 }
