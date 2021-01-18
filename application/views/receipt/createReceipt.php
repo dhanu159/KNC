@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="form-group col-md-12">
                                     <label for="cmbcustomer">Customer</label>
-                                    <select class="form-control select2" style="width: 100%;" id="cmbcustomer" name="cmbcustomer">
+                                    <select class="form-control select2" style="width: 100%;" id="cmbCustomer" name="cmbCustomer">
                                         <option value="0" disabled selected hidden>Select Customer</option>
                                         <?php foreach ($customer_data as $k => $v) { ?>
                                             <option value="<?= $v['intCustomerID'] ?>"><?= $v['vcCustomerName'] ?></option>
@@ -139,9 +139,9 @@
                                 <div class="form-group col-md-6">
                                     <label>Bank</label>
                                     <select class="form-control select2" style="width: 100%;" id="cmbBank" name="cmbBank">
-                                        <option value=" 0" disabled selected hidden>Select Bank</option>
-                                        <?php foreach ($payment_data as $k => $v) { ?>
-                                            <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
+                                        <option value="0" disabled selected hidden>Select Bank</option>
+                                        <?php foreach ($bank_data as $k => $v) { ?>
+                                            <option value="<?= $v['intBankID'] ?>"><?= $v['vcBankName'] ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>

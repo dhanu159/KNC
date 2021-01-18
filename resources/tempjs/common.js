@@ -83,6 +83,11 @@ $('#dtSettlementDate').datetimepicker({
     maxDate: new Date()
 });
 
+$('#dtPDDate').datetimepicker({
+    format: 'L',
+    defaultDate: new Date()
+});
+
 
 
 // Alerts

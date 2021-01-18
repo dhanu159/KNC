@@ -11,6 +11,52 @@ $(document).ready(function () {
 
 
 
+    $('#cmbPayMode').on('select2:close', function (e) {
+        if ($('#cmbPayMode').val() == 1) { // Cash
+
+            $("#txtAmount").val("");
+
+            $("#cmbBank").val(0); // Select the option with a value of '0'
+            $('#cmbBank').trigger('change'); // Notify any JS components that the value changed
+            $("#cmbBank").prop('disabled', true);
+
+            $("#txtChequeNo").val("");
+            $("#txtChequeNo").prop('disabled', true);
+            $("#txtChequeNo").css('background-color', '#eee');
+
+            $("#PDDate").prop('disabled', true);
+            $("#PDDate").css('background-color', '#eee');
+
+            $('#dtPDDate').datetimepicker({
+                defaultDate: new Date()
+            });
+
+        } else if ($('#cmbPayMode').val() == 2) { // Cheque
+            $("#txtAmount").val("");
+
+            $("#cmbBank").val('0');
+            $("#cmbBank").prop('disabled', false);
+
+            $("#txtChequeNo").val("");
+            $("#txtChequeNo").prop('disabled', false);
+            $("#txtChequeNo").css('background-color', '#FFFFFF');
+
+            $("#PDDate").prop('disabled', false);
+            $("#PDDate").css('background-color', '#FFFFFF');
+        }
+    });
+
+    $('#cmbCustomer').on('select2:close', function (e) {
+        // var model = new Dispatch();
+        // model.intCuttingOrderHeaderID = cuttingOrderId;
+
+        var CustomerID = $('#cmbCustomer').val();
+
+        ajaxCall('Receipt/getCustomerToBeSettleIssueNos', CustomerID, function (response) {
+debugger;
+        });
+    });
+
 
     // $('#cmbcustomer').on('select2:select', function (e) {
     //     // getDetailByCustomerID();
@@ -42,7 +88,7 @@ $(document).ready(function () {
     });
 
     $("#cmbItem").on('select2:close', function (event) {
-        
+
         $("input[name=txtQty],input[name=txtTotalPrice]").val("");
         $('#txtQty').focus();
         getItemDetailsByCustomerID();
@@ -231,7 +277,7 @@ $(document).ready(function () {
             toastr["error"]("Please select customer !");
             return;
         }
-        
+
         else {
             if ($("#txtQty").val() > 0) {
 

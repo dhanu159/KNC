@@ -31,11 +31,20 @@ class Receipt extends Admin_Controller
 
     $customer_data = $this->model_customer->getCustomerData();
     $paymode_data = $this->model_utility->getPayModes();
-    $this->data['paymode_data'] = $paymode_data;
+    $bank_data = $this->model_utility->getBanks();
+
     $this->data['customer_data'] = $customer_data;
+    $this->data['paymode_data'] = $paymode_data;
+    $this->data['bank_data'] = $bank_data;
 
     $this->render_template('Receipt/CreateReceipt', 'Create Receipt',  $this->data);
   }
+
+
+  public function getCustomerToBeSettleIssueNos($CustomerID){
+    $data = $this->model_receipt->getCustomerToBeSettleIssueNos($CustomerID);
+    echo json_encode($data);
+  } 
 
 
 }

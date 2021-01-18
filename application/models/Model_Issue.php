@@ -13,13 +13,13 @@ class Model_issue extends CI_Model
     {
         $this->db->trans_begin();
 
-        $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
-        $ret = $query->row();
-        $IssueNo = $ret->IssueNo;
+        // $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
+        // $ret = $query->row();
+        // $IssueNo = $ret->IssueNo;
 
         $response = array();
 
-        // $IssueNo = "Issue-001";
+        $IssueNo = "Issue-001";
 
         $insertDetails = false;
 
@@ -205,7 +205,7 @@ class Model_issue extends CI_Model
             INNER JOIN user as U ON IH.intUserID = U.intUserID
             INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
             LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID
-            WHERE IH.intIssueHeaderID = ? AND IH.IsActive = 1;";
+            WHERE IH.intIssueHeaderID = ?";
 
             $query = $this->db->query($sql, array($IssueHeaderID));
             return $query->row_array();
@@ -236,7 +236,7 @@ class Model_issue extends CI_Model
        INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
        LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID";
 
-        $dateFilter = " WHERE IH.IsActive = 1 AND CAST(IH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
+        $dateFilter = " WHERE CAST(IH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
 
         $customerFilte = "";
         $paymentTypeFilte = "";
