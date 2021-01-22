@@ -171,9 +171,10 @@
 
                     </div>
                     <div class="row">
-                        <table class="table arcadia-table" id="itemTable">
+                        <table class="table arcadia-table" id="receiptTable">
                             <thead>
                                 <tr>
+                                    <th hidden>Issue Header ID</th>
                                     <th style="text-align:center;">Issue No</th>
                                     <th style="width: 150px; text-align:center;">Total Amount</th>
                                     <th style="width: 150px; text-align:center;">Total Paid Amount</th>
@@ -186,22 +187,16 @@
                             <tbody>
 
                                 <tr class="first-tr">
-                                    <td class="static" hidden><input type="number" class="form-control" name="txtItemIDx" min="0"></td>
+                                    <td class="static" hidden><input type="text" class="form-control" name="txtIssueHeaderID"></td>
                                     <td class="static">
-                                        <select class="form-control select2" style="width: 100%;" id="cmbItem" name="cmbItem"">
-                                        <option value=" 0" disabled selected hidden>Select Issue No</option>
-                                            <?php foreach ($item_data as $k => $v) {
-                                                if ($v['decStockInHand'] > 0) { ?>
-                                                    <option value="<?= $v['intItemID'] ?>"><?= $v['vcItemName'] ?></option>
-                                                <?php } else { ?>
-                                                    <option value="<?= $v['intItemID'] ?>" class="icons_select2" name="icons_select2"><?= $v['vcItemName'] ?></option>
-                                            <?php }
-                                            } ?>
+                                        <select class="form-control select2" style="width: 100%;" id="cmbIssueNo" name="cmbIssueNo"">
+                                            <!-- Generated Are -->
                                         </select>
                                     </td>
-                                    <td class="static"><input type="text" class="form-control add-item" name="txtTotalAmount" id="txtTotalAmount" placeholder="N/A" style="text-align:right;" disabled></td>
-                                    <td class="static"><input type="text" class="form-control add-item" name="txtPaidAmount" id="txtPaidAmount" placeholder="N/A" style="text-align:right;" disabled></td>
-                                    <td class="static"><input type="text" class="form-control add-item" name="txtOutstrandingAmount" id="txtOutstrandingAmount" placeholder="N/A" style="text-align:right;" disabled></td>
+                                    <td class=" static"><input type="text" class="form-control" name="txtTotalAmount" id="txtTotalAmount" placeholder="N/A" style="text-align:right;" disabled>
+                                    </td>
+                                    <td class="static"><input type="text" class="form-control" name="txtPaidAmount" id="txtPaidAmount" placeholder="N/A" style="text-align:right;" disabled></td>
+                                    <td class="static"><input type="text" class="form-control" name="txtOutstrandingAmount" id="txtOutstrandingAmount" placeholder="N/A" style="text-align:right;" disabled></td>
                                     <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtPayAmount" id="txtPayAmount" placeholder="0.00" style="text-align:right;"></td>
                                     <td class="static" hidden><input type="text" class="form-control" name="txtRv" id="txtRv"></td>
                                     <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
@@ -209,7 +204,29 @@
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
+                    <div class="row" style="border-top:1px solid #dee2e6;">
+                        <div class="col-6">
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="form-group col-md-6">
+                                    <label for="txtTotalOutstanding">Total Allocated Amount</label>
+                                    <input type="text" class="form-control" id="txtTotalAllocated" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="txtTotalOutstanding">Available Amount</label>
+                                    <input type="text" class="form-control" id="txtTotalAvailable" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
+                                </div>
+                            </div>
+                            <p style="color: #c2c7d0;" id="itemCount">Item Count : 0</p>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-6">
+
+                            <div class="row" style="margin-top: 40px;">
+                                <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat" style="position:absolute; right: 0px;"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
+                            </div>
+                        </div>
+                        <!-- /.col -->
+                    </div>
                 </form>
             </div>
             <!-- /.card-body -->
