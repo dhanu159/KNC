@@ -7,7 +7,7 @@ class Receipt extends Admin_Controller
     {
         parent::__construct();
         $this->not_logged_in();
-        // $this->load->model('model_receipt');
+        $this->load->model('model_receipt');
         $this->load->model('model_customer');
     $this->load->model('model_utility'); 
 
@@ -41,10 +41,17 @@ class Receipt extends Admin_Controller
   }
 
 
-  public function getCustomerToBeSettleIssueNos($CustomerID){
+  public function getCustomerToBeSettleIssueNos(){
+    $CustomerID = $this->input->post('intCustomerID');
     $data = $this->model_receipt->getCustomerToBeSettleIssueNos($CustomerID);
     echo json_encode($data);
   } 
+
+  public function getIssueNotePaymentDetails(){
+    $IssueHeaderID = $this->input->post('intIssueHeaderID');
+    $data = $this->model_receipt->getIssueNotePaymentDetails($IssueHeaderID);
+    echo json_encode($data);
+  }
 
 
 }
