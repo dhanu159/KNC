@@ -10,9 +10,9 @@ class Model_receipt extends CI_Model
         $sql = "
             SELECT 
                 IH.intIssueHeaderID,
-                IH.vcISSueNo,
+                IH.vcIssueNo,
                 IH.decGrandTotal,
-                SUM(IFNULL(RD.decPayAmount,0)) AS PayAmount 
+                SUM(IFNULL(RD.decPaidAmount,0)) AS decPaidAmount 
             FROM 
                 IssueHeader AS IH
                 LEFT OUTER JOIN ReceiptDetail AS RD ON IH.intIssueHeaderID = RD.intIssueHeaderID
@@ -21,10 +21,25 @@ class Model_receipt extends CI_Model
             GROUP BY
                 IH.intIssueHeaderID
             HAVING
-                IH.decGrandTotal > SUM(IFNULL(RD.decPayAmount,0)) ";
+                IH.decGrandTotal > SUM(IFNULL(RD.decPaidAmount,0)) ";
 
         $query = $this->db->query($sql, array($CustomerID));
         return $query->result_array();
+    }
+
+    public function getIssueNotePaymentDetails($IssueHeaderID){
+        $sql = "
+            SELECT 
+                IH.decGrandTotal,
+                SUM(IFNULL(RD.decPaidAmount,0)) AS decPaidAmount
+            FROM 
+                IssueHeader AS IH
+                LEFT OUTER JOIN ReceiptDetail AS RD ON IH.intIssueHeaderID = RD.intIssueHeaderID
+            WHERE 
+                IH.intIssueHeaderID = ?";
+
+        $query = $this->db->query($sql, array($IssueHeaderID));
+        return $query->row_array();
     }
 
 
