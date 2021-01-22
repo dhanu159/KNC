@@ -28,11 +28,11 @@ class Issue extends Admin_Controller
     }
 
     $customer_data = $this->model_customer->getCustomerData();
-    $item_data = $this->model_item->getOnlyFinishItemData();
+    // $item_data = $this->model_item->getOnlyFinishItemData();
     $payment_data = $this->model_issue->getPaymentTypes();
     $this->data['payment_data'] = $payment_data;
     $this->data['customer_data'] = $customer_data;
-    $this->data['item_data'] = $item_data;
+    // $this->data['item_data'] = $item_data;
 
     $this->render_template('Issue/createIssue', 'Create Issue',  $this->data);
   }
@@ -290,7 +290,7 @@ class Issue extends Admin_Controller
       }
     }
 
-    $IssueHeaderData = $this->model_issue->GetIssueHeaderData($this->input->post('cmbIssueNo'));
+    $IssueHeaderData = $this->model_issue->GetIssueHeaderData($this->input->post('cmbIssueNo'),null,null,null,null);
     $CustomerID =  $IssueHeaderData['intCustomerID'];
 
     $result =  $this->model_issue->chkNullCustomerAdvancePayment($CustomerID);

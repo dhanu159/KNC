@@ -8,6 +8,29 @@ $(document).ready(function () {
         $("#txtPayAmount").focus();
     });
 
+    $('#cmbPayMode').on('select2:close', function (e) {
+  
+        if ($("#cmbPayMode option:selected").val() == 1)
+        {
+            $("#cmbBank").prop('disabled', true);
+            $('#cmbBank').val('0'); // Select the option with a value of '0'
+            $('#cmbBank').trigger('change'); // Notify any JS components that the value changed
+            $("#txtChequeNo").prop('disabled', true);
+            $("input[name=txtChequeNo]").val("");
+            document.getElementById("txtChequeNo").placeholder = "Enter Cheque Number";
+            $("#txtChequeNo").css('background-color', '#eee');
+            $("#PDDate").prop('disabled', true);
+            $("#PDDate").css('background-color', '#eee');
+        }
+       if ($("#cmbPayMode option:selected").val() == 2) {
+            $("#cmbBank").prop('disabled', false);
+            $("#txtChequeNo").prop('disabled', false);
+            $("#txtChequeNo").css('background-color', '#ffffff');
+            $("#PDDate").prop('disabled', false);
+            $("#PDDate").css('background-color', '#ffffff');
+        }
+    });
+
     $("#cmbBank").prop('disabled', true);
     $("#txtChequeNo").prop('disabled', true);
     $("#txtChequeNo").css('background-color', '#eee');

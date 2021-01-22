@@ -25,7 +25,7 @@ $(document).ready(function () {
         // getcmbItemDate();
     });
 
-    getcmbItemDate(); 
+    getcmbItemData(); 
 
 
     $(document).on('keyup', 'input[type=search]', function (e) {
@@ -67,7 +67,7 @@ $(document).ready(function () {
         $('#cmbItem').trigger('change'); // Notify any JS components that the value changed
         $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice], input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice],input[name=grandTotal],input[name=subTotal],input[name=txtDiscount]").val("");
         CalculateItemCount();
-        getcmbItemDate();
+        // getcmbItemDate();
 
     });
 
@@ -458,7 +458,7 @@ function chkCreditLimit() {
     return (canAdd == true) ? true : false;
 }
 
-function getcmbItemDate() {
+function getcmbItemData() {
     $.ajax({
         async: false,
         url: 'getOnlyFinishItemData',
@@ -498,6 +498,7 @@ $('#btnSubmit').click(function () {
         toastr["error"]("Please add the issue items !");
         $("#cmbItem").focus();
     } else {
+        $("input[name=txtQty],input[name=txtTotalPrice]").val("");
         if ($("#cmbpayment option:selected").val() == 2 && chkCreditLimit() == false) {
             toastr["error"]("Customer CreditLimit Exceed !");
             return;

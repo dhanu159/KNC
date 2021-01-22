@@ -183,6 +183,7 @@ class Model_issue extends CI_Model
         if ($IssueHeaderID) {
             $sql = "
                     SELECT  IH.intIssueHeaderID,
+                    IH.intCustomerID,
                     IH.vcIssueNo,
                     CU.vcCustomerName,
                     CU.vcBuildingNumber,
