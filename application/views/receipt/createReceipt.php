@@ -91,7 +91,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('Issue/SaveIssue') ?>" id="createIssue">
+                <form role="form" class="add-form" method="post" action="<?= base_url('Receipt/SaveReceipt') ?>" id="createReceipt">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="row">
@@ -208,11 +208,11 @@
                         <div class="col-6">
                             <div class="row" style="margin-top: 20px;">
                                 <div class="form-group col-md-6">
-                                    <label for="txtTotalOutstanding">Total Allocated Amount</label>
+                                    <label for="txtTotalAllocated">Total Allocated Amount</label>
                                     <input type="text" class="form-control" id="txtTotalAllocated" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="txtTotalOutstanding">Available Amount</label>
+                                    <label for="txtTotalAvailable">Available Amount</label>
                                     <input type="text" class="form-control" id="txtTotalAvailable" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
                                 </div>
                             </div>
