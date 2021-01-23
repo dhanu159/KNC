@@ -14,7 +14,7 @@ var row_id = 1;
 
 
 $(document).ready(function () {
-
+    $("#btnSubmit").prop('disabled', true);
     $("#cmbPayMode").prop('disabled', true);
     $("#txtAmount").prop('disabled', true);
     $("#txtAmount").css('background-color', '#eee');
@@ -28,28 +28,7 @@ $(document).ready(function () {
 
     $('#cmbCustomer').on('select2:close', function (e) {
         ResetGrid();
-        var model = new Customer();
-        model.intCustomerID = $('#cmbCustomer').val();
-        ajaxCall('Receipt/getCustomerToBeSettleIssueNos', model, function (response) {
-            $("#cmbPayMode").prop('disabled', false);
-            $("#txtAmount").prop('disabled', false);
-            $("#txtAmount").css('background-color', '#FFFFFF');
-            $("#txtRemark").prop('disabled', false);
-            $("#txtRemark").css('background-color', '#FFFFFF');
-
-            var issueTotal = 0;
-            var paidTotal = 0;
-            var issueNoHTML = '<option value="0" disabled selected hidden>Select Issue No</option>';
-
-            for (let index = 0; index < response.length; index++) {
-                issueNoHTML += '<option value="' + response[index].intIssueHeaderID + '">' + response[index].vcIssueNo + '</option>';
-                issueTotal += parseFloat(response[index].decGrandTotal);
-                paidTotal += parseFloat(response[index].decPaidAmount);
-            }
-            $("#txtTotalOutstanding").val(parseFloat(issueTotal - paidTotal).toFixed(2));
-            $("#cmbIssueNo").empty();
-            $("#cmbIssueNo").append(issueNoHTML);
-        });
+        setCustomerIssueDetails();
     });
 
     $('#cmbPayMode').on('select2:close', function (e) {
@@ -94,6 +73,10 @@ $(document).ready(function () {
 
     $('#txtAmount').on('keyup', function (e) {
         ResetGrid();
+        if (parseFloat($("#txtTotalOutstanding").val()) < parseFloat($("#txtAmount").val())) {
+            $("#txtAmount").val("");
+            toastr["error"]("You can't enter more than customer outstanding amount !");
+        }
         calculateTotalAllocatedAndAvailableAmount();
     });
 
@@ -103,18 +86,23 @@ $(document).ready(function () {
 
     $('#cmbIssueNo').on('select2:close', function (e) {
         if ($('#cmbCustomer').val() > 0) {
-            if (checkPayModeSelected()) {
-                var model = new Issue();
-                model.intIssueHeaderID = $('#cmbIssueNo').val();
-                ajaxCall('Receipt/getIssueNotePaymentDetails', model, function (response) {
-                    $("#txtTotalAmount").val(parseFloat(response.decGrandTotal).toFixed(2));
-                    $("#txtPaidAmount").val(parseFloat(response.decPaidAmount).toFixed(2));
-                    $("#txtOutstrandingAmount").val((parseFloat(response.decGrandTotal) - parseFloat(response.decPaidAmount)).toFixed(2));
-                    $("#txtPayAmount").focus();
-                });
+            if ($("#cmbIssueNo").val() > 0) {
+                if (checkPayModeSelected()) {
+                    var model = new Issue();
+                    model.intIssueHeaderID = $('#cmbIssueNo').val();
+                    ajaxCall('Receipt/getIssueNotePaymentDetails', model, function (response) {
+                        $("#txtTotalAmount").val(parseFloat(response.decGrandTotal).toFixed(2));
+                        $("#txtPaidAmount").val(parseFloat(response.decPaidAmount).toFixed(2));
+                        $("#txtOutstrandingAmount").val((parseFloat(response.decGrandTotal) - parseFloat(response.decPaidAmount)).toFixed(2));
+                        $("#txtRv").val(response.rv);
+
+                        $("#txtPayAmount").focus();
+                    });
+                }
             }
         } else {
             toastr["error"]("Please Select Customer First !");
+            $('#cmbCustomer').focus();
         }
     });
 
@@ -123,9 +111,9 @@ $(document).ready(function () {
             toastr["error"]("Please select issue no !");
             $("#txtPayAmount").val("");
             $('#cmbIssueNo').focus();
-        }else if ($("#txtPayAmount").val() != "") {
-            if (parseFloat($("#txtOutstrandingAmount").val()) < parseFloat($("#txtPayAmount").val())) {
-                toastr["error"]("You can't pay more than outstanding amount!");
+        } else if ($("#txtPayAmount").val() != "") {
+            if (parseFloat($("#txtPayAmount").val()) > parseFloat($("#txtOutstrandingAmount").val())) {
+                toastr["error"]("You can't exceed outstanding amount!");
                 $("#txtPayAmount").val("");
             } else if (parseFloat($("#txtPayAmount").val()) > totalAvailableAmount) {
                 toastr["error"]("You can't exceed available amount!");
@@ -139,10 +127,10 @@ $(document).ready(function () {
         if (keycode == '13') {
             if ($("#cmbIssueNo option:selected").val() == 0) {
                 toastr["error"]("Please select issue no !");
-            }else if ($("#txtPayAmount").val() == "") {
+            } else if ($("#txtPayAmount").val() == "") {
                 toastr["error"]("Please enter pay amount first !");
-            }else{
-                AddToGrid(true);
+            } else {
+                AddToGrid();
             }
         }
 
@@ -150,93 +138,37 @@ $(document).ready(function () {
     });
 
 
-
-
-
-    // $('#txtQty').on('keyup', function (e) {
-    //     if ($('#txtStockQty').val() == 0) {
-    //         $('#txtQty').val(null);
-    //         toastr["error"]("You can't Issue this. Because this item stock quantity is zero!");
-    //     } else if ($('#txtStockQty').val() > 0) {
-    //         if (parseFloat($('#txtQty').val()) > parseFloat($('#txtStockQty').val())) {
-    //             toastr["error"]("You can't exceed stock quantity  !");
-    //         }
-    //     }
-
-    // });
-
-
     $("#btnAddToGrid").click(function () {
-
-        if ($("#cmbcustomer option:selected").val() == 0) {
-            toastr["error"]("Please select customer !");
-            return;
-        }
-        if ($("input[name=txtStockQty]").val() == "N/A" || $("input[name=txtStockQty]").val() == "0.00") {
-            toastr["error"]("Please can't Add Stock Qty N/A !");
-            return;
-        }
-
-        if ($("input[name=txtQty]").val() == "") {
-            toastr["error"]("Please Enter Issue Qty !");
-            return;
-        }
-
-        if ($("#cmbpayment option:selected").val() == 2) { //Credit
-            if (chkCreditLimit() == false) {
-                toastr["error"]("Customer CreditLimit Exceed !");
-            }
-            else {
-
-                AddToGrid(false);
-            }
-        }
-        else {
-            AddToGrid(false);
+        if ($("#cmbIssueNo option:selected").val() == 0) {
+            toastr["error"]("Please select issue no !");
+        } else if ($("#txtPayAmount").val() == "") {
+            toastr["error"]("Please enter pay amount first !");
+        } else {
+            AddToGrid();
         }
     });
 
 
 
     $('#btnSubmit').click(function () {
-        var IsAdvancePayment = document.getElementById("IsAdvancePayment");
-
-        if ($("#cmbcustomer option:selected").val() == 0) {
-            toastr["error"]("Please select customer !");
-            $("#cmbcustomer").focus();
+        if (totalAvailableAmount > 0) {
+            toastr["error"]("You have available amount, Please allocate total amount and try again !");
             return;
         }
-        if ($('#itemTable tr').length == 2) {
-            toastr["error"]("Please add the issue items !");
-            $("#cmbItem").focus();
-        } else {
-            if ($("#cmbpayment option:selected").val() == 2 && chkCreditLimit() == false) {
-                toastr["error"]("Customer CreditLimit Exceed !");
-                return;
-            } if (IsAdvancePayment.checked) {
-                if ($("input[name=grandTotal]").val() < AdvanceAmount) {
-                    toastr["error"]("Please Enter more than Advance Payment !");
-                    return;
-                }
-            }
-            if ($("#cmbpayment option:selected").val() == 2) {
-                if (IsAdvancePayment.checked) {
-                    if (CreditBuyAmount < $("input[name=grandTotal]").val()) {
-                        toastr["error"]("Customer CreditLimit Exceed !");
-                        return;
-                    }
-                }
-                else {
-                    if (AvailableCredit < $("input[name=grandTotal]").val()) {
-                        toastr["error"]("Customer CreditLimit Exceed ! Please Try Apply Advance Amount!");
-                        return;
-                    }
-                }
-            }
-
+        if ($("#cmbCustomer option:selected").val() == 0) {
+            toastr["error"]("Please select customer !");
+            $("#cmbCustomer").focus();
+            return;
+        }
+        if ($('#receiptTable tr').length == 2) {
+            toastr["error"]("Please allocate pay amount into issue numbers !");
+            $("#cmbIssueNo").focus();
+            return;
+        } 
+        if (checkPayModeSelected()) {
 
             arcadiaConfirmAlert("You want to be able to create this !", function (button) {
-                var form = $("#createIssue");
+                var form = $("#createReceipt");
 
                 $.ajax({
                     async: false,
@@ -247,7 +179,8 @@ $(document).ready(function () {
                     success: function (response) {
                         if (response.success == true) {
                             debugger;
-                            arcadiaSuccessAfterIssuePrint("Issue No : " + response.vcIssueNo, response.intIssueHeaderID);
+                            alert(response.messages);
+                            // arcadiaSuccessAfterIssuePrint("Receipt No : " + response.vcReceiptNo, response.intReceiptHeaderID);
                             // $('#printpage', window.parent.document).hide();
                         } else {
                             toastr["error"](response.messages);
@@ -257,10 +190,34 @@ $(document).ready(function () {
                 });
             }, this);
         }
-
     });
 
 });
+
+function setCustomerIssueDetails() {
+    var model = new Customer();
+    model.intCustomerID = $('#cmbCustomer').val();
+    ajaxCall('Receipt/getCustomerToBeSettleIssueNos', model, function (response) {
+        $("#cmbPayMode").prop('disabled', false);
+        $("#txtAmount").prop('disabled', false);
+        $("#txtAmount").css('background-color', '#FFFFFF');
+        $("#txtRemark").prop('disabled', false);
+        $("#txtRemark").css('background-color', '#FFFFFF');
+
+        var issueTotal = 0;
+        var paidTotal = 0;
+        var issueNoHTML = '<option value="0" disabled selected hidden>Select Issue No</option>';
+
+        for (let index = 0; index < response.length; index++) {
+            issueNoHTML += '<option value="' + response[index].intIssueHeaderID + '">' + response[index].vcIssueNo + '</option>';
+            issueTotal += parseFloat(response[index].decGrandTotal);
+            paidTotal += parseFloat(response[index].decPaidAmount);
+        }
+        $("#txtTotalOutstanding").val(parseFloat(issueTotal - paidTotal).toFixed(2));
+        $("#cmbIssueNo").empty();
+        $("#cmbIssueNo").append(issueNoHTML);
+    });
+}
 
 function checkPayModeSelected() {
     if ($("#cmbPayMode").val() == 1) {  // Cash
@@ -314,17 +271,24 @@ function ResetGrid() {
     $("#txtPaidAmount").val("");
     $("#txtOutstrandingAmount").val("");
     $("#txtPayAmount").val("");
-    alert("Clear Table");
+    $("#txtRv").val("");
+    totalOutstanding = 0;
+    totalPayAmount = 0
+    totalAllocatedAmount = 0;
+    totalAvailableAmount = 0;
+
+    $("#receiptTable").find(".generatedRow").remove();
+    setCustomerIssueDetails();
+    calculateTotalAllocatedAndAvailableAmount();
 }
 
 function calculateTotalAllocatedAndAvailableAmount() {
-
     if ($("#txtAmount").val() == "") {
         totalPayAmount = 0;
     } else {
         totalPayAmount = parseFloat($("#txtAmount").val());
     }
-
+    totalAllocatedAmount = 0;
     $('#receiptTable tbody tr').each(function () {
         var value = parseFloat($(this).closest("tr").find('.total').val());
         if (!isNaN(value)) {
@@ -337,159 +301,113 @@ function calculateTotalAllocatedAndAvailableAmount() {
     $("#txtTotalAllocated").val(parseFloat(totalAllocatedAmount).toFixed(2));
     $("#txtTotalAvailable").val(parseFloat(totalAvailableAmount).toFixed(2));
 
+    if (totalAvailableAmount == 0) {
+        $("#btnSubmit").prop('disabled', false);
+    } else {
+        $("#btnSubmit").prop('disabled', true);
+    }
 
 }
 
 
-function AddToGrid(IsMouseClick = false) {
+function AddToGrid() {
 
-    if ($("#cmbcustomer option:selected").val() == 0) {
-        toastr["error"]("Please select customer !");
-        return;
-    }
+    if ($("#txtPayAmount").val() > 0) {
 
-    else {
-        if ($("#txtQty").val() > 0) {
+        if ($("#cmbIssueNo option:selected").val() > 0) {
+            var IssueHeaderID = $("#cmbIssueNo option:selected").val();
+            var IssueNo = $("#cmbIssueNo option:selected").text();
+            var totalAmount = $("#txtTotalAmount").val();
+            var paidAmount = $("#txtPaidAmount").val();
+            var outstandingAmount = $("#txtOutstrandingAmount").val();
+            var payAmount = $("#txtPayAmount").val();
+            var rv = $("#txtRv").val();
 
-            if ($('#txtStockQty').val() == 0) {
-                if (IsMouseClick) {
-                    $('#txtQty').val(null);
-                    toastr["error"]("You can't dispatch this. Because this item stock quantity is zero!");
-                }
-            } else if (parseFloat($('#txtQty').val()) > parseFloat($('#txtStockQty').val())) {
-                if (IsMouseClick) {
-                    toastr["error"]("You can't exceed stock quantity  !");
-                }
-            } else {
-                if ($("#cmbItem option:selected").val() > 0) {
-                    var itemID = $("#cmbItem option:selected").val();
-                    var item = $("#cmbItem option:selected").text();
-                    var measureUnit = $("input[name=txtMeasureUnit]").val();
-                    var stockQty = $("input[name=txtStockQty]").val();
-                    var unitPrice = $("input[name=txtUnitPrice]").val();
-                    var qty = $("input[name=txtQty]").val();
-                    var Rv = $("input[name=txtRv]").val();
-                    var total = unitPrice * qty;
+            $(".first-tr").after('<tr class="generatedRow">' +
+                '<td hidden>' +
+                '<input type="text" class="form-control issueHeaderID disable-typing" name="issueHeaderID[]" id="issueHeaderID_' + row_id + '" value="' + IssueHeaderID + '" readonly>' +
+                '</td>' +
+                '<td>' +
+                '<input type="text" class="form-control issueNo disable-typing" name="issueNo[]" id="issueNo_' + row_id + '" value="' + IssueNo + '" readonly>' +
+                '</td>' +
+                '<td>' +
+                '<input type="text" class="form-control disable-typing" style="text-align:right;" name="totalAmount[]" id="totalAmount_' + row_id + '" value="' + parseFloat(totalAmount).toFixed(2) + '" readonly>' +
+                '</td>' +
+                '<td>' +
+                '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="paidAmount[]" id="paidAmount_' + row_id + '"  value="' + paidAmount + '" readonly>' +
+                '</td>' +
+                '<td>' +
+                '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="outstandingAmount[]" id="outstandingAmount_' + row_id + '"  value="' + outstandingAmount + '" readonly>' +
+                '</td>' +
+                '<td>' +
+                '<input type="text" class="form-control total disable-typing" style="text-align:right;" name="payAmount[]" id="payAmount_' + row_id + '"  value="' + payAmount + '" readonly>' +
+                '</td>' +
+                '<td hidden>' +
+                '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + rv + '" readonly>' +
+                '</td>' +
+                '<td class="static">' +
+                '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
+                '</td>' +
+                '</tr>');
 
-                    $(".first-tr").after('<tr>' +
-                        '<td hidden>' +
-                        '<input type="text" class="form-control itemID disable-typing" name="itemID[]" id="itemID_' + row_id + '" value="' + itemID + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '<input type="text" class="form-control itemName disable-typing" name="itemName[]" id="itemName_' + row_id + '" value="' + item + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '<input type="text" class="form-control disable-typing" style="text-align:right;" name="unitPrice[]" id="unitPrice_' + row_id + '" value="' + parseFloat(unitPrice).toFixed(2) + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="stockQty[]" id="stockQty_' + row_id + '"  value="' + stockQty + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '   <input type="text" class="form-control disable-typing" style="text-align:center;" name="unit[]" id="unit_' + row_id + '"  value="' + measureUnit + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '<input type="text" class="form-control disable-typing" style="text-align:right;" name="itemQty[]" id="itemQty_' + row_id + '"  value="' + qty + '" readonly>' +
-                        '</td>' +
-                        '<td>' +
-                        '<input type="text" class="form-control total disable-typing" style="text-align:right;" name="totalPrice[]" id="totalPrice_' + row_id + '"  value="' + parseFloat(total).toFixed(2) + '" readonly>' +
-                        '</td>' +
-                        '<td hidden>' +
-                        '<input type="text" style="cursor: pointer;" class="form-control Rv disable-typing" name="Rv[]" id="Rv_' + row_id + '" value="' + Rv + '" readonly>' +
-                        '</td>' +
-                        '<td class="static">' +
-                        '<span class="button red center-items"><i class="fas fa-times"></i></span>' +
-                        '</td>' +
-                        '</tr>');
+            row_id++;
+            remove();
+            $("#cmbIssueNo :selected").remove();
 
-                    row_id++;
-                    remove();
-                    $("#cmbItem :selected").remove();
+            $("input[name=txtTotalAmount], input[name=txtPaidAmount],input[name=txtOutstrandingAmount],input[name=txtPayAmount],input[name=txtRv]").val("");
 
-                    $("input[name=cmbItem], input[name=txtMeasureUnit],input[name=txtUnitPrice],input[name=txtQty],input[name=txtStockQty],input[name=txtTotalPrice]").val("");
-                    // $("input[name=txtTotalPrice]").val("0.00");
-                    CalculateItemCount();
-                    CalculateGrandTotal();
-                    $("#cmbItem").focus();
-                    $("li").attr('aria-selected', false);
-
-                } else {
-                    toastr["error"]("Please select valid item !");
-                    $("#cmbItem").focus();
-                    $("li").attr('aria-selected', false);
-                }
-            }
+            CalculateItemCount();
+            calculateTotalAllocatedAndAvailableAmount();
+            $("#cmbIssueNo").val(0);
+            $('#cmbIssueNo').trigger('change');
+            $("#cmbIssueNo").focus();
+        } else {
+            toastr["error"]("Please select valid item !");
+            $("#cmbIssueNo").val(0);
+            $('#cmbIssueNo').trigger('change');
+            $("#cmbIssueNo").focus();
         }
+
     }
+
 }
 
 function remove() {
     $(".red").click(function () {
-        // var itemID = $(this).closest("tr").find('td.itemID').text();
-        // var itemName = $(this).closest("tr").find('td.itemName').text();
 
-        var itemID = $(this).closest("tr").find('.itemID').val();
-        var itemName = $(this).closest("tr").find('.itemName').val();
+        var issueHeaderID = $(this).closest("tr").find('.issueHeaderID').val();
+        var issueNo = $(this).closest("tr").find('.issueNo').val();
 
         var IsAlreadyIncluded = false;
 
-        $("#cmbItem option").each(function () {
-            if (itemID == $(this).val()) {
+        $("#cmbIssueNo option").each(function () {
+            if (issueHeaderID == $(this).val()) {
                 IsAlreadyIncluded = true;
                 return false;
             }
         });
 
         if (!IsAlreadyIncluded) {
-            var cmbItem = $('#cmbItem');
-            cmbItem.append(
-                $('<option></option>').val(itemID).html(itemName)
+            var cmbIssueNo = $('#cmbIssueNo');
+            cmbIssueNo.append(
+                $('<option></option>').val(issueHeaderID).html(issueNo)
             );
             $(this).closest("tr").remove();
         }
+
+        $("input[name=txtTotalAmount], input[name=txtPaidAmount],input[name=txtOutstrandingAmount],input[name=txtPayAmount],input[name=txtRv]").val("");
+
         CalculateItemCount();
-        CalculateGrandTotal();
+        calculateTotalAllocatedAndAvailableAmount();
     });
 }
 
-// function CalculateGrandTotal() {
-//     if ($('#itemTable tr').length > 2) { // Because table header and item add row in here
-//         var discount = $("#txtDiscount").val();
-//         var total = 0;
-//         $('#itemTable tbody tr').each(function () {
-//             var value = parseFloat($(this).closest("tr").find('.total').val());
-//             if (!isNaN(value)) {
-//                 total += value;
-//             }
-//         });
 
-//         discount == "" ? discount = 0 : discount;
-
-//         $("#subTotal").val(currencyFormat(total));
-//         $("#grandTotal").val(currencyFormat(total - discount));
-
-//     } else {
-//         debugger;
-//         $("#subTotal").val("0.00");
-//         $("#txtDiscount").val("0.00");
-//         $("#grandTotal").val("0.00");
-//     }
-// }
 
 function CalculateItemCount() {
-    var rowCount = $('#itemTable tr').length;
+    var rowCount = $('#receiptTable tr').length;
     $("#itemCount").text("Item Count : " + (rowCount - 2));
 }
-
-// function CalculateTotal() {
-//     // getMeasureUnitByItemID();
-//     var unitPrice = $("#txtUnitPrice").val();
-//     var qty = $("#txtQty").val()
-
-//     if (unitPrice != "" && qty != "") {
-//         var total = unitPrice * qty;
-//         $("#txtTotalPrice").val(currencyFormat(total));
-//     }
-// }
 
 
 // on first focus (bubbles up to document), open the menu
