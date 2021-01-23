@@ -267,4 +267,73 @@ class Supplier extends Admin_Controller
 	
 		  echo json_encode($response);
 	}
+
+
+	public function getGRNPaymentDetails(){
+		$GRNHeaderID = $this->input->post('intGRNHeaderID');
+		$data = $this->model_supplier->getGRNPaymentDetails($GRNHeaderID);
+		echo json_encode($data);
+	  }
+
+	//-----------------------------------
+    // View Supplier Credit Settlement
+    //-----------------------------------
+
+	  public function ViewSupplierCreditSettlement()
+	  {
+		if (!$this->isAdmin) {
+			if (!in_array('viewSupplierCreditSettlement', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$supplier_data = $this->model_supplier->getSupplierData();
+		$payment_data = $this->model_utility->getPayModes();
+
+		$this->data['payment_data'] = $payment_data;
+		$this->data['supplier_data'] = $supplier_data;
+
+		$this->render_template('Supplier/viewSupplierCreditSettlement','View Supplier Credit Settlement', $this->data);
+	  }
+
+	  public function FilterSupplierCreditSettlementHeaderData($PayModeID, $SupplierID, $FromDate, $ToDate)
+	  {
+		if (!$this->isAdmin) {
+			if (!in_array('viewSupplierCreditSettlement', $this->permission)) {
+			  redirect('dashboard', 'refresh');
+			}
+		  }
+	  
+		  $result = array('data' => array());
+	  
+		  $settlement_data = $this->model_supplier->GetSupplierCreditSettlementHeaderData(null, $PayModeID, $SupplierID, $FromDate, $ToDate);
+	  
+	  
+		  foreach ($settlement_data as $key => $value) {
+	  
+			$buttons = '';
+	  
+			if (in_array('viewIssue', $this->permission) || $this->isAdmin) {
+			  $buttons .= '';
+			}
+	  
+	  
+			$result['data'][$key] = array(
+			  $value['vcSupplierSettlementNo'],
+			  $value['vcSupplierName'],
+			  $value['vcPayMode'],
+			  number_format((float)$value['decAmount'], 2, '.', ''),
+			  $value['dtPaidDate'],
+			  $value['vcFullName'],
+			  $value['dtCreatedDate'],
+			  $value['vcBankName'],
+			  $value['vcChequeNo'],
+			  $value['dtPDDate'],
+			  $value['vcRemark'],
+			  $buttons
+			);
+		  }
+	  
+		  echo json_encode($result);
+	  }
 }

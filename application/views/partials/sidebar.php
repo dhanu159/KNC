@@ -197,6 +197,14 @@
                                 <p>&nbsp;&nbsp;&nbsp;Supplier Credit Settlement</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Supplier/ViewSupplierCreditSettlement') ?>" class="nav-link <?php if ($this->uri->segment(2) == "viewSupplierCreditSettlement") {
+                                                                                                                            echo 'active';
+                                                                                                                        } ?>">
+                                <i class="fas fa-user"></i>
+                                <p>&nbsp;&nbsp;&nbsp;View Supplier Credit Settlement</p>
+                            </a>
+                        </li>
                     </ul>
 
                 </li>

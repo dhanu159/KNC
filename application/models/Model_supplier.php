@@ -5,6 +5,7 @@ class Model_supplier extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        $this->load->model('model_grn');
 
     }
 
@@ -91,7 +92,7 @@ class Model_supplier extends CI_Model
     public function getSupplierWiseInvoiceAndGRNno($supplierID)
     {
         if ($supplierID) {
-            $sql = "SELECT G.intGRNHeaderID, CONCAT(G.vcInvoiceNo,' ( ', G.vcGRNNo,' ) ') AS vcGRNNo , G.intSupplierID  , SUM(IFNULL(SD.decPaidAmount,0)) AS PayAmount ,G.decGrandTotal
+            $sql = "SELECT G.intGRNHeaderID, CONCAT(G.vcInvoiceNo,' ( ', G.vcGRNNo,' ) ') AS vcGRNNo , G.intSupplierID  , SUM(IFNULL(SD.decPaidAmount,0)) AS decPaidAmount ,G.decGrandTotal
             FROM grnheader AS G
             LEFT OUTER JOIN suppliersettlementdetail AS SD ON G.intGRNHeaderID = SD.intGRNHeaderID
             WHERE  G.intSupplierID = ? AND  G.intPaymentTypeID = 2 AND G.intApprovedBy is not null AND G.intRejectedBy is null
@@ -104,30 +105,175 @@ class Model_supplier extends CI_Model
         }
     }
 
+    public function getGRNPaymentDetails($GRNHeaderID)
+    {
+        $sql = "
+        SELECT G.intGRNHeaderID,
+        SUM(IFNULL(SU.decPaidAmount,0)) AS decPaidAmount,
+        G.decGrandTotal ,REPLACE(G.rv,' ','-') as rv
+        FROM 
+        grnheader AS G
+        LEFT OUTER JOIN suppliersettlementdetail AS SU ON G.intGRNHeaderID = SU.intGRNHeaderID
+        WHERE G.intGRNHeaderID = ? AND G.intPaymentTypeID = 2";
+
+        $query = $this->db->query($sql, array($GRNHeaderID));
+        return $query->row_array();
+    }
+
     public function SaveSupplierCreditSettlement()
     {
-        $this->db->trans_start();
+        $this->db->trans_begin();
+        $anotherUserAccess = false;
+
+        // $query = $this->db->query("SELECT fnGenerateSupplierSettlementNo() AS SupplierSettlementNo");
+        // $ret = $query->row();
+        // $SupplierSettlementNo = $ret->SupplierSettlementNo;
+
+        $response = array();
+
+        $SupplierSettlementNo = "SS-001";
+
+        $cmbPayMode = $this->input->post('cmbPayMode');
 
         $data = array(
+            'vcSupplierSettlementNo' =>  $SupplierSettlementNo,
             'intSupplierID' => $this->input->post('cmbsupplier'),
             'decAmount' => $this->input->post('txtAmount'),
-            'intPayModelD' =>  $this->input->post('cmbPayMode'),
+            'intPayModeID' =>  $this->input->post('cmbPayMode'),
             'dtPaidDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('dtSettlementDate')))),
             'intUserID' =>  $this->session->userdata('user_id'),
-            'vcChequeNo' => $this->input->post('txtChequeNo'),
-            'intBankID' =>  $this->input->post('cmbBank'),
-            'dtPDDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('dtPDDate')))),
-            'vcRemark' => $this->input->post('txtRemark'),
+            'vcChequeNo' => $cmbPayMode == 1 ? NULL : $this->input->post('txtChequeNo'),
+            'intBankID' =>  $cmbPayMode == 1 ? NULL : $this->input->post('cmbBank'),
+            'dtPDDate' => $cmbPayMode == 1 ? NULL : date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('dtPDDate')))),
+            'vcRemark' => $this->input->post('txtRemark') == "" ? NULL : $this->input->post('txtRemark'),
         );
+
 
         $this->db->insert('suppliersettlementheader', $data);
         $SupplierSettlementHeaderID = $this->db->insert_id();
 
-        $item_count = count($this->input->post('----------'));
+        $grn_count = count($this->input->post('GRNHeaderID'));
+
+        for ($i = 0; $i < $grn_count; $i++) {
+
+            $currentRV = $this->model_grn->getGRNHeaderData($this->input->post('GRNHeaderID')[$i],NULL,NULL,NULL);
+            $previousRV =  $this->input->post('Rv')[$i];
 
 
+            if ($currentRV['rv'] != $previousRV) {
+                $anotherUserAccess = true;
+            }
+        
+            $items = array(
+                'intSupplierSettlementHeaderID' => $SupplierSettlementHeaderID,
+                'intGRNHeaderID' => $this->input->post('GRNHeaderID')[$i],
+                'decPaidAmount' => $this->input->post('txtPayAmount')[$i]
+            );
+            $insertDetails = $this->db->insert('suppliersettlementdetail', $items);
+        }
 
+        // if ($cmbPayMode == 1) //Cash
+        // {
+            $sql = "UPDATE supplier AS S
+            SET S.decAvailableCredit = (S.decAvailableCredit + " . $this->input->post('txtAmount') . ")
+            WHERE S.intSupplierID = ?";
+        // }
+    
+        $this->db->query($sql, array($this->input->post('cmbsupplier')));
+
+
+        if ($anotherUserAccess == true) {
+            $response['success'] = false;
+            $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
+            $this->db->trans_rollback();
+            // return $response;
+        // } else if ($exceedStockQty == true) {
+        //     $response['success'] = false;
+        //     $response['messages'] = 'Stock quantity over exceeds error, please refresh the page and try again !';
+        //     $this->db->trans_rollback();
+        // } else if ($exceedCreditLimit == true) {
+        //     $response['success'] = false;
+        //     $response['messages'] = 'You cannot exceed cutomer credit limit !';
+        //     $this->db->trans_rollback();
+        } else {
+            if ($this->db->trans_status() === FALSE) {
+                $this->db->trans_rollback();
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while create the issue details';
+            } else {
+
+                $this->db->trans_commit();
+                $response['success'] = true;
+                $response['messages'] = 'Succesfully created !';
+            }
+        }
+
+        return $response;
 
 
     }
+
+    //-----------------------------------
+    // View Supplier Credit Settlement
+    //-----------------------------------
+
+    public function GetSupplierCreditSettlementHeaderData($SupplierSettlementID = null, $PayModeID = null, $SupplierID = null, $FromDate = null, $ToDate = null)
+    {
+        if ($SupplierSettlementID) {
+            $sql = "
+                    ----";
+
+            $query = $this->db->query($sql, array($SupplierSettlementID));
+            return $query->row_array();
+        }
+
+
+        $sql = "
+        SELECT 
+                SS.intSupplierSettlementHeaderID,
+                SS.vcSupplierSettlementNo,
+                S.vcSupplierName,
+                P.vcPayMode,
+                SS.decAmount,
+                CAST(SS.dtPaidDate AS DATE) AS dtPaidDate,
+                U.vcFullName,
+                SS.dtCreatedDate,
+                IFNULL(B.vcBankName,'N/A') AS vcBankName,
+                IFNULL(SS.vcChequeNo,'N/A') AS vcChequeNo,
+                IFNULL(SS.dtPDDate,'N/A') AS dtPDDate,
+                IFNULL(SS.vcRemark,'N/A') AS vcRemark
+        FROM suppliersettlementheader AS SS
+        INNER JOIN supplier AS S ON SS.intSupplierID = S.intSupplierID
+        INNER JOIN paymode AS P ON SS.intPayModeID = P.intPayModeID
+        INNER JOIN user AS U ON SS.intUserID = U.intUserID
+        LEFT OUTER JOIN bank AS B ON SS.intBankID = B.intBankID";
+
+        $dateFilter = " WHERE CAST(SS.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
+
+        $customerFilte = "";
+        $paymentTypeFilte = "";
+
+        $sqlParam = array();
+
+        array_push($sqlParam, $FromDate);
+        array_push($sqlParam, $ToDate);
+
+        if ($PayModeID != 0) {
+
+            $paymentTypeFilte = " AND P.intPayModeID = ? ";
+            array_push($sqlParam, $PayModeID);
+        }
+
+        if ($SupplierID != 0) {
+
+            $customerFilte = " AND S.intSupplierID = ? ";
+            array_push($sqlParam, $SupplierID);
+        }
+
+        $sql  = $sql . $dateFilter  . $paymentTypeFilte . $customerFilte . " ORDER BY SS.dtCreatedDate DESC";
+
+        $query = $this->db->query($sql, $sqlParam);
+        return $query->result_array();
+    }
+
 }

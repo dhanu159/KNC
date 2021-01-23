@@ -299,7 +299,9 @@ class Model_issue extends CI_Model
 
     public function getReturnIssueNo()
     {
-        $sql = "SELECT intIssueHeaderID,vcIssueNo from issueheader;";
+        $sql = "SELECT IH.intIssueHeaderID,IH.vcIssueNo 
+        FROM issueheader IH
+        WHERE IH.intIssueHeaderID NOT IN (select intIssueHeaderID from receiptdetail);";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -339,15 +341,11 @@ class Model_issue extends CI_Model
         $UserID = $this->session->userdata('user_id');
 
 
-
-
         $sql = "UPDATE Item AS I
         INNER JOIN issuedetail AS ID ON I.intItemID = ID.intItemID
         SET I.decStockInHand = (I.decStockInHand + ID.decIssueQty)
         WHERE ID.intIssueHeaderID = ? ;";
         $this->db->query($sql, array($IssueHeaderID));
-
-
 
 
         $sql = "UPDATE customer AS C
@@ -367,9 +365,10 @@ class Model_issue extends CI_Model
         FROM    issueheader AS IH
         WHERE   IH.intIssueHeaderID = ?;";
         $this->db->query($sql, array($IssueHeaderID));
+        $IssueReturnHeaderID = $this->db->insert_id();
 
         $sql = "INSERT INTO issuereturndetail(intIssueReturnHeaderID, intIssueDetailID, intIssueHeaderID, intItemID, decIssueQty, decUnitPrice, decTotalPrice,decReturnQty)
-        SELECT  170 , ID.intIssueDetailID, ID.intIssueHeaderID, ID.intItemID, ID.decIssueQty, ID.decUnitPrice, ID.decTotalPrice , ID.decIssueQty
+        SELECT  $IssueReturnHeaderID , ID.intIssueDetailID, ID.intIssueHeaderID, ID.intItemID, ID.decIssueQty, ID.decUnitPrice, ID.decTotalPrice , ID.decIssueQty
         FROM    issuedetail AS ID
         WHERE   ID.intIssueHeaderID = ?;";
         $this->db->query($sql, array($IssueHeaderID));

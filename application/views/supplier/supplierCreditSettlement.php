@@ -207,8 +207,30 @@
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
+                    <div class="row" style="border-top:1px solid #dee2e6;">
+                        <div class="col-6">
+                            <div class="row" style="margin-top: 20px;">
+                                <div class="form-group col-md-6">
+                                    <label for="txtTotalOutstanding">Total Allocated Amount</label>
+                                    <input type="text" class="form-control" id="txtTotalAllocated" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="txtTotalOutstanding">Available Amount</label>
+                                    <input type="text" class="form-control" id="txtTotalAvailable" name="txtTotalOutstanding" placeholder="N/A" style="cursor: not-allowed; color:#000000;" disabled />
+                                </div>
+                            </div>
+                            <p style="color: #c2c7d0;" id="itemCount">Item Count : 0</p>
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-6">
+
+                            <div class="row" style="margin-top: 40px;">
+                                <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat" style="position:absolute; right: 0px;"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
+                            </div>
+                        </div>
+                        <!-- /.col -->
                     </div>
-                    <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
                 </form>
             </div>
             <!-- /.card-body -->

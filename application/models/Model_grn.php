@@ -77,7 +77,8 @@ class Model_grn extends CI_Model
                         ApprovedUser.vcFullName AS ApprovedUser, 
                         GH.dtApprovedOn,
                         RejectedUser.vcFullName AS RejectedUser,
-                        GH.dtRejectedOn 
+                        GH.dtRejectedOn,
+                        REPLACE(GH.rv,' ','-') as rv 
                     FROM 
                         KNC.GRNHeader AS GH
                         INNER JOIN KNC.Supplier AS S ON GH.intSupplierID = S.intSupplierID
