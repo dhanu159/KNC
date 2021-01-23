@@ -3,19 +3,19 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Receipt extends Admin_Controller
 {
-    public function __construct()
-    {
-        parent::__construct();
-        $this->not_logged_in();
-        $this->load->model('model_receipt');
-        $this->load->model('model_customer');
-    $this->load->model('model_utility'); 
+  public function __construct()
+  {
+    parent::__construct();
+    $this->not_logged_in();
+    $this->load->model('model_receipt');
+    $this->load->model('model_customer');
+    $this->load->model('model_utility');
 
-        // $this->load->model('model_issue');
+    // $this->load->model('model_issue');
 
-        // $user_group_data = $this->model_groups->getUserGroupData();
-        // $this->data['user_groups_data'] = $user_group_data;
-    }
+    // $user_group_data = $this->model_groups->getUserGroupData();
+    // $this->data['user_groups_data'] = $user_group_data;
+  }
 
   //-----------------------------------
   // Create Receipt
@@ -41,17 +41,35 @@ class Receipt extends Admin_Controller
   }
 
 
-  public function getCustomerToBeSettleIssueNos(){
+  public function getCustomerToBeSettleIssueNos()
+  {
     $CustomerID = $this->input->post('intCustomerID');
     $data = $this->model_receipt->getCustomerToBeSettleIssueNos($CustomerID);
     echo json_encode($data);
-  } 
+  }
 
-  public function getIssueNotePaymentDetails(){
+  public function getIssueNotePaymentDetails()
+  {
     $IssueHeaderID = $this->input->post('intIssueHeaderID');
     $data = $this->model_receipt->getIssueNotePaymentDetails($IssueHeaderID);
     echo json_encode($data);
   }
 
+  public function SaveReceipt()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('createReceipt', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
 
+    $response = $this->model_receipt->saveReceipt();
+    if ($response['success'] == true) {
+      // $response['issueNote'] = $this->PrintIssueDiv($response['intIssueHeaderID']);
+    }
+    // $response['issueNote'] = "ABC";
+
+
+    echo json_encode($response);
+  }
 }
