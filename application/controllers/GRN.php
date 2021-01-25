@@ -146,6 +146,12 @@ class GRN extends Admin_Controller
                 $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ViewGRNDetails/" . $value['intGRNHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
             }
 
+            if ($value['intSupplierSettlementHeaderID'] != 'N/A') {
+                if (in_array('viewSupplierCreditSettlement', $this->permission) || $this->isAdmin) {
+                    $buttons .= ' <button type="button" class="btn btn-default" onclick="viewGRNWiseSettlementDetails(' . $value['intGRNHeaderID'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-money-bill-alt"></i></button>';
+                }
+            }    
+
             if ($value['ApprovedUser'] == null && $value['RejectedUser'] == null) { // Pending 
                 if (in_array('editGRN', $this->permission) || $this->isAdmin) {
                     $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/EditGRN/" . $value['intGRNHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-edit"></i></a>';
@@ -156,8 +162,9 @@ class GRN extends Admin_Controller
                 if (in_array('approveGRN', $this->permission) || $this->isAdmin) {
                     $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ApproveOrRejectGRN/" . $value['intGRNHeaderID']) . '"><i class="far fa-thumbs-up"></i></a>';
                 }
-            } 
+            }
 
+         
 
             $result['data'][$key] = array(
                 $value['vcGRNNo'],

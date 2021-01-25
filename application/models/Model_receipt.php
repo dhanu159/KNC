@@ -67,7 +67,7 @@ class Model_receipt extends CI_Model
             'intPayModeID' =>  $payMode,
             'decAmount' => $receiptTotal,
             'dtReceiptDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('ReceiptDate')))),
-            'vcRemark' => $this->input->post('txtRemark'),
+            'vcRemark' => $this->input->post('txtRemark') == "" ? NULL : $this->input->post('txtRemark'),
             'intUserID' => $this->session->userdata('user_id'),
         );
 

@@ -150,48 +150,50 @@ $(document).ready(function () {
 
 
 
-    $('#btnSubmit').click(function () {
-        if (totalAvailableAmount > 0) {
-            toastr["error"]("You have available amount, Please allocate total amount and try again !");
-            return;
-        }
-        if ($("#cmbCustomer option:selected").val() == 0) {
-            toastr["error"]("Please select customer !");
-            $("#cmbCustomer").focus();
-            return;
-        }
-        if ($('#receiptTable tr').length == 2) {
-            toastr["error"]("Please allocate pay amount into issue numbers !");
-            $("#cmbIssueNo").focus();
-            return;
-        } 
-        if (checkPayModeSelected()) {
+  
 
-            arcadiaConfirmAlert("You want to be able to create this !", function (button) {
-                var form = $("#createReceipt");
+});
 
-                $.ajax({
-                    async: false,
-                    type: form.attr('method'),
-                    url: form.attr('action'),
-                    data: form.serialize(),
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.success == true) {
-                            debugger;
-                            alert(response.messages);
-                            // arcadiaSuccessAfterIssuePrint("Receipt No : " + response.vcReceiptNo, response.intReceiptHeaderID);
-                            // $('#printpage', window.parent.document).hide();
-                        } else {
-                            toastr["error"](response.messages);
-                        }
+$('#btnSubmit').click(function () {
+    if (totalAvailableAmount > 0) {
+        toastr["error"]("You have available amount, Please allocate total amount and try again !");
+        return;
+    }
+    if ($("#cmbCustomer option:selected").val() == 0) {
+        toastr["error"]("Please select customer !");
+        $("#cmbCustomer").focus();
+        return;
+    }
+    if ($('#receiptTable tr').length == 2) {
+        toastr["error"]("Please allocate pay amount into issue numbers !");
+        $("#cmbIssueNo").focus();
+        return;
+    } 
+    if (checkPayModeSelected()) {
 
+        arcadiaConfirmAlert("You want to be able to create this !", function (button) {
+            var form = $("#createReceipt");
+
+            $.ajax({
+                async: false,
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success == true) {
+                        debugger;
+                        alert(response.messages);
+                        // arcadiaSuccessAfterIssuePrint("Receipt No : " + response.vcReceiptNo, response.intReceiptHeaderID);
+                        // $('#printpage', window.parent.document).hide();
+                    } else {
+                        toastr["error"](response.messages);
                     }
-                });
-            }, this);
-        }
-    });
 
+                }
+            });
+        }, this);
+    }
 });
 
 function setCustomerIssueDetails() {
@@ -264,7 +266,6 @@ function checkPayModeSelected() {
 }
 
 function ResetGrid() {
-
     $("#cmbIssueNo").val(0); // Select the option with a value of '0'
     $('#cmbIssueNo').trigger('change'); // Notify any JS components that the value changed
     $("#txtTotalAmount").val("");
@@ -280,6 +281,7 @@ function ResetGrid() {
     $("#receiptTable").find(".generatedRow").remove();
     setCustomerIssueDetails();
     calculateTotalAllocatedAndAvailableAmount();
+    $("#btnSubmit").prop('disabled', true);
 }
 
 function calculateTotalAllocatedAndAvailableAmount() {

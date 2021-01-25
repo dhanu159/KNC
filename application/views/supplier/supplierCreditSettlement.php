@@ -8,7 +8,7 @@
         overflow: hidden;
         margin-top: 50px;
     } */
-
+ 
     /* table {
         background: black;
         box-shadow: 0 10px 30px rgba(225, 225, 225, 0.5);

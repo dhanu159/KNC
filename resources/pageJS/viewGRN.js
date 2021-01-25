@@ -1,5 +1,8 @@
 
 // var manageTable;
+var supplier = function () {
+    this.intSupplierSettlementHeaderID = 0;
+}
 
 
 $(document).ready(function () {
@@ -100,4 +103,29 @@ function removeGRN(GRNHeaderID){
             }
         });
     }, this);
+}
+
+function viewGRNWiseSettlementDetails($GRNHeaderID)
+{
+    
+    if ($GRNHeaderID > 0) {
+
+        $('#IssueItemTable tbody').empty();
+    
+        var model = new supplier(); 
+        model.intGRNHeaderID = $GRNHeaderID;
+
+        ajaxCall('Supplier/viewGRNWiseSettlementDetailsToModal', model, function (response) {
+           debugger;
+            for (let index = 0; index < response.length; index++) {
+                $("#IssueItemTable tbody").append('<tr>'+
+                '<td><input type="text" class="form-control" name="txtMeasureUnit[]" id="txtMeasureUnit" style="text-align:center;" value="'+response[index].vcSupplierSettlementNo+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:right;" value="'+response[index].vcChequeNo+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:right;" value="'+response[index].dtPDDate+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:right;" value="'+response[index].decPaidAmount+'" disabled></td>'+
+            '</tr>');
+            }
+      
+        });
+    }
 }

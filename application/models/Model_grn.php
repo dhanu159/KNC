@@ -95,31 +95,33 @@ class Model_grn extends CI_Model
 
 
         $sql = "
-                    SELECT 
-                        GH.intGRNHeaderID, 
-                        GH.vcGRNNo, 
-                        GH.vcInvoiceNo, 
-                        GH.intSupplierID,
-                        S.vcSupplierName, 
-                        GH.decSubTotal, 
-                        IFNULL(GH.decDiscount,0.00) AS decDiscount, 
-                        GH.decGrandTotal, 
-                        GH.dtReceivedDate, 
-                        GH.vcRemark,
-                        GH.dtCreatedDate, 
-                        GH.intUserID AS CreatedUserID,
-                        CreatedUser.vcFullName AS CreatedUser, 
-                        GH.intApprovedBy,
-                        ApprovedUser.vcFullName AS ApprovedUser, 
-                        GH.dtApprovedOn,
-                        RejectedUser.vcFullName AS RejectedUser,
-                        GH.dtRejectedOn 
-                    FROM 
-                        KNC.GRNHeader AS GH
-                        INNER JOIN KNC.Supplier AS S ON GH.intSupplierID = S.intSupplierID
-                        INNER JOIN KNC.User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
-                        LEFT OUTER JOIN KNC.User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
-                        LEFT OUTER JOIN KNC.User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID";
+                SELECT 
+                GH.intGRNHeaderID, 
+                GH.vcGRNNo, 
+                GH.vcInvoiceNo, 
+                GH.intSupplierID,
+                S.vcSupplierName, 
+                GH.decSubTotal, 
+                IFNULL(GH.decDiscount,0.00) AS decDiscount, 
+                GH.decGrandTotal, 
+                GH.dtReceivedDate, 
+                GH.vcRemark,
+                GH.dtCreatedDate, 
+                GH.intUserID AS CreatedUserID,
+                CreatedUser.vcFullName AS CreatedUser, 
+                GH.intApprovedBy,
+                ApprovedUser.vcFullName AS ApprovedUser, 
+                GH.dtApprovedOn,
+                RejectedUser.vcFullName AS RejectedUser,
+                GH.dtRejectedOn,
+                IFNULL(SD.intSupplierSettlementHeaderID,'N/A') AS intSupplierSettlementHeaderID
+            FROM 
+                GRNHeader AS GH
+                INNER JOIN Supplier AS S ON GH.intSupplierID = S.intSupplierID
+                INNER JOIN User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
+                LEFT OUTER JOIN User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
+                LEFT OUTER JOIN User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID
+                LEFT OUTER JOIN suppliersettlementdetail AS SD ON GH.intGRNHeaderID = SD.intGRNHeaderID";
 
 
         $dateFilter = " WHERE GH.IsActive = 1 AND CAST(GH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";

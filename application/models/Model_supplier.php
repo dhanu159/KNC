@@ -276,4 +276,31 @@ class Model_supplier extends CI_Model
         return $query->result_array();
     }
 
+    public function getSettlementDetailsToModal($SupplierSettlementHeaderID)
+    {
+        if ($SupplierSettlementHeaderID) {
+            $sql = "SELECT  GH.intGRNHeaderID, CONCAT(GH.vcInvoiceNo,' ( ', GH.vcGRNNo,' ) ') AS vcGRNNo , GH.decGrandTotal AS TotalAmount , SD.decPaidAmount AS PaidAmount
+            FROM suppliersettlementdetail AS SD
+            INNER JOIN suppliersettlementheader AS SH ON SD.intSupplierSettlementHeaderID = SH.intSupplierSettlementHeaderID
+            INNER JOIN supplier AS S ON SH.intSupplierID = S.intSupplierID
+            INNER JOIN paymode AS P ON SH.intPayModeID = P.intPayModeID
+            INNER JOIN user AS U ON SH.intUserID = U.intUserID
+            INNER JOIN grnheader AS GH ON SD.intGRNHeaderID = GH.intGRNHeaderID
+            WHERE SD.intSupplierSettlementHeaderID = ?";
+            $query = $this->db->query($sql, array($SupplierSettlementHeaderID));
+            return $query->result_array();
+        }
+    }
+
+    public function getGRNWiseSettlementDetailsToModal($GRNHeaderID)
+    {
+        if ($GRNHeaderID) {
+            $sql = "SELECT SH.vcSupplierSettlementNo,IFNULL(SH.vcChequeNo,'N/A') AS vcChequeNo ,IFNULL(CAST(SH.dtPDDate AS DATE),'N/A') AS dtPDDate, SD.decPaidAmount  FROM suppliersettlementheader AS SH
+            INNER JOIN suppliersettlementdetail AS SD ON SH.intSupplierSettlementHeaderID = SD.intSupplierSettlementHeaderID
+            WHERE SD.intGRNHeaderID = ?";
+            $query = $this->db->query($sql, array($GRNHeaderID));
+            return $query->result_array();
+        }
+    }
+
 }

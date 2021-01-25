@@ -1,10 +1,18 @@
-<!-- <style type="text/css">
-    table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    } 
-</style> -->
+<style>
+      .table,
+    td {
+        border: 1px solid #263238;
+    }
+
+    .table th {
+        background-color: #263238 !important;
+        color: #FFFFFF;
+    }
+
+    tbody td {
+        padding: 0 !important;
+    }
+</style>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper arcadia-main-container ">
@@ -141,23 +149,36 @@
 
 
 </div>
-<!-- /.content-wrapper -->
 
-<!-- /.content-wrapper -->
+<div class="modal fade" tabindex="-1" role="dialog" id="viewModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModal">View Settlement Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <table class="table" id="IssueItemTable">
+                <thead>
+                    <tr>
+                        <th style="text-align:center;">Supplier Settlement No</th>
+                        <th style="width: 100px; text-align:center;">Cheque No</th>
+                        <th style="width: 100px; text-align:center;">PD Date</th>
+                        <th style="width: 100px; text-align:center;">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
 
 
-<!-- <script>
-    $(function() {
-        date = new Date();
-        $('input[name="daterange"]').daterangepicker({
-            opens: 'center',
-            startDate: new Date(date.getFullYear(), date.getMonth(), 1),
-            endDate: new Date()
-        }, function(start, end, label) {
-            alert("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
-        });
-    });
-</script> -->
+                </tbody>
+            </table>
+
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 <script src="<?php echo base_url('resources/pageJS/viewGRN.js') ?>"></script>

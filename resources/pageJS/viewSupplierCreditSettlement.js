@@ -1,6 +1,11 @@
 
 // var manageTable;
 
+var supplier = function () {
+    this.intSupplierSettlementHeaderID = 0;
+}
+
+
 $(document).ready(function () {
 
 var date = new Date();
@@ -8,7 +13,6 @@ var monthStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
 
 var selectedFromDate = "";
 var selectedToDate = "";
-
 
 
 FilterItems(convertToShortDate(monthStartDate), convertToShortDate(date));
@@ -42,6 +46,29 @@ $('#cmbsupplier').on('change', function () {
 
 });
 
+function viewSettlementDetails($SupplierSettlementHeaderID)
+{
+    if ($SupplierSettlementHeaderID > 0) {
+
+        $('#IssueItemTable tbody').empty();
+    
+        var model = new supplier(); 
+        model.intSupplierSettlementHeaderID = $SupplierSettlementHeaderID;
+
+        ajaxCall('Supplier/ViewSettlementDetailsToModal', model, function (response) {
+            // debugger;
+            for (let index = 0; index < response.length; index++) {
+                $("#IssueItemTable tbody").append('<tr>'+
+                '<td><input type="text" class="form-control" name="txtMeasureUnit[]" id="txtMeasureUnit" style="text-align:center;" value="'+response[index].vcGRNNo+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:right;" value="'+response[index].TotalAmount+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:right;" value="'+response[index].PaidAmount+'" disabled></td>'+
+            '</tr>');
+            }
+      
+        });
+    }
+    
+}
 
 
 function FilterItems(FromDate, ToDate) {

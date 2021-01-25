@@ -7,7 +7,7 @@ class Supplier extends Admin_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		$this->not_logged_in();
+		// $this->not_logged_in();
 		$this->load->model('model_supplier');
 		$this->load->model('model_groups');
 		$this->load->model('model_utility');
@@ -313,8 +313,8 @@ class Supplier extends Admin_Controller
 	  
 			$buttons = '';
 	  
-			if (in_array('viewIssue', $this->permission) || $this->isAdmin) {
-			  $buttons .= '';
+			if (in_array('viewSupplierCreditSettlement', $this->permission) || $this->isAdmin) {
+				$buttons .= ' <button type="button" class="btn btn-default" onclick="viewSettlementDetails(' . $value['intSupplierSettlementHeaderID'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
 			}
 	  
 	  
@@ -335,5 +335,19 @@ class Supplier extends Admin_Controller
 		  }
 	  
 		  echo json_encode($result);
+	  }
+
+	  public function ViewSettlementDetailsToModal()
+	  {
+		$SupplierSettlementHeaderID = $this->input->post('intSupplierSettlementHeaderID');
+		$data = $this->model_supplier->getSettlementDetailsToModal($SupplierSettlementHeaderID);
+		echo json_encode($data);
+	  }
+
+	  public function viewGRNWiseSettlementDetailsToModal()
+	  {
+		$GRNHeaderID = $this->input->post('intGRNHeaderID');
+		$data = $this->model_supplier->getGRNWiseSettlementDetailsToModal($GRNHeaderID);
+		echo json_encode($data);
 	  }
 }
