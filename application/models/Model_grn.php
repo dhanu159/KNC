@@ -65,10 +65,12 @@ class Model_grn extends CI_Model
                         GH.vcInvoiceNo, 
                         GH.intSupplierID,
                         S.vcSupplierName, 
+                        P.vcPaymentType,
+                        P.intPaymentTypeID,
                         GH.decSubTotal, 
                         IFNULL(GH.decDiscount,0.00) AS decDiscount, 
                         GH.decGrandTotal, 
-                        GH.dtReceivedDate, 
+                        CAST(GH.dtReceivedDate AS DATE) AS dtReceivedDate, 
                         GH.vcRemark,
                         GH.dtCreatedDate, 
                         GH.intUserID AS CreatedUserID,
@@ -83,6 +85,7 @@ class Model_grn extends CI_Model
                         KNC.GRNHeader AS GH
                         INNER JOIN KNC.Supplier AS S ON GH.intSupplierID = S.intSupplierID
                         INNER JOIN KNC.User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
+                        INNER JOIN paymenttype AS P ON GH.intPaymentTypeID = P.intPaymentTypeID
                         LEFT OUTER JOIN KNC.User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
                         LEFT OUTER JOIN KNC.User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID
                     WHERE GH.IsActive = 1 AND GH.intGRNHeaderID = ? 
@@ -101,10 +104,12 @@ class Model_grn extends CI_Model
                 GH.vcInvoiceNo, 
                 GH.intSupplierID,
                 S.vcSupplierName, 
+                P.vcPaymentType,
+                P.intPaymentTypeID,
                 GH.decSubTotal, 
                 IFNULL(GH.decDiscount,0.00) AS decDiscount, 
                 GH.decGrandTotal, 
-                GH.dtReceivedDate, 
+                CAST(GH.dtReceivedDate AS DATE) AS dtReceivedDate,  
                 GH.vcRemark,
                 GH.dtCreatedDate, 
                 GH.intUserID AS CreatedUserID,
@@ -114,11 +119,13 @@ class Model_grn extends CI_Model
                 GH.dtApprovedOn,
                 RejectedUser.vcFullName AS RejectedUser,
                 GH.dtRejectedOn,
-                IFNULL(SD.intSupplierSettlementHeaderID,'N/A') AS intSupplierSettlementHeaderID
+                IFNULL(SD.intSupplierSettlementHeaderID,'N/A') AS intSupplierSettlementHeaderID,
+                SUM(SD.decPaidAmount) AS TotalPaidAmount
             FROM 
                 GRNHeader AS GH
                 INNER JOIN Supplier AS S ON GH.intSupplierID = S.intSupplierID
                 INNER JOIN User AS CreatedUser ON GH.intUserID = CreatedUser.intUserID
+                INNER JOIN paymenttype AS P ON GH.intPaymentTypeID = P.intPaymentTypeID
                 LEFT OUTER JOIN User AS ApprovedUser ON GH.intApprovedBy = ApprovedUser.intUserID
                 LEFT OUTER JOIN User AS RejectedUser ON GH.intRejectedBy = RejectedUser.intUserID
                 LEFT OUTER JOIN suppliersettlementdetail AS SD ON GH.intGRNHeaderID = SD.intGRNHeaderID";
@@ -138,7 +145,7 @@ class Model_grn extends CI_Model
         }
 
 
-        $sql  = $sql . $dateFilter . $statusFilter. " ORDER BY GH.intGRNHeaderID";
+        $sql  = $sql . $dateFilter . $statusFilter. "GROUP BY GH.intGRNHeaderID  ORDER BY GH.intGRNHeaderID";
 
         $query = $this->db->query($sql, array($FromDate, $ToDate));
         return $query->result_array();

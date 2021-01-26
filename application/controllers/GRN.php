@@ -141,6 +141,7 @@ class GRN extends Admin_Controller
         foreach ($grn_data as $key => $value) {
 
             $buttons = '';
+            $badge = '';
 
             if (in_array('viewGRN', $this->permission) || $this->isAdmin) {
                 $buttons .= '<a class="button btn btn-default" href="' . base_url("GRN/ViewGRNDetails/" . $value['intGRNHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
@@ -164,12 +165,32 @@ class GRN extends Admin_Controller
                 }
             }
 
+            
+            if($value['TotalPaidAmount'] <  $value['decGrandTotal'] &&  $value['intPaymentTypeID'] == 2) 
+            {
+                $badge = '<span class="badge badge-secondary" style="padding: 4px 10px; float:right; margin-right:10px;">Partially Paid</span>';
+            }
+        
+            if ($value['RejectedUser'] != null) {
+                $badge = '<span class="badge badge-danger" style="padding: 4px 10px; float:right; margin-right:10px;">Rejected GRN</span>';
+            }
+            else if($value['TotalPaidAmount'] == 0 &&  $value['intPaymentTypeID'] == 2) 
+            {
+                $badge = '<span class="badge badge-warning" style="padding: 4px 10px; float:right; margin-right:10px;">Total Pending</span>';
+            }  
+
+            if($value['TotalPaidAmount'] ==  $value['decGrandTotal'] || $value['intPaymentTypeID'] == 1) 
+            {
+                $badge = '<span class="badge badge-success" style="padding: 4px 10px; float:right; margin-right:10px;">Fully Paid</span>';
+            }
+
          
 
             $result['data'][$key] = array(
                 $value['vcGRNNo'],
                 $value['vcInvoiceNo'],
                 $value['vcSupplierName'],
+                $value['vcPaymentType'],
                 number_format((float)$value['decSubTotal'], 2, '.', ''),
                 number_format((float)$value['decDiscount'], 2, '.', ''),
                 number_format((float)$value['decGrandTotal'], 2, '.', ''),
@@ -181,6 +202,7 @@ class GRN extends Admin_Controller
                 ($value['ApprovedUser'] == NULL) ? "N/A" : $value['ApprovedUser'],
                 ($value['dtRejectedOn'] == NULL) ? "N/A" : $value['dtRejectedOn'],
                 ($value['RejectedUser'] == NULL) ? "N/A" : $value['RejectedUser'],
+                $badge,
                 $buttons
             );
         }

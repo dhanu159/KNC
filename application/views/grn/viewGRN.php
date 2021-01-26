@@ -81,6 +81,7 @@
                                     <th>GRN No</th>
                                     <th>Invoice No</th>
                                     <th>Supplier</th>
+                                    <th>Payment Type</th>
                                     <th>Sub Total</th>
                                     <th>Discount</th>
                                     <th>Grand Total</th>
@@ -92,6 +93,7 @@
                                     <th>Approved User</th>
                                     <th>Rejected Date</th>
                                     <th>Rejected User</th>
+                                    <th>Payment Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
