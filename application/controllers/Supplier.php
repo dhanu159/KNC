@@ -12,7 +12,7 @@ class Supplier extends Admin_Controller
 		$this->load->model('model_groups');
 		$this->load->model('model_utility');
 		// $user_group_data = $this->model_groups->getUserGroupData();
-        // $this->data['user_groups_data'] = $user_group_data;
+		// $this->data['user_groups_data'] = $user_group_data;
 	}
 	public function index()
 	{
@@ -23,7 +23,7 @@ class Supplier extends Admin_Controller
 			}
 		}
 
-		$this->render_template('supplier/manageSupplier','Manage Supplier');
+		$this->render_template('supplier/manageSupplier', 'Manage Supplier');
 	}
 
 	public function fetchSupplierDataById($id)
@@ -98,21 +98,19 @@ class Supplier extends Admin_Controller
 			// button
 			$buttons = '';
 
-			
-            if ($this->isAdmin) {
+
+			if ($this->isAdmin) {
 				$buttons .= '<button type="button" class="btn btn-default" onclick="editSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#editSupplierModal"><i class="fas fa-edit"></i></button>';
 				$buttons .= ' <button type="button" class="btn btn-default" onclick="removeSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#removeSupplierModal"><i class="fa fa-trash"></i></button>';
+			} else {
+				if (in_array('editSupplier', $this->permission)) {
+					$buttons .= '<button type="button" class="btn btn-default" onclick="editSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#editSupplierModal"><i class="fas fa-edit"></i></button>';
+				}
 
-            } else {
-                if (in_array('editSupplier', $this->permission)) {
-                    $buttons .= '<button type="button" class="btn btn-default" onclick="editSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#editSupplierModal"><i class="fas fa-edit"></i></button>';
-                }
-
-                if (in_array('deleteSupplier', $this->permission)) {
+				if (in_array('deleteSupplier', $this->permission)) {
 					$buttons .= ' <button type="button" class="btn btn-default" onclick="removeSupplier(' . $value['intSupplierID'] . ')" data-toggle="modal" data-target="#removeSupplierModal"><i class="fa fa-trash"></i></button>';
-
-                }
-            }
+				}
+			}
 
 
 
@@ -125,7 +123,7 @@ class Supplier extends Admin_Controller
 				$value['decAvailableCredit'],
 				$buttons
 			);
-		} 
+		}
 
 		echo json_encode($result);
 	}
@@ -179,7 +177,7 @@ class Supplier extends Admin_Controller
 			} else {
 				$response['success'] = false;
 				foreach ($_POST as $key => $value) {
-				$response['messages'][$key] = form_error($key);
+					$response['messages'][$key] = form_error($key);
 				}
 			}
 		}
@@ -227,8 +225,8 @@ class Supplier extends Admin_Controller
 	}
 
 	//-----------------------------------
-    // Supplier Credit Settlement
-    //-----------------------------------
+	// Supplier Credit Settlement
+	//-----------------------------------
 
 	public function SupplierCreditSettlement()
 	{
@@ -245,7 +243,7 @@ class Supplier extends Admin_Controller
 		$this->data['supplier_data'] = $supplier_data;
 		$this->data['bank_data'] = $bank_data;
 
-		$this->render_template('supplier/supplierCreditSettlement','Manage Supplier Credit Settlement', $this->data);
+		$this->render_template('supplier/supplierCreditSettlement', 'Manage Supplier Credit Settlement', $this->data);
 	}
 
 	public function getSupplierWiseInvoiceAndGRNno($supplierID)
@@ -258,29 +256,30 @@ class Supplier extends Admin_Controller
 	{
 		if (!$this->isAdmin) {
 			if (!in_array('createSaveSupplierCreditSettlement', $this->permission)) {
-			  redirect('dashboard', 'refresh');
+				redirect('dashboard', 'refresh');
 			}
-		  }
-	  
-		  $response = $this->model_supplier->SaveSupplierCreditSettlement();
+		}
 
-	
-		  echo json_encode($response);
+		$response = $this->model_supplier->SaveSupplierCreditSettlement();
+
+
+		echo json_encode($response);
 	}
 
 
-	public function getGRNPaymentDetails(){
+	public function getGRNPaymentDetails()
+	{
 		$GRNHeaderID = $this->input->post('intGRNHeaderID');
 		$data = $this->model_supplier->getGRNPaymentDetails($GRNHeaderID);
 		echo json_encode($data);
-	  }
+	}
 
 	//-----------------------------------
-    // View Supplier Credit Settlement
-    //-----------------------------------
+	// View Supplier Credit Settlement
+	//-----------------------------------
 
-	  public function ViewSupplierCreditSettlement()
-	  {
+	public function ViewSupplierCreditSettlement()
+	{
 		if (!$this->isAdmin) {
 			if (!in_array('viewSupplierCreditSettlement', $this->permission)) {
 				redirect('dashboard', 'refresh');
@@ -293,61 +292,100 @@ class Supplier extends Admin_Controller
 		$this->data['payment_data'] = $payment_data;
 		$this->data['supplier_data'] = $supplier_data;
 
-		$this->render_template('Supplier/viewSupplierCreditSettlement','View Supplier Credit Settlement', $this->data);
-	  }
+		$this->render_template('Supplier/viewSupplierCreditSettlement', 'View Supplier Credit Settlement', $this->data);
+	}
 
-	  public function FilterSupplierCreditSettlementHeaderData($PayModeID, $SupplierID, $FromDate, $ToDate)
-	  {
+	public function FilterSupplierCreditSettlementHeaderData($PayModeID, $SupplierID, $FromDate, $ToDate)
+	{
 		if (!$this->isAdmin) {
 			if (!in_array('viewSupplierCreditSettlement', $this->permission)) {
-			  redirect('dashboard', 'refresh');
+				redirect('dashboard', 'refresh');
 			}
-		  }
-	  
-		  $result = array('data' => array());
-	  
-		  $settlement_data = $this->model_supplier->GetSupplierCreditSettlementHeaderData(null, $PayModeID, $SupplierID, $FromDate, $ToDate);
-	  
-	  
-		  foreach ($settlement_data as $key => $value) {
-	  
+		}
+
+		$result = array('data' => array());
+
+		$settlement_data = $this->model_supplier->GetSupplierCreditSettlementHeaderData(null, $PayModeID, $SupplierID, $FromDate, $ToDate);
+
+
+		foreach ($settlement_data as $key => $value) {
+
 			$buttons = '';
-	  
+
 			if (in_array('viewSupplierCreditSettlement', $this->permission) || $this->isAdmin) {
 				$buttons .= ' <button type="button" class="btn btn-default" onclick="viewSettlementDetails(' . $value['intSupplierSettlementHeaderID'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
 			}
-	  
-	  
-			$result['data'][$key] = array(
-			  $value['vcSupplierSettlementNo'],
-			  $value['vcSupplierName'],
-			  $value['vcPayMode'],
-			  number_format((float)$value['decAmount'], 2, '.', ''),
-			  $value['dtPaidDate'],
-			  $value['vcFullName'],
-			  $value['dtCreatedDate'],
-			  $value['vcBankName'],
-			  $value['vcChequeNo'],
-			  $value['dtPDDate'],
-			  $value['vcRemark'],
-			  $buttons
-			);
-		  }
-	  
-		  echo json_encode($result);
-	  }
 
-	  public function ViewSettlementDetailsToModal()
-	  {
+
+			$result['data'][$key] = array(
+				$value['vcSupplierSettlementNo'],
+				$value['vcSupplierName'],
+				$value['vcPayMode'],
+				number_format((float)$value['decAmount'], 2, '.', ''),
+				$value['dtPaidDate'],
+				$value['vcFullName'],
+				$value['dtCreatedDate'],
+				$value['vcBankName'],
+				$value['vcChequeNo'],
+				$value['dtPDDate'],
+				$value['vcRemark'],
+				$buttons
+			);
+		}
+
+		echo json_encode($result);
+	}
+
+	public function ViewSettlementDetailsToModal()
+	{
 		$SupplierSettlementHeaderID = $this->input->post('intSupplierSettlementHeaderID');
 		$data = $this->model_supplier->getSettlementDetailsToModal($SupplierSettlementHeaderID);
 		echo json_encode($data);
-	  }
+	}
 
-	  public function viewGRNWiseSettlementDetailsToModal()
-	  {
+	public function viewGRNWiseSettlementDetailsToModal()
+	{
 		$GRNHeaderID = $this->input->post('intGRNHeaderID');
 		$data = $this->model_supplier->getGRNWiseSettlementDetailsToModal($GRNHeaderID);
 		echo json_encode($data);
-	  }
+	}
+
+	//-----------------------------------
+	// Cancel Supplier Credit Settlement
+	//-----------------------------------
+
+	public function CancelSupplierCreditSettlement()
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('cancelSupplierCreditSettlement', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+		$settlement_No = $this->model_supplier->getSupplierCreditSettlementNo();
+		$this->data['settlement_No'] = $settlement_No;
+
+
+		$this->render_template('Supplier/cancelSupplierCreditSettlement', 'Cancel Supplier Credit Settlement', $this->data);
+	}
+
+	public function getSupplierSettlementHeaderData()
+	{
+		$SupplierSettlementHeaderID = $this->input->post('intSupplierSettlementHeaderID');
+		$data = $this->model_supplier->GetSupplierCreditSettlementHeaderData($SupplierSettlementHeaderID, null, null, null, null);
+		echo json_encode($data);
+	}
+
+	public function SaveCancelSupplierCreditSettlement()
+	{
+		$cancel = $this->model_supplier->saveCancelSupplierCreditSettlement();
+
+		if ($cancel == true) {
+			$response['success'] = true;
+		} else {
+			$response['success'] = false;
+			$response['messages'] = 'Already Have a Advance Payment Please Delete this Customer Advance Amount !';
+		}
+
+		echo json_encode($response);
+	}
 }

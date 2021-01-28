@@ -6,7 +6,6 @@ class Model_supplier extends CI_Model
     {
         parent::__construct();
         $this->load->model('model_grn');
-
     }
 
     public function create($data)
@@ -29,10 +28,10 @@ class Model_supplier extends CI_Model
                 $insert_id = $this->db->insert_id();
                 $this->db->where('intSupplier_hisID', $insert_id);
                 $update = $this->db->update('supplier_his', array('intEnteredBy' => $this->session->userdata('user_id')));
-    
+
                 $this->db->where('intSupplierID', $id);
                 $update = $this->db->update('supplier', $data);
-    
+
                 $this->db->trans_complete();
                 return ($update == true) ? true : false;
             }
@@ -51,7 +50,6 @@ class Model_supplier extends CI_Model
         $sql = "SELECT intSupplierID,vcSupplierName,vcAddress,vcContactNo,decCreditLimit,decAvailableCredit,rv FROM supplier WHERE IsActive = 1";
         $query = $this->db->query($sql);
         return $query->result_array();
-
     }
 
 
@@ -85,7 +83,7 @@ class Model_supplier extends CI_Model
         }
     }
 
-	//-----------------------------------
+    //-----------------------------------
     // Supplier Credit Settlement
     //-----------------------------------
 
@@ -156,14 +154,14 @@ class Model_supplier extends CI_Model
 
         for ($i = 0; $i < $grn_count; $i++) {
 
-            $currentRV = $this->model_grn->getGRNHeaderData($this->input->post('GRNHeaderID')[$i],NULL,NULL,NULL);
+            $currentRV = $this->model_grn->getGRNHeaderData($this->input->post('GRNHeaderID')[$i], NULL, NULL, NULL);
             $previousRV =  $this->input->post('Rv')[$i];
 
 
             if ($currentRV['rv'] != $previousRV) {
                 $anotherUserAccess = true;
             }
-        
+
             $items = array(
                 'intSupplierSettlementHeaderID' => $SupplierSettlementHeaderID,
                 'intGRNHeaderID' => $this->input->post('GRNHeaderID')[$i],
@@ -174,11 +172,11 @@ class Model_supplier extends CI_Model
 
         // if ($cmbPayMode == 1) //Cash
         // {
-            $sql = "UPDATE supplier AS S
+        $sql = "UPDATE supplier AS S
             SET S.decAvailableCredit = (S.decAvailableCredit + " . $this->input->post('txtAmount') . ")
             WHERE S.intSupplierID = ?";
         // }
-    
+
         $this->db->query($sql, array($this->input->post('cmbsupplier')));
 
 
@@ -187,14 +185,14 @@ class Model_supplier extends CI_Model
             $response['messages'] = 'Another user tries to edit this Item details, please refresh the page and try again !';
             $this->db->trans_rollback();
             // return $response;
-        // } else if ($exceedStockQty == true) {
-        //     $response['success'] = false;
-        //     $response['messages'] = 'Stock quantity over exceeds error, please refresh the page and try again !';
-        //     $this->db->trans_rollback();
-        // } else if ($exceedCreditLimit == true) {
-        //     $response['success'] = false;
-        //     $response['messages'] = 'You cannot exceed cutomer credit limit !';
-        //     $this->db->trans_rollback();
+            // } else if ($exceedStockQty == true) {
+            //     $response['success'] = false;
+            //     $response['messages'] = 'Stock quantity over exceeds error, please refresh the page and try again !';
+            //     $this->db->trans_rollback();
+            // } else if ($exceedCreditLimit == true) {
+            //     $response['success'] = false;
+            //     $response['messages'] = 'You cannot exceed cutomer credit limit !';
+            //     $this->db->trans_rollback();
         } else {
             if ($this->db->trans_status() === FALSE) {
                 $this->db->trans_rollback();
@@ -209,8 +207,6 @@ class Model_supplier extends CI_Model
         }
 
         return $response;
-
-
     }
 
     //-----------------------------------
@@ -220,16 +216,32 @@ class Model_supplier extends CI_Model
     public function GetSupplierCreditSettlementHeaderData($SupplierSettlementID = null, $PayModeID = null, $SupplierID = null, $FromDate = null, $ToDate = null)
     {
         if ($SupplierSettlementID) {
-            $sql = "
-                    ----";
+            $sql = "SELECT 
+                        SS.intSupplierSettlementHeaderID,
+                        SS.vcSupplierSettlementNo,
+                        S.vcSupplierName,
+                        P.vcPayMode,
+                        SS.decAmount,
+                        CAST(SS.dtPaidDate AS DATE) AS dtPaidDate,
+                        U.vcFullName,
+                        SS.dtCreatedDate,
+                        IFNULL(B.vcBankName,'N/A') AS vcBankName,
+                        IFNULL(SS.vcChequeNo,'N/A') AS vcChequeNo,
+                        IFNULL(SS.dtPDDate,'N/A') AS dtPDDate,
+                        IFNULL(SS.vcRemark,'N/A') AS vcRemark
+                FROM suppliersettlementheader AS SS
+                INNER JOIN supplier AS S ON SS.intSupplierID = S.intSupplierID
+                INNER JOIN paymode AS P ON SS.intPayModeID = P.intPayModeID
+                INNER JOIN user AS U ON SS.intUserID = U.intUserID
+                LEFT OUTER JOIN bank AS B ON SS.intBankID = B.intBankID
+                WHERE SS.intSupplierSettlementHeaderID = ?";
 
             $query = $this->db->query($sql, array($SupplierSettlementID));
             return $query->row_array();
         }
 
 
-        $sql = "
-        SELECT 
+        $sql = " SELECT 
                 SS.intSupplierSettlementHeaderID,
                 SS.vcSupplierSettlementNo,
                 S.vcSupplierName,
@@ -303,4 +315,50 @@ class Model_supplier extends CI_Model
         }
     }
 
+    //-----------------------------------
+    // Cancel Supplier Credit Settlement
+    //-----------------------------------
+
+    public function getSupplierCreditSettlementNo()
+    {
+        $sql = "SELECT SH.intSupplierSettlementHeaderID,SH.vcSupplierSettlementNo 
+        FROM suppliersettlementheader SH";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    public function saveCancelSupplierCreditSettlement()
+    {
+        $this->db->trans_start();
+        $SupplierSettlementHeaderID = $this->input->post('cmbSupplierSettlementNo');
+        $UserID = $this->session->userdata('user_id');
+        $Reason =  $this->input->post('Reason') == "" ? NULL : $this->input->post('Reason');
+
+        $sql = "INSERT INTO `cancelsuppliersettlementheader`(`intSupplierSettlementHeaderID`,`vcSupplierSettlementNo`,`intSupplierID`,`decAmount`,`intPayModeID`,`dtPaidDate`,`intUserID`,`dtCreatedDate`,`vcChequeNo`,`intBankID`,`dtPDDate`,`vcRemark`,`intEnteredBy`,`vcReason`)
+                SELECT intSupplierSettlementHeaderID, vcSupplierSettlementNo, intSupplierID, decAmount, intPayModeID, dtPaidDate, intUserID, dtCreatedDate, vcChequeNo, intBankID, dtPDDate, vcRemark , $UserID ,' $Reason '
+                FROM suppliersettlementheader WHERE intSupplierSettlementHeaderID = ?;";
+         $query = $this->db->query($sql, array($SupplierSettlementHeaderID));
+
+
+         $sql = "INSERT INTO `cancelsuppliersettlementdetail`(`intSupplierSettlementDetailID`,`intSupplierSettlementHeaderID`,`intGRNHeaderID`,`decPaidAmount`)
+         SELECT intSupplierSettlementDetailID, intSupplierSettlementHeaderID, intGRNHeaderID, decPaidAmount
+         FROM suppliersettlementdetail WHERE intSupplierSettlementHeaderID = ?;";
+         $query = $this->db->query($sql, array($SupplierSettlementHeaderID));
+
+         $sql = "UPDATE supplier S
+         INNER JOIN suppliersettlementheader as SS ON S.intSupplierID = SS.intSupplierID 
+         SET S.decAvailableCredit =  (S.decAvailableCredit - SS.decAmount)
+         WHERE SS.intSupplierSettlementHeaderID = ?;";
+         $query = $this->db->query($sql, array($SupplierSettlementHeaderID));
+
+         $this->db->where('intSupplierSettlementHeaderID', $SupplierSettlementHeaderID);
+         $this->db->delete('suppliersettlementdetail');
+ 
+         $this->db->where('intSupplierSettlementHeaderID', $SupplierSettlementHeaderID);
+         $this->db->delete('suppliersettlementheader');
+
+        $this->db->trans_complete();
+
+        return ($query == true) ? true : false;
+    }
 }
