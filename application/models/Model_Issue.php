@@ -9,6 +9,15 @@ class Model_issue extends CI_Model
         $this->load->model('model_item');
     }
 
+    public function chkRv($id = null)
+    {
+        if ($id) {
+            $sql = "SELECT REPLACE(rv,' ','-') as rv FROM `IssueHeader` WHERE intIssueHeaderID = ?";
+            $query = $this->db->query($sql, array($id));
+            return $query->row_array();
+        }
+    } 
+
     public function saveIssue()
     {
         $this->db->trans_begin();
