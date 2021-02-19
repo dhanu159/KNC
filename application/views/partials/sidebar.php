@@ -191,10 +191,18 @@
                         </li>
                         <li class="nav-item">
                             <a href="<?php echo base_url('Supplier/SupplierCreditSettlement') ?>" class="nav-link <?php if ($this->uri->segment(2) == "supplierCreditSettlement") {
+                                                                                                                        echo 'active';
+                                                                                                                    } ?>">
+                                <i class="fas fa-user"></i>
+                                <p>&nbsp;&nbsp;&nbsp;Supplier Credit Settlement</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('Receipt/ViewReceipt') ?>" class="nav-link <?php if ($this->uri->segment(2) == "viewReceipt") {
                                                                                                                             echo 'active';
                                                                                                                         } ?>">
                                 <i class="fas fa-user"></i>
-                                <p>&nbsp;&nbsp;&nbsp;Supplier Credit Settlement</p>
+                                <p>&nbsp;&nbsp;&nbsp;View Customer Credit Settlement</p>
                             </a>
                         </li>
                         <li class="nav-item">

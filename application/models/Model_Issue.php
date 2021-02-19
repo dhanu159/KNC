@@ -321,6 +321,16 @@ class Model_issue extends CI_Model
         }
     }
 
+    public function chkExistsReceiptDetails($id = null)
+    {
+        if ($id) {
+            $sql = "SELECT EXISTS(SELECT intIssueHeaderID  FROM receiptdetail WHERE intIssueHeaderID = ?) AS value";
+            $query = $this->db->query($sql, array($id));
+            return $query->result_array();
+        }
+    }
+
+
     public function saveIssueReturn()
     {
         $this->db->trans_begin();

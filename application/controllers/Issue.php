@@ -39,8 +39,8 @@ class Issue extends Admin_Controller
 
   public function getOnlyFinishItemData()
   {
-      $data = $this->model_item->getOnlyFinishItemData();
-      echo json_encode($data);
+    $data = $this->model_item->getOnlyFinishItemData();
+    echo json_encode($data);
   }
 
 
@@ -56,7 +56,7 @@ class Issue extends Admin_Controller
     if ($response['success'] == true) {
       $response['issueNote'] = $this->PrintIssueDiv($response['intIssueHeaderID']);
     }
-      // $response['issueNote'] = "ABC";
+    // $response['issueNote'] = "ABC";
 
 
     echo json_encode($response);
@@ -592,32 +592,32 @@ class Issue extends Admin_Controller
 
   public function ViewIssueDetails($IssueHeaderID)
   {
-      if (!$this->isAdmin) {
-          if (!in_array('viewIssue', $this->permission)) {
-              redirect('dashboard', 'refresh');
-          }
+    if (!$this->isAdmin) {
+      if (!in_array('viewIssue', $this->permission)) {
+        redirect('dashboard', 'refresh');
       }
+    }
 
-      if (!$IssueHeaderID) {
-          redirect('dashboard', 'refresh');
-      }
+    if (!$IssueHeaderID) {
+      redirect('dashboard', 'refresh');
+    }
 
-      $issue_header_data = $this->model_issue->GetIssueHeaderData($IssueHeaderID, null, null, null, null);
+    $issue_header_data = $this->model_issue->GetIssueHeaderData($IssueHeaderID, null, null, null, null);
 
-      if (isset($issue_header_data)) {
+    if (isset($issue_header_data)) {
 
-        $issue_detail_Date =  $this->model_issue->GetIssueDetailsData($IssueHeaderID);
+      $issue_detail_Date =  $this->model_issue->GetIssueDetailsData($IssueHeaderID);
 
-          $this->data['issue_detail_Date'] = $issue_detail_Date;
-          $this->data['issue_header_data'] = $issue_header_data;
+      $this->data['issue_detail_Date'] = $issue_detail_Date;
+      $this->data['issue_header_data'] = $issue_header_data;
 
-          $this->render_template('Issue/viewIssueDetail', 'View Issue', $this->data);
-      }else{
-          redirect(base_url() . 'Issue/viewIssueDetail', 'refresh');
-      }
+      $this->render_template('Issue/viewIssueDetail', 'View Issue', $this->data);
+    } else {
+      redirect(base_url() . 'Issue/viewIssueDetail', 'refresh');
+    }
   }
 
-  
+
   //-----------------------------------
   // Issue Return
   //-----------------------------------
@@ -657,22 +657,27 @@ class Issue extends Admin_Controller
       }
     }
 
-    $IssueHeaderData = $this->model_issue->GetIssueHeaderData($this->input->post('cmbIssueNo'),null,null,null,null);
+    $IssueHeaderData = $this->model_issue->GetIssueHeaderData($this->input->post('cmbIssueNo'), null, null, null, null);
     $CustomerID =  $IssueHeaderData['intCustomerID'];
+    $IssueHeaderID = $this->input->post('cmbIssueNo');
 
     $result =  $this->model_issue->chkNullCustomerAdvancePayment($CustomerID);
 
     if ($result) {
-      $response = $this->model_issue->saveIssueReturn();
-      // $response['success'] = true;
-      // $response['messages'] = 'Succesfully Returned !';
-    }
-    else {
+      $ckhExist = $this->model_issue->chkExistsReceiptDetails($IssueHeaderID);
+      if ($ckhExist <> '') {
+        if ($ckhExist[0]['value'] == 1) {
+          $response['success'] = false;
+          $response['messages'] = "Already Payment added this Issue. Please Cancel Payment Details !";
+        } else {
+          $response = $this->model_issue->saveIssueReturn();
+        }
+      }
+    } else {
       $response['success'] = false;
       $response['messages'] = 'Already Have a Advance Payment Please Delete this Customer Advance Amount !';
     }
-  
+
     echo json_encode($response);
   }
-
 }

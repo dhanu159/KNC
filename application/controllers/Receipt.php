@@ -72,4 +72,28 @@ class Receipt extends Admin_Controller
 
     echo json_encode($response);
   }
+
+
+  //-----------------------------------
+  // View Receipt
+  //-----------------------------------
+
+  public function ViewReceipt()
+  {
+    if (!$this->isAdmin) {
+      if (!in_array('viewReceipt', $this->permission)) {
+        redirect('dashboard', 'refresh');
+      }
+    }
+
+    $customer_data = $this->model_customer->getCustomerData();
+		$payment_data = $this->model_utility->getPayModes();
+
+		$this->data['payment_data'] = $payment_data;
+		$this->data['customer_data'] = $customer_data;
+
+		$this->render_template('Receipt/ViewReceipt', 'View Receipt Settlement', $this->data);
+
+
+  }
 }
