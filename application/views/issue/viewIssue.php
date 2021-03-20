@@ -91,6 +91,7 @@
                                     <th>Discount</th>
                                     <th>Grand Total</th>
                                     <th>Remark</th>
+                                    <th>Payment Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

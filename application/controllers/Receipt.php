@@ -94,6 +94,54 @@ class Receipt extends Admin_Controller
 
 		$this->render_template('Receipt/ViewReceipt', 'View Receipt Settlement', $this->data);
 
-
   }
+
+  public function FilterCustomerReceiptHeaderData($PayModeID, $CustomerID, $FromDate, $ToDate)
+	{
+		if (!$this->isAdmin) {
+			if (!in_array('viewReceipt', $this->permission)) {
+				redirect('dashboard', 'refresh');
+			}
+		}
+
+		$result = array('data' => array());
+
+		$settlement_data = $this->model_receipt->GetCustomerReceiptHeaderData(null, $PayModeID, $CustomerID, $FromDate, $ToDate);
+
+
+		foreach ($settlement_data as $key => $value) {
+
+			$buttons = '';
+
+			if (in_array('viewReceipt', $this->permission) || $this->isAdmin) {
+				$buttons .= ' <button type="button" class="btn btn-default" onclick="viewSettlementDetails(' . $value['intReceiptHeaderID'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-eye"></i></button>';
+			}
+
+
+			$result['data'][$key] = array(
+				$value['vcReceiptNo'],
+				$value['vcCustomerName'],
+				$value['vcPayMode'],
+				number_format((float)$value['decAmount'], 2, '.', ''),
+				$value['dtPaidDate'],
+				$value['vcFullName'],
+				$value['dtCreatedDate'],
+				$value['vcBankName'],
+				$value['vcChequeNo'],
+				$value['dtPDDate'],
+				$value['vcRemark'],
+				$buttons
+			);
+		}
+
+		echo json_encode($result);
+	}
+
+  public function ViewSettlementDetailsToModal()
+  {
+    $ReceiptHeaderID = $this->input->post('intReceiptHeaderID');
+		$data = $this->model_receipt->getSettlementDetailsToModal($ReceiptHeaderID);
+		echo json_encode($data);
+  }
+  
 }

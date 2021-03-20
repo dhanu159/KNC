@@ -112,9 +112,6 @@ class Supplier extends Admin_Controller
 				}
 			}
 
-
-
-
 			$result['data'][$key] = array(
 				$value['vcSupplierName'],
 				$value['vcAddress'],

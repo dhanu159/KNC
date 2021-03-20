@@ -277,11 +277,25 @@ class Issue extends Admin_Controller
     foreach ($issue_data as $key => $value) {
 
       $buttons = '';
+      $badge = '';
 
       if (in_array('viewIssue', $this->permission) || $this->isAdmin) {
         $buttons .= '<a class="button btn btn-default" href="' . base_url("Issue/ViewIssueDetails/" . $value['intIssueHeaderID']) . '" style="margin:0 !important;"><i class="fas fa-eye"></i></a>';
       }
 
+      if ($value['PaymentViewButton'] != 'N/A') {
+        if (in_array('viewIssueCreditSettlement', $this->permission) || $this->isAdmin) {
+          $buttons .= ' <button type="button" class="btn btn-default" onclick="viewReceiptWiseSettlementDetails(' . $value['intIssueHeaderID'] . ')" data-toggle="modal" data-target="#viewModal"><i class="fas fa-money-bill-alt"></i></button>';
+        }
+      }
+
+      if ($value['PaymentViewButton'] != 'N/A') {
+        $badge = '<span class="badge badge-secondary" style="padding: 4px 10px; float:right; margin-right:10px;">Partially Paid</span>';
+      }
+      else{
+        $badge = '<span class="badge badge-warning" style="padding: 4px 10px; float:right; margin-right:10px;">Total Pending</span>';
+      }
+     
 
       $result['data'][$key] = array(
         $value['vcIssueNo'],
@@ -294,6 +308,7 @@ class Issue extends Admin_Controller
         number_format((float)$value['decDiscount'], 2, '.', ''),
         number_format((float)$value['decGrandTotal'], 2, '.', ''),
         $value['vcRemark'],
+        $badge,
         $buttons
       );
     }

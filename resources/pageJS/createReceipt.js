@@ -182,9 +182,8 @@ $('#btnSubmit').click(function () {
                 dataType: 'json',
                 success: function (response) {
                     if (response.success == true) {
-                        debugger;
-                        alert(response.messages);
-                        // arcadiaSuccessAfterIssuePrint("Receipt No : " + response.vcReceiptNo, response.intReceiptHeaderID);
+                        // alert(response.messages);
+                        arcadiaSuccessMessage(response.messages, "Receipt/CreateReceipt");
                         // $('#printpage', window.parent.document).hide();
                     } else {
                         toastr["error"](response.messages);

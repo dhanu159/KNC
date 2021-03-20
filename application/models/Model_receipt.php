@@ -134,4 +134,98 @@ class Model_receipt extends CI_Model
 
         return $response;
     }
+
+    //-----------------------------------
+    // View Customer Credit Settlement
+    //-----------------------------------
+
+    public function GetCustomerReceiptHeaderData($ReceiptHeaderID = null, $PayModeID = null, $CustomerID = null, $FromDate = null, $ToDate = null)
+    {
+        if ($ReceiptHeaderID) {
+            $sql = "SELECT 
+                    SS.intReceiptHeaderID,
+                    SS.vcReceiptNo,
+                    S.vcCustomerName,
+                    P.vcPayMode,
+                    SS.decAmount,
+                    CAST(SS.dtReceiptDate AS DATE) AS dtPaidDate,
+                    U.vcFullName,
+                    SS.dtCreatedDate,
+                    IFNULL(B.vcBankName,'N/A') AS vcBankName,
+                    IFNULL(C.vcChequeNo,'N/A') AS vcChequeNo,
+                    IFNULL(C.dtPDDate,'N/A') AS dtPDDate,
+                    IFNULL(SS.vcRemark,'N/A') AS vcRemark
+            FROM receiptheader AS SS
+            INNER JOIN customer AS S ON SS.intCustomerID = S.intCustomerID
+            INNER JOIN paymode AS P ON SS.intPayModeID = P.intPayModeID
+            INNER JOIN user AS U ON SS.intUserID = U.intUserID
+            LEFT OUTER JOIN CustomerCheque AS C ON SS.intReceiptHeaderID = C.intReceiptHeaderID
+            LEFT OUTER JOIN bank AS B ON C.intBankID = B.intBankID
+            WHERE SS.intReceiptHeaderID = ?";
+
+            $query = $this->db->query($sql, array($ReceiptHeaderID));
+            return $query->row_array();
+        }
+
+
+        $sql = " SELECT 
+                    SS.intReceiptHeaderID,
+                    SS.vcReceiptNo,
+                    S.vcCustomerName,
+                    P.vcPayMode,
+                    SS.decAmount,
+                    CAST(SS.dtReceiptDate AS DATE) AS dtPaidDate,
+                    U.vcFullName,
+                    SS.dtCreatedDate,
+                    IFNULL(B.vcBankName,'N/A') AS vcBankName,
+                    IFNULL(C.vcChequeNo,'N/A') AS vcChequeNo,
+                    IFNULL(C.dtPDDate,'N/A') AS dtPDDate,
+                    IFNULL(SS.vcRemark,'N/A') AS vcRemark
+            FROM receiptheader AS SS
+            INNER JOIN customer AS S ON SS.intCustomerID = S.intCustomerID
+            INNER JOIN paymode AS P ON SS.intPayModeID = P.intPayModeID
+            INNER JOIN user AS U ON SS.intUserID = U.intUserID
+            LEFT OUTER JOIN CustomerCheque AS C ON SS.intReceiptHeaderID = C.intReceiptHeaderID
+            LEFT OUTER JOIN bank AS B ON C.intBankID = B.intBankID";
+
+        $dateFilter = " WHERE CAST(SS.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
+
+        $customerFilte = "";
+        $paymentTypeFilte = "";
+
+        $sqlParam = array();
+
+        array_push($sqlParam, $FromDate);
+        array_push($sqlParam, $ToDate);
+
+        if ($PayModeID != 0) {
+
+            $paymentTypeFilte = " AND P.intPayModeID = ? ";
+            array_push($sqlParam, $PayModeID);
+        }
+
+        if ($CustomerID != 0) {
+
+            $customerFilte = " AND S.intCustomerID = ? ";
+            array_push($sqlParam, $CustomerID);
+        }
+
+        $sql  = $sql . $dateFilter  . $paymentTypeFilte . $customerFilte . " ORDER BY SS.dtCreatedDate DESC";
+
+        $query = $this->db->query($sql, $sqlParam);
+        return $query->result_array();
+    }
+
+    public function getSettlementDetailsToModal($ReceiptHeaderID)
+    {
+        if ($ReceiptHeaderID) {
+            $sql = "SELECT IH.vcIssueNo , IH.decGrandTotal  , RD.decPaidAmount
+            FROM receiptdetail AS RD
+            INNER JOIN receiptheader AS RH ON RD.intReceiptHeaderID = RH.intReceiptHeaderID
+            INNER JOIN issueheader AS IH ON RD.intIssueHeaderID = IH.intIssueHeaderID
+            WHERE RD.intReceiptHeaderID = ?";
+            $query = $this->db->query($sql, array($ReceiptHeaderID));
+            return $query->result_array();
+        }
+    }
 }

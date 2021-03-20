@@ -93,6 +93,12 @@ function FilterItems(FromDate, ToDate) {
 
 }
 
+function viewReceiptWiseSettlementDetails($ReceiptHeaderID)
+{
+    
+}
+
+
 // function removeGRN(GRNHeaderID){
 //     arcadiaConfirmAlert("You want to be able to remove this !", function (button) {
 
