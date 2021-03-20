@@ -138,7 +138,7 @@
                             <thead>
                                 <tr>
                                     <th>Settlement No</th>
-                                    <th>Supplier Name</th>
+                                    <th>Customer Name</th>
                                     <th>Payment Mode</th>
                                     <th>Paid Amount</th>
                                     <th>Paid Date</th>
@@ -179,7 +179,7 @@
             <table class="table" id="IssueItemTable">
                 <thead>
                     <tr>
-                        <th style="text-align:center;">Invoice No / GRN No</th>
+                        <th style="text-align:center;">Issue No</th>
                         <th style="width: 100px; text-align:center;">Total Amount</th>
                         <th style="width: 100px; text-align:center;">Paid Amount</th>
                     </tr>

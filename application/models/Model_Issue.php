@@ -209,12 +209,14 @@ class Model_issue extends CI_Model
                     CU.decCreditLimit,
                     CU.decAvailableCredit,
                     IFNULL(CA.decAmount,'N/A') AS decAdvanceAmount,
-                    IFNULL(IH.vcRemark,'N/A') AS vcRemark
+                    IFNULL(IH.vcRemark,'N/A') AS vcRemark,
+                    IFNULL(RD.intIssueHeaderID,'N/A') AS PaymentViewButton
             FROM Issueheader AS IH
             INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
             INNER JOIN user as U ON IH.intUserID = U.intUserID
             INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
             LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID
+            LEFT OUTER JOIN receiptdetail AS RD ON IH.intIssueHeaderID = RD.intIssueHeaderID
             WHERE IH.intIssueHeaderID = ?";
 
             $query = $this->db->query($sql, array($IssueHeaderID));
@@ -239,12 +241,14 @@ class Model_issue extends CI_Model
                IH.decDiscount,
                IH.decGrandTotal,
                IFNULL(CA.decAmount,'N/A') AS decAdvanceAmount,
-               IFNULL(IH.vcRemark,'N/A') AS vcRemark
+               IFNULL(IH.vcRemark,'N/A') AS vcRemark,
+               IFNULL(RD.intIssueHeaderID,'N/A') AS PaymentViewButton
        FROM Issueheader AS IH
        INNER JOIN customer AS CU ON IH.intCustomerID = CU.intCustomerID
        INNER JOIN user as U ON IH.intUserID = U.intUserID
        INNER JOIN paymenttype AS PY ON IH.intPaymentTypeID = PY.intPaymentTypeID
-       LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID";
+       LEFT OUTER JOIN customeradvancepayment AS CA ON IH.intIssueHeaderID = CA.intIssueHeaderID
+       LEFT OUTER JOIN receiptdetail AS RD ON IH.intIssueHeaderID = RD.intIssueHeaderID";
 
         $dateFilter = " WHERE CAST(IH.dtCreatedDate AS DATE) BETWEEN ? AND ? ";
 
@@ -268,7 +272,7 @@ class Model_issue extends CI_Model
             array_push($sqlParam, $CustomerID);
         }
 
-        $sql  = $sql . $dateFilter  . $paymentTypeFilte . $customerFilte . " ORDER BY IH.dtCreatedDate DESC";
+        $sql  = $sql . $dateFilter  . $paymentTypeFilte . $customerFilte . "GROUP BY IH.intIssueHeaderID ORDER BY IH.dtCreatedDate DESC";
 
         $query = $this->db->query($sql, $sqlParam);
         return $query->result_array();

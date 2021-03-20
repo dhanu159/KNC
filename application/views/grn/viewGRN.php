@@ -153,7 +153,7 @@
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="viewModal">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="viewModal">View Settlement Details</h5>
@@ -166,9 +166,9 @@
                 <thead>
                     <tr>
                         <th style="text-align:center;">Supplier Settlement No</th>
-                        <th style="width: 100px; text-align:center;">Cheque No</th>
-                        <th style="width: 100px; text-align:center;">PD Date</th>
-                        <th style="width: 100px; text-align:center;">Amount</th>
+                        <th style="text-align:center;">Cheque No</th>
+                        <th style="text-align:center;">PD Date</th>
+                        <th style="text-align:center;">Amount</th>
                     </tr>
                 </thead>
                 <tbody>

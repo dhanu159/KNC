@@ -35,58 +35,78 @@ class Dashboard extends Admin_Controller
 				redirect('dashboard', 'refresh');
 			}
 		}
+		$result = array();
+
+		$notification = '';
+
+		$branch_id = 0;
+		if ($_SESSION['Is_main_branch'] == 0) {
+			$branch_id = $_SESSION['branch_id'];
+		}
+		$getSIHExceedItemData = $this->model_dashboard->getSIHExceedItemData($branch_id);
+
+		$ROLCount = 0;
+		foreach ($getSIHExceedItemData as $key => $value) {
+
+			$notification .= '<a href="#" class="dropdown-item">
+		                    	<p class="notify-title"><i class="fas fa-file mr-2"></i>&nbsp;Re-Order Level Exceeded !</p>
+		                    	<p class="notify-message">You have re-order level exceed item "' . $value['vcItemName'] . '"<span class="float-right text-muted text-sm">Your SIH is ' . $value['decStockInHand'] .  '</span></p>
+							</a>
+							<div class="dropdown-divider"></div>';
+			$ROLCount++;
+		}
+
+
 
 		if ($_SESSION['Is_main_branch'] == 1) { // Main Branch
 			$getPendingData = $this->model_dashboard->getMainBranchApprovalPendingData();
-		}else{ // Other Branch
+		} else { // Other Branch
 			$getPendingData = $this->model_dashboard->getMainBranchApprovalPendingData();
 		}
-	
 
-		$result = array();
-					
-		$notification = '';
+
+
 		$GRNCount = 0;
 		foreach ($getPendingData as $key => $value) {
 			$time = '';
 			if ($value['Minutes'] <= 60) {
-				$time = $value['Minutes'].' mins';
-			}else if($value['Hours'] <= 24){
+				$time = $value['Minutes'] . ' mins';
+			} else if ($value['Hours'] <= 24) {
 				$time = $value['Hours'] . ' hours';
-			}else{ 
+			} else {
 				$time = $value['Days'] . ' days';
 			}
 
 			$notification .= '<a href="' . base_url() . "GRN/ApproveOrRejectGRN/" . $value['intGRNHeaderID'] . '" class="dropdown-item">
 		                    	<p class="notify-title"><i class="fas fa-file mr-2"></i>&nbsp;GRN Approval Pending</p>
-		                    	<p class="notify-message">You have pending goods received a note to approve "'.$value['vcGRNNo'].'"<span class="float-right text-muted text-sm">'.$time. '</span></p>
+		                    	<p class="notify-message">You have pending goods received a note to approve "' . $value['vcGRNNo'] . '"<span class="float-right text-muted text-sm">' . $time . '</span></p>
 							</a>
 							<div class="dropdown-divider"></div>';
 			$GRNCount++;
 		}
 
-		$totalNotificationsCount = $GRNCount; // Sum another notifications
+		$totalNotificationsCount = $GRNCount + $ROLCount; // Sum another notifications
 
 		$notificationBadge = '';
 
-		if ($totalNotificationsCount>0) {
+		if ($totalNotificationsCount > 0) {
 			$notificationBadge = '<span class="badge badge-danger navbar-badge" style="font-weight: 500; border-radius: 50% !important; font-size:0.4em;">' . $totalNotificationsCount . '</span>';
 		}
 
 		$btnNotification = '<a class="nav-link" data-toggle="dropdown" href="#" style="font-size: 2.2em; margin-top:0; padding-top:0;">
 		                		<i class="far fa-bell"></i>
-		                		'. $notificationBadge.'
+		                		' . $notificationBadge . '
 							</a>';
 
 		$notoficationAreaBody = '<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="max-height: 80vh; overflow:scroll">
-		                			<span class="dropdown-item dropdown-header">'.$totalNotificationsCount.' Notifications</span>
+		                			<span class="dropdown-item dropdown-header">' . $totalNotificationsCount . ' Notifications</span>
 		                			<div class="dropdown-divider"></div>
-									'. $notification. 
-								'</div>';
+									' . $notification .
+			'</div>';
 
 
 
-		$htmlElement = $btnNotification. $notoficationAreaBody;
+		$htmlElement = $btnNotification . $notoficationAreaBody;
 
 		$result['htmlElement'] = $htmlElement;
 

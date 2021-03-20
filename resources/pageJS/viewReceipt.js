@@ -1,8 +1,8 @@
 
 // var manageTable;
 
-var supplier = function () {
-    this.intSupplierSettlementHeaderID = 0;
+var Receipt = function () {
+    this.intReceiptHeaderID = 0;
 }
 
 
@@ -13,7 +13,6 @@ var monthStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
 
 var selectedFromDate = "";
 var selectedToDate = "";
-
 
 FilterItems(convertToShortDate(monthStartDate), convertToShortDate(date));
 
@@ -46,22 +45,22 @@ $('#cmbcustomer').on('change', function () {
 
 });
 
-function viewSettlementDetails($SupplierSettlementHeaderID)
+function viewSettlementDetails($ReceiptHeaderID)
 {
-    if ($SupplierSettlementHeaderID > 0) {
+    if ($ReceiptHeaderID > 0) {
 
         $('#IssueItemTable tbody').empty();
     
-        var model = new supplier(); 
-        model.intSupplierSettlementHeaderID = $SupplierSettlementHeaderID;
+        var model = new Receipt(); 
+        model.intReceiptHeaderID = $ReceiptHeaderID;
 
-        ajaxCall('Supplier/ViewSettlementDetailsToModal', model, function (response) {
+        ajaxCall('Receipt/ViewSettlementDetailsToModal', model, function (response) {
             // debugger;
             for (let index = 0; index < response.length; index++) {
                 $("#IssueItemTable tbody").append('<tr>'+
-                '<td><input type="text" class="form-control" name="txtMeasureUnit[]" id="txtMeasureUnit" style="text-align:center;" value="'+response[index].vcGRNNo+'" disabled></td>'+
-                '<td><input type="text" class="form-control" name="txtExpectedQty[]" id="txtExpectedQty" style="text-align:right;" value="'+response[index].TotalAmount+'" disabled></td>'+
-                '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:right;" value="'+response[index].PaidAmount+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtIssueNo[]" id="txtIssueNo" style="text-align:center;" value="'+response[index].vcIssueNo+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtGrandTotal[]" id="txtGrandTotal" style="text-align:right;" value="'+response[index].decGrandTotal+'" disabled></td>'+
+                '<td><input type="text" class="form-control" name="txtReceivedQty[]" id="txtReceivedQty" style="text-align:right;" value="'+response[index].decPaidAmount+'" disabled></td>'+
             '</tr>');
             }
       
@@ -74,7 +73,7 @@ function viewSettlementDetails($SupplierSettlementHeaderID)
 function FilterItems(FromDate, ToDate) {
 
 var PayModeID = $('#cmbPayMode').val();
-var SupplierID = $('#cmbsupplier').val();
+var CustomerID = $('#cmbcustomer').val();
 // PayModeID >>    All         = 0
 // PayModeID >>    Cash        = 1
 // PayModeID >>    Cheque      = 2
@@ -85,7 +84,7 @@ $('#manageTable').DataTable({
     buttons: [
         'copy', 'csv', 'excel', 'pdf', 'print'
     ],
-    'ajax': 'FilterSupplierCreditSettlementHeaderData/' + PayModeID + '/' + SupplierID + '/' + '/' + FromDate + '/' + ToDate,
+    'ajax': 'FilterCustomerReceiptHeaderData/' + PayModeID + '/' + CustomerID + '/' + '/' + FromDate + '/' + ToDate,
     'order': [],
     "bDestroy": true,
     "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
