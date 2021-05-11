@@ -171,7 +171,7 @@
 					</button>
 				</div>
 
-				<form role="form" action="<?php echo base_url('customer/remove') ?>" method="post" id="removeCustomerForm">
+				<form role="form" action="<?php echo base_url('customer/removeCustomer') ?>" method="post" id="removeCustomerForm">
 					<div class="modal-body">
 						<p>Do you really want to remove?</p>
 					</div>
