@@ -49,13 +49,13 @@ class Model_receipt extends CI_Model
     {
         $this->db->trans_begin();
 
-        // $query = $this->db->query("SELECT fnGenerateReceiptNo() AS ReceiptNo");
-        // $ret = $query->row();
-        // $ReceiptNo = $ret->ReceiptNo;
+        $query = $this->db->query("SELECT fnGenerateReceiptNo() AS ReceiptNo");
+        $ret = $query->row();
+        $ReceiptNo = $ret->ReceiptNo;
 
         $response = array();
 
-        $ReceiptNo = "Receipt-001";
+        // $ReceiptNo = "Receipt-001";
 
         $customerID = $this->input->post('cmbCustomer');
         $payMode = $this->input->post('cmbPayMode');
