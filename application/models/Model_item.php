@@ -17,7 +17,7 @@ class Model_item extends CI_Model
             $query = $this->db->query($sql, array($itemId));
             return $query->row_array();
         }
-     
+
         $sql = "SELECT it.intItemID,it.vcItemName,mu.intMeasureUnitID,mu.vcMeasureUnit,t.intItemTypeID,t.vcItemTypeName,IFNULL(it.decStockInHand,'N/A') AS decStockInHand,it.decReOrderLevel,IFNULL(it.decUnitPrice,'N/A') AS decUnitPrice,it.rv FROM item as it
         inner join measureunit as mu on mu.intMeasureUnitID = it.intMeasureUnitID
         inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
@@ -44,9 +44,9 @@ class Model_item extends CI_Model
                 inner join itemtype as t on t.intItemTypeID = it.intItemTypeID
                 WHERE IsActive = 1 AND t.intItemTypeID = ? 
                 order by it.vcItemName asc ";
-                $query = $this->db->query($sql, array($itemTypeId));
-                return $query->result_array();
-            }
+            $query = $this->db->query($sql, array($itemTypeId));
+            return $query->result_array();
+        }
     }
 
     public function getOnlyRawItemData()
@@ -100,8 +100,8 @@ class Model_item extends CI_Model
     {
         if ($id) {
             $sql = "SELECT BS.intBranchStockID, BS.intBranchID, BS.intItemID, IT.vcItemName, BS.decStockInHand, BS.decReOrderLevel,REPLACE(BS.rv,' ','-') as rv FROM branchstock AS BS
-        INNER JOIN item AS IT ON BS.intItemID = IT.intItemID
-        WHERE BS.intBranchID = ? ";
+                    INNER JOIN item AS IT ON BS.intItemID = IT.intItemID
+                    WHERE BS.intBranchID = ? ";
             $query = $this->db->query($sql, array(1));
             return $query->row_array();
         }
@@ -112,11 +112,57 @@ class Model_item extends CI_Model
         return $query->result_array();
     }
 
+    public function fetchItemColourData($id = null)
+    {
+        if ($id) {
+            $sql = "SELECT intItemColourID, vcColourName FROM itemcolour WHERE intItemColourID = ? ";
+                $query = $this->db->query($sql, $id);
+                return $query->row_array();
+        }
+        $sql = "SELECT intItemColourID, vcColourName FROM itemcolour";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    public function getItemColourData()
+    {
+        $sql = "SELECT intItemColourID, vcColourName FROM itemcolour";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+        return $result;
+    }
+
+
     public function create($data)
     {
         if ($data) {
             $insert = $this->db->insert('item', $data);
             return ($insert == true) ? true : false;
+        }
+    }
+
+    public function createItemColour($data)
+    {
+        if ($data) {
+            $insert = $this->db->insert('itemcolour', $data);
+            return ($insert == true) ? true : false;
+        }
+    }
+    public function updateItemColour($data, $id)
+    {
+        if ($data && $id) {
+            $this->db->where('intItemColourID', $id);
+            $update = $this->db->update('itemcolour', $data);
+            return ($update == true) ? true : false;
+        }
+    }
+
+    public function removeItemColour($id)
+    {
+        if ($id) {
+            $this->db->where('intItemColourID', $id);
+            $delete = $this->db->delete('itemcolour');
+            return ($delete == true) ? true : false;
         }
     }
 
