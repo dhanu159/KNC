@@ -66,7 +66,7 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN">
+                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN"> 
                     <div class="row">
                         <div class="form-group col-md-4">
                             <label for="supplier">Supplier</label>
