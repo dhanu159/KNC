@@ -27,6 +27,11 @@ $(document).ready(function() {
    
     });
 
+    $("#editItemModal").on("hidden.bs.modal", function(){
+        $('#edit_cmbItemColour').val('0'); // Select the option with a value of '0'
+        $('#edit_cmbItemColour').trigger('change'); // Notify any JS components that the value changed
+    });
+
     $("#addItemModal").on("hidden.bs.modal", function(){
         $("#Item_name").val("");
         $("#unit_price").val("");
@@ -37,6 +42,8 @@ $(document).ready(function() {
         $('#measure_unit').trigger('change'); // Notify any JS components that the value changed
         $('#item_type').val('0'); // Select the option with a value of '0'
         $('#item_type').trigger('change'); // Notify any JS components that the value changed
+        $('#cmbItemColour').val('0'); // Select the option with a value of '0'
+        $('#cmbItemColour').trigger('change'); // Notify any JS components that the value changed
     });
     manageTable = $('#manageTable').DataTable({
         'ajax': 'fetchItemData',
@@ -51,9 +58,16 @@ $(document).ready(function() {
 
     // submit the create from 
     $("#createitemForm").unbind('submit').on('submit', function() {
-
       
         var form = $(this);
+        var ItemName = "";
+
+        if ($("#cmbItemColour :selected").val() == 0) {
+            ItemName =  $("#Item_name").val();
+        }
+        else{
+            ItemName = $("#Item_name").val() +" "+$("#cmbItemColour :selected").val()
+        }
 
         // remove the text-danger
         $(".text-danger").remove();
@@ -61,7 +75,7 @@ $(document).ready(function() {
         $.ajax({
             url: form.attr('action'),
             type: form.attr('method'),
-            data: form.serialize(), // /converting the form data into array and sending it to server
+            data: form.serialize() + "&ItemName="+ItemName,
             dataType: 'json',
             success: function(response) {
 
@@ -113,6 +127,7 @@ $(document).ready(function() {
 
 function editItem(id) {
     
+
     $.ajax({
         async : false,
         url: 'fetchItemDataById/' + id,
@@ -138,13 +153,22 @@ function editItem(id) {
             $("#updateItemForm").unbind('submit').bind('submit', function() {
                 var form = $(this);
 
+                var ItemName = "";
+        
+                if ($("#edit_cmbItemColour :selected").val() == 0) {
+                    ItemName =  $("#edit_item_name").val();
+                }
+                else{
+                    ItemName = $("#edit_item_name").val() +" "+$("#edit_cmbItemColour :selected").val()
+                }
+        
                 // remove the text-danger
                 $(".text-danger").remove();
 
                 $.ajax({
                     url: form.attr('action') + '/' + id,
                     type: form.attr('method'),
-                    data: form.serialize(), // /converting the form data into array and sending it to server
+                    data: form.serialize() + "&ItemName="+ItemName,
                     dataType: 'json',
                     success: function(response) {
 
