@@ -275,10 +275,8 @@ function removeItem(id) {
                     manageTable.ajax.reload(null, false);
 
                     if (response.success === true) {
-
-
                         toastr["success"](response.messages);
-
+                        location.reload();
                         // hide the modal
                         $("#removeItemModal").modal('hide');
                         $("#removeItemForm")[0].reset();
