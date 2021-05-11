@@ -196,7 +196,7 @@ class Customer extends Admin_Controller
 		echo json_encode($response);
 	}
 
-	public function remove($intCustomerID = null)
+	public function removeCustomer($intCustomerID = null)
 	{
 
 		if (!$this->isAdmin) {
@@ -209,25 +209,18 @@ class Customer extends Admin_Controller
 		$response = array();
 		if ($intCustomerID) {
 
-			//	$result = $this->model_customer->chkexists($intCustomerID);
-			$result = '';
-			if ($result <> '') {
-				if ($result[0]['value'] == 1) {
-					$response['success'] = false;
-					$response['messages'] = "Record already received for the system, can't remove this customer !";
-				} else {
-					$delete = $this->model_customer->remove($intCustomerID);
-					if ($delete == true) {
-						$response['success'] = true;
-						$response['messages'] = "Successfully removed !";
-					} else {
-						$response['success'] = false;
-						$response['messages'] = "Error in the database while removing the Supplier information";
-					}
-				}
+			// $result = $this->model_customer->chkexists($intCustomerID);
+
+			$delete = $this->model_customer->removeCustomer($intCustomerID);
+			if ($delete == true) {
+				$response['success'] = true;
+				$response['messages'] = "Successfully removed !";
+			} else {
+				$response['success'] = false;
+				$response['messages'] = "Error in the database while removing the Supplier information";
 			}
-			echo json_encode($response);
 		}
+		echo json_encode($response);
 	}
 
 	//-----------------------------------
@@ -485,13 +478,13 @@ class Customer extends Admin_Controller
 		$CurrentRV = $this->model_customer->getCustomerAdvancePaymentData($intCustomerAdvancePaymentID);
 
 		if ($CurrentRV['rv']  != $rv) {
-            $response['success'] = false;
-            $response['messages'] = 'Another user tries to edit this Data, please refresh the page and try again !';
-        }else {
+			$response['success'] = false;
+			$response['messages'] = 'Another user tries to edit this Data, please refresh the page and try again !';
+		} else {
 			if ($intCustomerAdvancePaymentID) {
 
 				$delete = $this->model_customer->RemoveCustomerAdvancePayment($intCustomerAdvancePaymentID);
-	
+
 				if ($delete == true) {
 					$response['success'] = true;
 					$response['messages'] = "Deleted !";
@@ -503,7 +496,7 @@ class Customer extends Admin_Controller
 				$response['success'] = false;
 				$response['messages'] = "Please refersh the page again !!";
 			}
-		} 
+		}
 
 		echo json_encode($response);
 	}
