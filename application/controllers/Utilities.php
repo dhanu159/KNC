@@ -444,12 +444,12 @@ class Utilities extends Admin_Controller
                 if (in_array('viewCuttingOrder', $this->permission)) {
                     $buttons .= ' <a href="' . base_url('Utilities/ViewCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-eye"></i></a>';
                 }
-                if (in_array('editCuttingOrder', $this->permission)) {
-                    $buttons .= ' <a href="' . base_url('Utilities/EditCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-edit"></i></a>';
-                }
-                if (in_array('deleteCuttingOrder', $this->permission)) {
-                    $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCuttingOrder" onclick="RemoveCuttingOrder(' . $value['intCuttingOrderHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
-                }
+                // if (in_array('editCuttingOrder', $this->permission)) {
+                //     $buttons .= ' <a href="' . base_url('Utilities/EditCuttingOrder/' . $value['intCuttingOrderHeaderID']) . '" class="btn btn-default"><i class="fa fa-edit"></i></a>';
+                // }
+                // if (in_array('deleteCuttingOrder', $this->permission)) {
+                //     $buttons .= ' <button type="button" class="btn btn-default" id="btnRemoveCuttingOrder" onclick="RemoveCuttingOrder(' . $value['intCuttingOrderHeaderID'] . ')"><i class="fa fa-trash"></i></button>';
+                // }
             }
 
             $result['data'][$key] = array(
