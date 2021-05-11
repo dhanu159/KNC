@@ -22,13 +22,13 @@ class Model_issue extends CI_Model
     {
         $this->db->trans_begin();
 
-        // $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
-        // $ret = $query->row();
-        // $IssueNo = $ret->IssueNo;
+        $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
+        $ret = $query->row();
+        $IssueNo = $ret->IssueNo;
 
         $response = array();
 
-        $IssueNo = "Issue-001";
+        // $IssueNo = "Issue-001";
 
         $insertDetails = false;
 
@@ -350,13 +350,13 @@ class Model_issue extends CI_Model
 
         $IssueHeaderID = $this->input->post('cmbIssueNo');
 
-        // $query = $this->db->query("SELECT fnGenerateIssueNo() AS IssueNo");
-        // $ret = $query->row();
-        // $IssueNo = $ret->IssueNo;
+        $query = $this->db->query("SELECT fnGenerateIssueReturnNo() AS ReturnNo");
+        $ret = $query->row();
+        $ReturnNo = $ret->ReturnNo;
 
         $response = array();
 
-        $ReturnNo = "Return-001";
+        // $ReturnNo = "Return-001";
 
         $Reason ="";
         $UserID = 0;
