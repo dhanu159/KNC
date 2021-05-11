@@ -35,8 +35,8 @@
 						<select class="form-control select2" style="width: 100%;" id="cmbItemType" name="cmbItemType">
 							<option value="0" selected hidden>All Types</option>
 							<?php foreach ($itemTypeAll as $k => $v) { ?>
-                                    <option value="<?= $v['intItemTypeID'] ?>"><?= $v['vcItemTypeName'] ?></option>
-                                <?php } ?>
+								<option value="<?= $v['intItemTypeID'] ?>"><?= $v['vcItemTypeName'] ?></option>
+							<?php } ?>
 						</select>
 					</div>
 
@@ -83,6 +83,15 @@
 						<div class="form-group">
 							<label for="txtItemName">Item Name</label>
 							<input type="text" class="form-control" id="Item_name" name="Item_name" placeholder="Enter Item Name" autofocus>
+						</div>
+						<div class="form-group">
+							<label>Item Colour</label>
+							<select class="form-control select2" style="width: 100%;" id="cmbItemColour" name="cmbItemColour">
+								<option value="0" selected >No Colour</option>
+								<?php foreach ($itemColourData as $row) { ?>
+									<option value="<?= $row->vcColourName ?>"><?= $row->vcColourName ?></option>
+								<?php } ?>
+							</select>
 						</div>
 						<div class="form-group">
 							<label>Measure Unit</label>
@@ -144,6 +153,15 @@
 						<div class="form-group">
 							<label for="Item_name">Item Name</label>
 							<input type="text" class="form-control" id="edit_item_name" name="edit_item_name" placeholder="Enter Item Name" autocomplete="off">
+						</div>
+						<div class="form-group">
+							<label>Item Colour</label>
+							<select class="form-control select2" style="width: 100%;" id="edit_cmbItemColour" name="edit_cmbItemColour">
+								<option value="0" selected hidden>No Colour</option>
+								<?php foreach ($itemColourData as $row) { ?>
+									<option value="<?= $row->vcColourName ?>"><?= $row->vcColourName ?></option>
+								<?php } ?>
+							</select>
 						</div>
 						<div class="form-group">
 							<label>Measure Unit</label>
