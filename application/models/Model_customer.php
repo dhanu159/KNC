@@ -50,7 +50,7 @@ class Model_customer extends CI_Model
     public function chkexists($id = null)
     {
         if ($id) {
-            $sql = "SELECT EXISTS(SELECT intCustomerID  FROM issu WHERE intCustomerID = ?) AS value";
+            $sql = "SELECT EXISTS(SELECT intCustomerID  FROM issueheader WHERE intCustomerID = ?) AS value";
             $query = $this->db->query($sql, array($id));
             return $query->result_array();
         }
@@ -62,6 +62,20 @@ class Model_customer extends CI_Model
             $this->db->where('intCustomerID', $id);
             $update = $this->db->update('customer', $data);
             return ($update == true) ? true : false;
+        }
+    }
+
+
+    
+    public function removeCustomer($id)
+    {
+        if ($id) {
+            $data = [
+                'IsActive' => '0',
+            ];
+            $this->db->where('intCustomerID', $id);
+            $delete = $this->db->update('customer', $data);
+            return ($delete == true) ? true : false;
         }
     }
 
