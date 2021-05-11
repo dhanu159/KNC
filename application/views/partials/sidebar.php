@@ -98,6 +98,14 @@
                                 <p>&nbsp;&nbsp;Cutting Order</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="<?= base_url('Item/manageItemColour') ?>" class="nav-link <?php if ($this->uri->segment(2) == "manageItemColour") {
+                                                                                                    echo 'active';
+                                                                                                } ?>">
+                                <i class="fas fa-balance-scale-right"></i>
+                                <p>&nbsp;&nbsp;Manage Item Colours</p>
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CustomersList" || $this->uri->segment(2) == "manageCustomerUnitPriceConfig") {
