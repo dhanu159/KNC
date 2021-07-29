@@ -50,12 +50,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Create GRN (Raw Materials)</h1>
+                    <h1>Create GRN (Finished Goods)</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">GRN</a></li>
-                        <li class="breadcrumb-item active">Create GRN (Raw Materials)</li>
+                        <li class="breadcrumb-item active">Create GRN (Finished Goods)</li>
                     </ol>
                 </div>
             </div>
@@ -66,42 +66,12 @@
         <!-- Default box -->
         <div class="card">
             <div class="card-body">
-                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveGRN') ?>" id="createGRN"> 
+                <form role="form" class="add-form" method="post" action="<?= base_url('GRN/SaveFinishedGoodsGRN') ?>" id="createGRNFinishedGoods"> 
                     <div class="row">
-                        <div class="form-group col-md-4">
-                            <label for="supplier">Supplier</label>
-                            <select class="form-control select2" style="width: 100%;" id="supplier" name="supplier">
-                                <option value="0" disabled selected hidden>Select Supplier</option>
-                                <?php foreach ($supplier_data as $k => $v) { ?>
-                                    <option value="<?= $v['intSupplierID'] ?>"><?= $v['vcSupplierName'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group col-md-4">
-                            <label for="credit_limit">Credit Limit</label>
-                            <input type="text" class="form-control" id="credit_limit" name="credit_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label for="credit_limit">Credit Balace</label>
-                            <input type="text" class="form-control" id="available_limit" name="available_limit" autocomplete="off" style="cursor: not-allowed; color:#000000;" disabled />
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-2">
-                            <label>Payment Mode :</label>
-                            <select class="form-control select2" style="width: 100%;" id="cmbpayment" name="cmbpayment">
-                                <!-- <option value="0" selected hidden>All Payments</option> -->
-                                <?php foreach ($payment_data as $k => $v) { ?>
-                                    <option value="<?= $v['intPaymentTypeID'] ?>"><?= $v['vcPaymentType'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-md-2">
-                            <label for="invoice_no">Invoice No</label>
-                            <input type="text" class="form-control" id="invoice_no" name="invoice_no" placeholder="Enter Invoice Number" autocomplete="off" required />
-                        </div>
+                        <!-- <div class="form-group col-md-4">
+                            <label for="dispatch_no">Dispatch No</label>
+                            <input type="text" class="form-control" id="dispatch_no" name="dispatch_no" placeholder="Enter Dispatch Number" autocomplete="off" required />
+                        </div> -->
                         <div class="form-group col-md-4">
                             <label>Received Date</label>
                             <div class="input-group date" id="dtReceivedDate" data-target-input="nearest">
@@ -122,10 +92,8 @@
                             <tr>
                                 <th hidden>Item ID</th>
                                 <th style="text-align:center;">Item</th>
-                                <th style="width: 200px; text-align:center;">Unit Price</th>
                                 <th style="width: 100px; text-align:center;">Unit</th>
                                 <th style="width: 100px; text-align:center;">Qty</th>
-                                <th style="width: 200px; text-align:center;">Total Price</th>
                                 <th style="width: 100px; text-align: center;">Action</th>
                             </tr>
                         </thead>
@@ -142,10 +110,8 @@
                                         <?php } ?>
                                     </select>
                                 </td>
-                                <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtUnitPrice" id="txtUnitPrice" style="text-align:right;"></td>
                                 <td class="static"><input type="text" class="form-control add-item" name="txtMeasureUnit" id="txtMeasureUnit" style="text-align:center;" disabled></td>
                                 <td class="static"><input type="text" class="form-control only-decimal add-item" name="txtQty" id="txtQty" style="text-align:right;"></td>
-                                <td class="static"><input type="text" class="form-control only-decimal" name="txtTotalPrice" id="txtTotalPrice" placeholder="0.00" style="text-align:right;" disabled></td>
                                 <td class="static"><button type="button" class="button green center-items" id="btnAddToGrid"><i class="fas fa-plus"></i></button></td>
                             </tr>
                         </tbody>
@@ -156,29 +122,7 @@
                             <p style="color: #c2c7d0; position:absolute; bottom:0;" id="itemCount">Item Count : 0</p>
                         </div>
                         <!-- /.col -->
-                        <div class="col-6" style="padding-right:100px;">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <tr>
-                                        <th style="border-top:0 !important; width:180px;">Sub Total:</th>
-                                        <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right;" id="subTotal" name="subTotal" placeholder="0.00" readonly>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th style="border-top:0 !important;">Discount:</th>
-                                        <td style="border-top:0 !important;">
-                                            <input type="text" class="form-control only-decimal" name="txtDiscount" id="txtDiscount" placeholder="0.00" style="font-weight: 600; text-align:right;">
-                                        </td>
-                                    </tr>
-                                    <tr style="border-top:2px solid #dee2e6; border-bottom:2px solid #dee2e6;">
-                                        <th style="font-size:1.5em;">Grand Total:</th>
-                                        <td>
-                                            <input type="text" class="form-control" style="font-weight: 600; text-align:right; font-size:1.5em;" id="grandTotal" name="grandTotal" placeholder="0.00" readonly>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
+                        <div class="col-6">
                             <button type="button" id="btnSubmit" class="btn btn-lg btn-info btn-flat float-right"><i class="fas fa-calendar-check"></i>&nbsp;&nbsp;&nbsp;Submit</button>
                         </div>
                         <!-- /.col -->
@@ -195,7 +139,7 @@
 </div>
 <!-- /.content-wrapper -->
 
-<script src="<?php echo base_url('resources/pageJS/createGRN.js') ?>"></script>
+<script src="<?php echo base_url('resources/pageJS/createGRNFinishedGoods.js') ?>"></script>
 
 <script>
     // $(document).ready(function() {

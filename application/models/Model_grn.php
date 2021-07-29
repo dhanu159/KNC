@@ -55,6 +55,46 @@ class Model_grn extends CI_Model
         return ($insertDetails == true) ? true : false;
     }
 
+    public function saveFinishedGoodsGRN()
+    {
+        $this->db->trans_start();
+
+        // $query = $this->db->query("SELECT fnGenerateFinishedGoodsGRNNo() AS GRNNo");
+        // $ret = $query->row();
+        // $GRNNo = $ret->GRNNo;
+
+
+        $GRNNo = "Test-001";
+
+        $insertDetails = false;
+
+
+        $data = array(
+            'vcFGGRNNo' => $GRNNo,  
+            'dtReceivedDate' => date('Y-m-d', strtotime(str_replace('-', '/', $this->input->post('receivedDate')))),
+            'vcRemark' => $this->input->post('txtRemark'),
+            'intUserID' => $this->session->userdata('user_id')
+        );
+
+        $insert = $this->db->insert('FG_GRNHeader', $data);
+        $GRNHeaderID = $this->db->insert_id();
+
+        $item_count = count($this->input->post('itemID'));
+
+        for ($i = 0; $i < $item_count; $i++) {
+            $items = array(
+                'intFGGRNHeaderID' => $GRNHeaderID,
+                'intItemID' => $this->input->post('itemID')[$i],
+                'decQty' => $this->input->post('itemQty')[$i]
+            );
+            $insertDetails = $this->db->insert('FG_GRNDetail', $items);
+        }
+
+        $this->db->trans_complete();
+
+        return ($insertDetails == true) ? true : false;
+    }
+
     public function getGRNHeaderData($GRNID = null, $Status = null, $FromDate = null, $ToDate = null)
     {
         if ($GRNID) {

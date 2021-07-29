@@ -73,6 +73,54 @@ class GRN extends Admin_Controller
         echo json_encode($data);
     }
 
+
+    
+
+    //-----------------------------------
+    // Create GRN - Finished Goods
+    //-----------------------------------
+
+    public function CreateFinishedGoodGRN()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('createFinishedGoodGRN',$this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        // $supplier_data = $this->model_supplier->getSupplierData();
+        $item_data = $this->model_item->getOnlyFinishItemData();
+        // $payment_data = $this->model_issue->getPaymentTypes();
+        // $this->data['payment_data'] = $payment_data;
+        // $this->data['supplier_data'] = $supplier_data;
+        $this->data['item_data'] = $item_data;
+
+        $this->render_template('GRN/createFinishedGoodGRN', 'Create Finished Goods GRN',  $this->data);
+    }
+
+    
+    
+    public function SaveFinishedGoodsGRN()
+    {
+        if (!$this->isAdmin) {
+            if (!in_array('createFinishedoodGRN', $this->permission)) {
+                redirect('dashboard', 'refresh');
+            }
+        }
+
+        $response = array();
+
+            $result = $this->model_grn->saveFinishedGoodsGRN();
+            if ($result == true) {
+                $response['success'] = true;
+            } else {
+                $response['success'] = false;
+                $response['messages'] = 'Error in the database while creating the GRN idetails. Please contact service provider.';
+            }
+ 
+        echo json_encode($response);
+    }
+
     //-----------------------------------
     // View GRN
     //-----------------------------------

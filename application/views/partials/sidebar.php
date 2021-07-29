@@ -268,7 +268,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateGRN" || $this->uri->segment(2) == "ViewGRN" || $this->uri->segment(2) == "EditGRN" || $this->uri->segment(2) == "ViewGRNDetails" || $this->uri->segment(2) == "ApproveOrRejectGRN") {
+                <li class="nav-item has-treeview <?php if ($this->uri->segment(2) == "CreateGRN" || $this->uri->segment(2) == "ViewGRN" || $this->uri->segment(2) == "EditGRN" || $this->uri->segment(2) == "ViewGRNDetails" || $this->uri->segment(2) == "ApproveOrRejectGRN" || $this->uri->segment(2) == "CreateFinishedGoodGRN") {
                                                         echo 'menu-open';
                                                     } ?>">
                     <a href="#" class="nav-link">
@@ -283,7 +283,15 @@
                                                                                                     echo 'active';
                                                                                                 } ?>">
                                 <i class="fas fa-cart-plus"></i>
-                                <p>&nbsp;&nbsp;Create GRN</p>
+                                <p>&nbsp;&nbsp;Create GRN (Raw Materials)</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="<?php echo base_url('GRN/CreateFinishedGoodGRN') ?>" class="nav-link <?php if ($this->uri->segment(2) == "CreateFinishedGoodGRN") {
+                                                                                                    echo 'active';
+                                                                                                } ?>">
+                                <i class="fas fa-cart-plus"></i>
+                                <p>&nbsp;&nbsp;Create GRN (Finished Goods)</p>
                             </a>
                         </li>
                         <li class="nav-item">
